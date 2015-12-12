@@ -79,8 +79,16 @@ class DomManipulator
      */
     protected function setSizesAttribute($node)
     {
+        // Don't overwrite existing attributes
+        if ($node->getAttribute('sizes') !== '') {
+            return;
+        }
+
         $width = $node->getAttribute('width');
-        $sizes = $width !== '' ? sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width) : '100vw';
+
+        $sizes = $width !== ''
+            ? sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width)
+            : '100vw';
 
         $node->setAttribute('sizes', $sizes);
     }
@@ -93,10 +101,17 @@ class DomManipulator
      */
     protected function setSrcSetAttribute($node, $srcSets)
     {
+        // Don't overwrite existing attributes
+        if ($node->getAttribute('srcset') !== '') {
+            return;
+        }
+
         $attribute = [];
+
         foreach ($srcSets as $size => $url) {
             $attribute[] = sprintf('%s %sw', $url, $size);
         }
+
         $node->setAttribute('srcset', implode($attribute, ', '));
     }
 
