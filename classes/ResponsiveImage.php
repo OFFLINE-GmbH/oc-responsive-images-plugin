@@ -184,13 +184,13 @@ class ResponsiveImage
     }
 
     /**
-     * Returns the partition directory based on the image's filename.
+     * Returns the partition directory based on the image's path.
      *
      * @return string
      */
     protected function getPartitionDirectory()
     {
-        return implode('/', array_slice(str_split(md5($this->filename), 3), 0, 3)) . '/';
+        return implode('/', array_slice(str_split(md5($this->path), 3), 0, 3)) . '/';
     }
 
     /**
