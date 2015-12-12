@@ -4,7 +4,6 @@ namespace OFFLINE\ResponsiveImages\Classes;
 
 use Cms\Classes\MediaLibrary;
 use File as FileHelper;
-use October\Rain\Database\Attach\Resizer;
 use URL;
 
 /**
@@ -53,7 +52,7 @@ class ResponsiveImage
      * @var array
      */
     protected $sizes = [
-        '300',
+        '400',
         '768',
         '1024',
     ];
@@ -78,7 +77,7 @@ class ResponsiveImage
     public function __construct($imagePath)
     {
         $this->mediaLibrary = MediaLibrary::instance();
-        $this->path         = base_path($imagePath);
+        $this->path         = $this->normalizeImagePath($imagePath);
 
         if ( ! FileHelper::isLocalPath($this->path)) {
             throw new \InvalidArgumentException('The specified path is not local.');
@@ -126,13 +125,13 @@ class ResponsiveImage
     {
         $unavailableSizes = $this->getUnavailableSizes();
 
-        // Only create a Resizer object if copies
+        // Only create a ImageResizer object if copies
         // need to be generated.
         if (count($unavailableSizes) < 1) {
             return true;
         }
 
-        $this->resizer = Resizer::open($this->path);
+        $this->resizer = new ImageResizer($this->path);
 
         foreach ($unavailableSizes as $size) {
             $this->createCopy($size);
@@ -148,6 +147,12 @@ class ResponsiveImage
      */
     protected function createCopy($size)
     {
+        // Only scale the image down
+        if ($this->resizer->getWidth() < $size) {
+            unset($this->srcSet[$size]);
+            return;
+        }
+
         try {
             $this->resizer
                 ->resize($size, null)
@@ -228,5 +233,17 @@ class ResponsiveImage
     protected function stripBasePath($path)
     {
         return str_replace(base_path(), '', $path);
+    }
+
+    /**
+     * Remove the local host name and add the base path.
+     *
+     * @param $imagePath
+     *
+     * @return mixed
+     */
+    protected function normalizeImagePath($imagePath)
+    {
+        return str_replace(URL::to('/'), '', base_path($imagePath));
     }
 }

@@ -34,10 +34,9 @@ class ResponsiveImageService
         $srcSets = [];
 
         foreach ($this->domManipulator->getImageSources() as $source) {
-
             try {
                 $responsiveImage = new ResponsiveImage($source);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 // Ignore unprocessable images.
                 continue;
             }
