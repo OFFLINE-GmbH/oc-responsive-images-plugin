@@ -30,7 +30,7 @@ Subsequent page loads will be faster since the images are only resized once.
 
 ## Bug reports
 
-It is very likely that there will be bugs with some specific html markup. If you encounter such a bug please report it.
+It is very likely that there will be bugs with some specific html markup. If you encounter such a bug, please report it.
 
 ## Future plans
 
