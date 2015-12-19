@@ -35,7 +35,7 @@ You can change these values by editing the config/config.php file in the plugin'
 I have tested this plugin on a page with 20 hd wallpapers from pixabay.
 
 | Viewport width | Transferred file size |
-| -------------- | ----------------------|
+| -------------: | ---------------------:|
 |        1920 px |               21.8 MB |
 |        1024 px |                3.1 MB |
 |         768 px |                2.0 MB |
