@@ -18,15 +18,28 @@ into this
 ```
  
 It automatically creates resized copies of the image and serves the most fitting one to your visitor.
-  
-Currently three image sizes are created: 400, 768 and 1024 pixels. 
 
-Configuration possibilities for these values will be added in a future release.
- 
 All image copies are saved in your public temp path. Remote file systems are currently untested.
 
 The images are generated on the first page load. Depending on the source image size this may take a few seconds. 
 Subsequent page loads will be faster since the images are only resized once.
+
+## Configuration
+
+Three image sizes are created by default: 400, 768 and 1024 pixels. 
+
+You can change these values by editing the config/config.php file in the plugin's directory.
+
+## Test results
+
+I have tested this plugin on a page with 20 hd wallpapers from pixabay.
+
+| Viewport width | Transferred file size |
+| -------------- | ----------------------|
+|        1920 px |               21.8 MB |
+|        1024 px |                3.1 MB |
+|         768 px |                2.0 MB |
+|         400 px |                0.8 MB |
 
 ## Bug reports
 
