@@ -14,7 +14,6 @@ use Illuminate\Http\Response;
  */
 class ResponsiveImagesMiddleware
 {
-
     /**
      * Add srcset and sizes attributes to all local
      * images and create the various image sizes.

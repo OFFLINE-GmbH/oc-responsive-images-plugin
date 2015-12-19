@@ -2,7 +2,6 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
-
 use Illuminate\Support\Facades\URL;
 
 class SourceSet
@@ -13,7 +12,6 @@ class SourceSet
      * @var int
      */
     public $originalWidth;
-
     /**
      * The srcset rules.
      *
@@ -34,7 +32,7 @@ class SourceSet
     public function __construct($originalPath, $originalWidth)
     {
         $this->originalWidth = $originalWidth;
-        $this->originalPath = $originalPath;
+        $this->originalPath  = $originalPath;
 
         $this->push($originalWidth, $originalPath);
     }

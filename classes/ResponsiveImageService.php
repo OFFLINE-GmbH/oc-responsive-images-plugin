@@ -9,6 +9,9 @@ namespace OFFLINE\ResponsiveImages\Classes;
  */
 class ResponsiveImageService
 {
+    /**
+     * @var string
+     */
     private $html;
     /**
      * @var DomManipulator

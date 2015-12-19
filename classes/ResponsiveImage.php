@@ -45,7 +45,6 @@ class ResponsiveImage
      * @var SourceSet
      */
     protected $srcSet;
-
     /**
      * What copies of the image need to be created.
      *
@@ -56,7 +55,6 @@ class ResponsiveImage
         '768',
         '1024',
     ];
-
     /**
      * Only process these images.
      *
