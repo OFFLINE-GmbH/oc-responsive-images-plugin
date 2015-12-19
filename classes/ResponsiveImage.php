@@ -2,6 +2,7 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
+use Cache;
 use Cms\Classes\MediaLibrary;
 use Config;
 use File as FileHelper;
@@ -94,10 +95,26 @@ class ResponsiveImage
         $this->setConfigValues();
         $this->parseImagePath();
 
-        $this->resizer   = new ImageResizer($this->path);
-        $this->sourceSet = new SourceSet($this->path, $this->resizer->getWidth());
+        $this->sourceSet = new SourceSet($this->path, $this->getWidth());
 
         $this->createCopies();
+    }
+
+    /**
+     * Returns and caches the image's original width.
+     *
+     * @return int
+     */
+    protected function getWidth()
+    {
+        $cacheKey = 'responsiveimages.widths.' . $this->getPathHash();
+        $path     = $this->path;
+
+        $width = Cache::rememberForever($cacheKey, function () use ($path) {
+            return (new ImageResizer($this->path))->getWidth();
+        });
+
+        return $width;
     }
 
     /**
@@ -118,6 +135,15 @@ class ResponsiveImage
      */
     protected function createCopies()
     {
+        $unavailableSizes = $this->getUnavailableSizes();
+
+        // Only create ImageResizer if there are copies to be made.
+        if (count($unavailableSizes) < 1) {
+            return;
+        }
+
+        $this->resizer = new ImageResizer($this->path);
+
         foreach ($this->getUnavailableSizes() as $size) {
             $this->createCopy($size);
         }
@@ -175,7 +201,7 @@ class ResponsiveImage
      */
     protected function getPartitionDirectory()
     {
-        return implode('/', array_slice(str_split(md5($this->path), 3), 0, 3)) . '/';
+        return implode('/', array_slice(str_split($this->getPathHash(), 3), 0, 3)) . '/';
     }
 
     /**
@@ -243,5 +269,15 @@ class ResponsiveImage
         if ( ! in_array($this->extension, $this->allowedExtensions)) {
             throw new \InvalidArgumentException('The specified file type is not allowed.');
         }
+    }
+
+    /**
+     * Returns the hashed file path.
+     *
+     * @return string
+     */
+    protected function getPathHash()
+    {
+        return md5($this->path);
     }
 }
