@@ -34,6 +34,5 @@ It is very likely that there will be bugs with some specific html markup. If you
 
 ## Future plans
 
-* Configuration
 * Exclude/Include-Filters
 * Maybe a component to enable the middleware only on some pages

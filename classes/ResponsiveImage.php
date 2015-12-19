@@ -3,6 +3,7 @@
 namespace OFFLINE\ResponsiveImages\Classes;
 
 use Cms\Classes\MediaLibrary;
+use Config;
 use File as FileHelper;
 use URL;
 
@@ -48,15 +49,21 @@ class ResponsiveImage
     /**
      * What copies of the image need to be created.
      *
+     * These values are overridden by the plugin's
+     * config/config.php if available!
+     *
      * @var array
      */
-    protected $sizes = [
-        '400',
-        '768',
-        '1024',
+    protected $dimensions = [
+        400,
+        768,
+        1024,
     ];
     /**
      * Only process these images.
+     *
+     * These values are overridden by the plugin's
+     * config/config.php if available!
      *
      * @var array
      */
@@ -74,8 +81,7 @@ class ResponsiveImage
      */
     public function __construct($imagePath)
     {
-        $this->mediaLibrary = MediaLibrary::instance();
-        $this->path         = $this->normalizeImagePath($imagePath);
+        $this->path = $this->normalizeImagePath($imagePath);
 
         if ( ! FileHelper::isLocalPath($this->path)) {
             throw new \InvalidArgumentException('The specified path is not local.');
@@ -85,14 +91,8 @@ class ResponsiveImage
             throw new \InvalidArgumentException('The specified file does not exist.');
         }
 
-        $basename = basename($this->path);
-
-        $this->filename  = pathinfo($basename, PATHINFO_FILENAME);
-        $this->extension = pathinfo($basename, PATHINFO_EXTENSION);
-
-        if ( ! in_array($this->extension, $this->allowedExtensions)) {
-            throw new \InvalidArgumentException('The specified file type is not allowed.');
-        }
+        $this->setConfigValues();
+        $this->parseImagePath();
 
         $this->resizer   = new ImageResizer($this->path);
         $this->sourceSet = new SourceSet($this->path, $this->resizer->getWidth());
@@ -199,7 +199,7 @@ class ResponsiveImage
     {
         $unavailableSizes = [];
 
-        foreach ($this->sizes as $size) {
+        foreach ($this->dimensions as $size) {
             if ( ! file_exists($this->getStoragePath($size))) {
                 $unavailableSizes[] = $size;
             }
@@ -218,5 +218,30 @@ class ResponsiveImage
     protected function normalizeImagePath($imagePath)
     {
         return str_replace(URL::to('/'), '', base_path($imagePath));
+    }
+
+    /**
+     * Overwrites the defaults with user specified
+     * config values.
+     */
+    private function setConfigValues()
+    {
+        $this->dimensions        = Config::get('offline.responsiveimages::dimensions', $this->dimensions);
+        $this->allowedExtensions = Config::get('offline.responsiveimages::allowedExtensions', $this->allowedExtensions);
+    }
+
+    /**
+     * Extracts the filename and extension
+     * out of the image path.
+     */
+    protected function parseImagePath()
+    {
+        $basename = basename($this->path);
+
+        $this->filename  = pathinfo($basename, PATHINFO_FILENAME);
+        $this->extension = pathinfo($basename, PATHINFO_EXTENSION);
+        if ( ! in_array($this->extension, $this->allowedExtensions)) {
+            throw new \InvalidArgumentException('The specified file type is not allowed.');
+        }
     }
 }

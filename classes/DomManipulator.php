@@ -78,7 +78,8 @@ class DomManipulator
     /**
      * Set the sizes attribute based on the image's width attribute.
      *
-     * @param $node
+     * @param           $node
+     * @param SourceSet $sourceSet
      */
     protected function setSizesAttribute($node, SourceSet $sourceSet)
     {
