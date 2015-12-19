@@ -41,10 +41,10 @@ class ResponsiveImageService
                 continue;
             }
 
-            $srcSets[$source] = $responsiveImage->getSrcSet();
+            $srcSets[$source] = $responsiveImage->getSourceSet();
         }
 
-        return $this->domManipulator->addSrcSetAttributes($srcSets, $responsiveImage);
+        return $this->domManipulator->addSrcSetAttributes($srcSets);
     }
 
 

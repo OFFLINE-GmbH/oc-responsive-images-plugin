@@ -42,9 +42,9 @@ class ResponsiveImage
     /**
      * Where the various copies of the image saved.
      *
-     * @var array
+     * @var SourceSet
      */
-    protected $srcSet = [];
+    protected $srcSet;
 
     /**
      * What copies of the image need to be created.
@@ -96,6 +96,9 @@ class ResponsiveImage
             throw new \InvalidArgumentException('The specified file type is not allowed.');
         }
 
+        $this->resizer   = new ImageResizer($this->path);
+        $this->sourceSet = new SourceSet($this->path, $this->resizer->getWidth());
+
         $this->createCopies();
     }
 
@@ -105,25 +108,9 @@ class ResponsiveImage
      *
      * @return array
      */
-    public function getSrcSet()
+    public function getSourceSet()
     {
-        $srcSet = [];
-
-        foreach ($this->srcSet as $size => $path) {
-            $srcSet[$size] = $this->getPublicUrl($path);
-        }
-
-        return $srcSet;
-    }
-
-    /**
-     * Returns the original width of the iamge.
-     *
-     * @return int
-     */
-    public function getOriginalWidth()
-    {
-        return (new ImageResizer($this->path))->getWidth();
+        return $this->sourceSet;
     }
 
     /**
@@ -133,21 +120,9 @@ class ResponsiveImage
      */
     protected function createCopies()
     {
-        $unavailableSizes = $this->getUnavailableSizes();
-
-        // Only create a ImageResizer object if copies
-        // need to be generated.
-        if (count($unavailableSizes) < 1) {
-            return true;
-        }
-
-        $this->resizer = new ImageResizer($this->path);
-
-        foreach ($unavailableSizes as $size) {
+        foreach ($this->getUnavailableSizes() as $size) {
             $this->createCopy($size);
         }
-
-        return true;
     }
 
     /**
@@ -159,7 +134,7 @@ class ResponsiveImage
     {
         // Only scale the image down
         if ($this->resizer->getWidth() < $size) {
-            unset($this->srcSet[$size]);
+            $this->sourceSet->remove($size);
 
             return;
         }
@@ -170,7 +145,7 @@ class ResponsiveImage
                 ->save($this->getStoragePath($size));
         } catch (\Exception $e) {
             // Cannot resize image to this size. Remove it from the srcset.
-            unset($this->srcSet[$size]);
+            $this->sourceSet->remove($size);
         }
     }
 
@@ -188,8 +163,9 @@ class ResponsiveImage
             FileHelper::makeDirectory($path, 0777, true, true);
         }
 
-        $storagePath         = $path . $this->getStorageFilename($size);
-        $this->srcSet[$size] = $storagePath;
+        $storagePath = $path . $this->getStorageFilename($size);
+
+        $this->sourceSet->push($size, $storagePath);
 
         return $storagePath;
     }
@@ -232,18 +208,6 @@ class ResponsiveImage
         }
 
         return $unavailableSizes;
-    }
-
-    /**
-     * Removes the base path from $path and adds the url.
-     *
-     * @param $path
-     *
-     * @return mixed
-     */
-    protected function getPublicUrl($path)
-    {
-        return URL::to('/') . str_replace(base_path(), '', $path);
     }
 
     /**

@@ -57,16 +57,19 @@ class DomManipulator
      *
      * @return string
      */
-    public function addSrcSetAttributes(array $srcSets, ResponsiveImage $responsiveImage)
+    public function addSrcSetAttributes(array $srcSets)
     {
         foreach ($this->imgNodes as $node) {
-            if ( ! array_key_exists($this->getSrcAttribute($node), $srcSets)) {
+
+            $src = $this->getSrcAttribute($node);
+
+            if ( ! array_key_exists($src, $srcSets)) {
                 // There are no alternative sizes available for this image
                 continue;
             }
 
-            $this->setSrcSetAttribute($node, $srcSets[$this->getSrcAttribute($node)]);
-            $this->setSizesAttribute($node, $responsiveImage);
+            $this->setSrcSetAttribute($node, $srcSets[$src]);
+            $this->setSizesAttribute($node, $srcSets[$src]);
         }
 
         return $this->dom->saveHTML();
@@ -77,44 +80,30 @@ class DomManipulator
      *
      * @param $node
      */
-    protected function setSizesAttribute($node, ResponsiveImage $responsiveImage)
+    protected function setSizesAttribute($node, SourceSet $sourceSet)
     {
         // Don't overwrite existing attributes
         if ($node->getAttribute('sizes') !== '') {
             return;
         }
 
-        if ($width = $node->getAttribute('width') === '') {
-            $width = $responsiveImage->getOriginalWidth();
-        }
-
-        $sizes = $width !== ''
-            ? sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width)
-            : '100vw';
-
-        $node->setAttribute('sizes', $sizes);
+        $node->setAttribute('sizes', $sourceSet->getSizesAttribute($node->getAttribute('width')));
     }
 
     /**
      * Set the srcset attribute.
      *
      * @param $node
-     * @param $srcSets
+     * @param $sourceSet
      */
-    protected function setSrcSetAttribute($node, $srcSets)
+    protected function setSrcSetAttribute($node, SourceSet $sourceSet)
     {
         // Don't overwrite existing attributes
         if ($node->getAttribute('srcset') !== '') {
             return;
         }
 
-        $attribute = [];
-
-        foreach ($srcSets as $size => $url) {
-            $attribute[] = sprintf('%s %sw', $url, $size);
-        }
-
-        $node->setAttribute('srcset', implode($attribute, ', '));
+        $node->setAttribute('srcset', $sourceSet->getSrcSetAttribute());
     }
 
     /**

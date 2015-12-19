@@ -33,7 +33,6 @@ class ResponsiveImagesMiddleware
         if ( ! $this->isRelevant($request, $response)) {
             return $response;
         }
-
         $response->setContent(
             (new ResponsiveImageService($response->getContent()))->process()
         );
