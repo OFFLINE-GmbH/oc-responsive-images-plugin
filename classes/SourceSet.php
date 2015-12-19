@@ -45,7 +45,7 @@ class SourceSet
      */
     public function push($size, $storagePath)
     {
-        $this->rules[$size] = ['storage_page' => $storagePath, 'public_url' => $this->getPublicUrl($storagePath)];
+        $this->rules[$size] = ['storage_path' => $storagePath, 'public_url' => $this->getPublicUrl($storagePath)];
     }
 
     /**
