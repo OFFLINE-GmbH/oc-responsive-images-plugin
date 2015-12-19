@@ -57,7 +57,7 @@ class DomManipulator
      *
      * @return string
      */
-    public function addSrcSetAttributes(array $srcSets)
+    public function addSrcSetAttributes(array $srcSets, ResponsiveImage $responsiveImage)
     {
         foreach ($this->imgNodes as $node) {
             if ( ! array_key_exists($this->getSrcAttribute($node), $srcSets)) {
@@ -66,7 +66,7 @@ class DomManipulator
             }
 
             $this->setSrcSetAttribute($node, $srcSets[$this->getSrcAttribute($node)]);
-            $this->setSizesAttribute($node);
+            $this->setSizesAttribute($node, $responsiveImage);
         }
 
         return $this->dom->saveHTML();
@@ -77,14 +77,16 @@ class DomManipulator
      *
      * @param $node
      */
-    protected function setSizesAttribute($node)
+    protected function setSizesAttribute($node, ResponsiveImage $responsiveImage)
     {
         // Don't overwrite existing attributes
         if ($node->getAttribute('sizes') !== '') {
             return;
         }
 
-        $width = $node->getAttribute('width');
+        if ($width = $node->getAttribute('width') === '') {
+            $width = $responsiveImage->getOriginalWidth();
+        }
 
         $sizes = $width !== ''
             ? sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width)

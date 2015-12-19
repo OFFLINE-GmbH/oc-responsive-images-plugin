@@ -110,10 +110,20 @@ class ResponsiveImage
         $srcSet = [];
 
         foreach ($this->srcSet as $size => $path) {
-            $srcSet[$size] = $this->stripBasePath($path);
+            $srcSet[$size] = $this->getPublicUrl($path);
         }
 
         return $srcSet;
+    }
+
+    /**
+     * Returns the original width of the iamge.
+     *
+     * @return int
+     */
+    public function getOriginalWidth()
+    {
+        return (new ImageResizer($this->path))->getWidth();
     }
 
     /**
@@ -150,6 +160,7 @@ class ResponsiveImage
         // Only scale the image down
         if ($this->resizer->getWidth() < $size) {
             unset($this->srcSet[$size]);
+
             return;
         }
 
@@ -224,15 +235,15 @@ class ResponsiveImage
     }
 
     /**
-     * Removes the base path from $path.
+     * Removes the base path from $path and adds the url.
      *
      * @param $path
      *
      * @return mixed
      */
-    protected function stripBasePath($path)
+    protected function getPublicUrl($path)
     {
-        return str_replace(base_path(), '', $path);
+        return URL::to('/') . str_replace(base_path(), '', $path);
     }
 
     /**
