@@ -29,7 +29,7 @@ class DomManipulator
             $this->dom = new \DOMDocument;
         }
 
-        $this->dom->loadHTML($html);
+        $this->dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
         $this->imgNodes = (new \DOMXPath($this->dom))->query("//img");
     }
 
