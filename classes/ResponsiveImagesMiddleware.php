@@ -50,7 +50,7 @@ class ResponsiveImagesMiddleware
      */
     private function isBackendRequest(Request $request)
     {
-        return starts_with(trim($request->getPathInfo(), '/'), Config::get('cms.backendUri', 'backend'));
+        return starts_with(trim($request->getPathInfo(), '/'), trim(Config::get('cms.backendUri', 'backend'), '/'));
     }
 
     /**
