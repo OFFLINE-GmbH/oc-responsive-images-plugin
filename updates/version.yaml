@@ -1,1 +1,4 @@
 1.0.1: First version of ResponsiveImages
+1.0.2: 
+    - Fixed encoding problems
+    - Fixed broken media manager when using custom backend url
