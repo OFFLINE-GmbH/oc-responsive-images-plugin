@@ -30,6 +30,12 @@ Three image sizes are created by default: 400, 768 and 1024 pixels.
 
 You can change these values by editing the config/config.php file in the plugin's directory.
 
+### Alternative `src` attribute
+
+If you want to use an alternative `src` attribute you can change this via the `alternative-src` config value. 
+This is useful if you are using a plugin like [jQuery.lazyLoad](http://www.appelsiini.net/projects/lazyload) where the image
+ is initially linked via a `data-original` attribute.
+
 ## Test results
 
 I have tested this plugin on a page with 20 hd wallpapers from pixabay.

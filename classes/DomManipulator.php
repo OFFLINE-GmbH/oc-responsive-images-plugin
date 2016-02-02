@@ -2,6 +2,8 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
+use Config;
+
 /**
  * Manipulates images in a DOMDocument.
  *
@@ -116,7 +118,15 @@ class DomManipulator
      */
     protected function getSrcAttribute($node)
     {
-        return trim($node->getAttribute('src'), '/');
+        $src = $node->getAttribute('src');
+
+        $altSrc = Config::get('offline.responsiveimages::alternative-src', false);
+
+        if ($altSrc && $node->getAttribute($altSrc) !== '') {
+            $src = $node->getAttribute($altSrc);
+        }
+
+        return trim($src, '/');
     }
 
 }

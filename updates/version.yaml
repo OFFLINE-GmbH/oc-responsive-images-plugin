@@ -2,3 +2,4 @@
 1.0.2: 
     - Fixed encoding problems
     - Fixed broken media manager when using custom backend url
+1.0.3: Added alternative-src config option to support jQuery.lazyLoad plugin
