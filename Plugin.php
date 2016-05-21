@@ -28,7 +28,7 @@ class Plugin extends PluginBase
         return [
             'name'        => 'ResponsiveImages',
             'description' => 'Adds srcset and sizes attributes to your images',
-            'author'      => 'OFFLINE',
+            'author'      => 'OFFLINE GmbH',
             'icon'        => 'icon-file-image-o',
         ];
     }
