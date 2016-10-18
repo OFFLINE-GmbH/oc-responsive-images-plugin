@@ -118,7 +118,7 @@ class DomManipulator
      */
     protected function getSrcAttribute($node)
     {
-        $src = urldecode( $node->getAttribute('src') );
+        $src = $node->getAttribute('src');
 
         $altSrc = Config::get('offline.responsiveimages::alternative-src', false);
 

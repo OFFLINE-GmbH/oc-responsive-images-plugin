@@ -40,10 +40,11 @@ class ResponsiveImageService
 
         foreach ($this->domManipulator->getImageSources() as $source) {
             try {
-                $source = urldecode($source);
                 $responsiveImage = new ResponsiveImage($source);
+            } catch(\RemotePathException $e) {
+                //we dont want to log all remote images so just continue here
+                continue;
             } catch (\Exception $e) {
-                // we should log what kind of images are not processable and then continue loop
                 Log::warning("[Offline.responsiveimages] could not process image: " . $source);
                 continue;
             }

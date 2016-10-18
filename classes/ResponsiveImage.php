@@ -82,10 +82,11 @@ class ResponsiveImage
      */
     public function __construct($imagePath)
     {
+        $imagePath = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
 
         if ( ! FileHelper::isLocalPath($this->path)) {
-            throw new \InvalidArgumentException('The specified path is not local.');
+            throw new \RemotePathException('The specified path is not local.');
         }
 
         if ( ! file_exists($this->path)) {
