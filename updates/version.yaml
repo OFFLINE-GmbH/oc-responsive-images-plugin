@@ -3,3 +3,4 @@
     - Fixed encoding problems
     - Fixed broken media manager when using custom backend url
 1.0.3: Added alternative-src config option to support jQuery.lazyLoad plugin
+1.0.4: Fixed handling of filenames containing spaces (Thanks to webeks!)
