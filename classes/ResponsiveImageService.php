@@ -2,6 +2,8 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * Class ResponsiveImageService
  *
@@ -39,8 +41,11 @@ class ResponsiveImageService
         foreach ($this->domManipulator->getImageSources() as $source) {
             try {
                 $responsiveImage = new ResponsiveImage($source);
+            } catch(\RemotePathException $e) {
+                //we dont want to log all remote images so just continue here
+                continue;
             } catch (\Exception $e) {
-                // Ignore unprocessable images.
+                Log::warning("[Offline.responsiveimages] could not process image: " . $source);
                 continue;
             }
 

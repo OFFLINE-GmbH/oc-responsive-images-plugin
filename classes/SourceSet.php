@@ -67,7 +67,11 @@ class SourceSet
      */
     protected function getPublicUrl($path)
     {
-        return URL::to('/') . str_replace(base_path(), '', $path);
+        $relativePath = str_replace(base_path(), '', $path);
+        $filename = basename($relativePath);
+        $relativeFolderPath = str_replace($filename, '', $relativePath);
+
+        return URL::to('/') . $relativeFolderPath . rawurlencode($filename) ;
     }
 
     /**
