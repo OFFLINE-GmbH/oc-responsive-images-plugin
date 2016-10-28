@@ -41,6 +41,13 @@ This is useful if you are using a plugin like [jQuery.lazyLoad](http://www.appel
  
  If your plugin requires an alternative srcset attribute (like [verlok/LazyLoad](https://github.com/verlok/lazyload)) this can also be specified via the backend settings. 
 
+
+### Global `class` attributes
+
+If you want to add a class to every processed image you can configure this via the backend settings.
+
+This is useful if you want to add Bootstrap's `img-responsive` class to all images on your website.
+
 ## Test results
 
 I have tested this plugin on a page with 20 hd wallpapers from pixabay.
