@@ -6,6 +6,11 @@ use Cache;
 use Cms\Classes\MediaLibrary;
 use Config;
 use File as FileHelper;
+use Log;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
+use OFFLINE\ResponsiveImages\Models\Settings;
 use URL;
 
 /**
@@ -51,49 +56,45 @@ class ResponsiveImage
      * What copies of the image need to be created.
      *
      * These values are overridden by the plugin's
-     * config/config.php if available!
+     * settings!
      *
      * @var array
      */
-    protected $dimensions = [
-        400,
-        768,
-        1024,
-    ];
+    protected $dimensions = '400,768,1024';
+
     /**
      * Only process these images.
      *
      * These values are overridden by the plugin's
-     * config/config.php if available!
+     * settings!
      *
      * @var array
      */
-    protected $allowedExtensions = [
-        'jpg',
-        'jpeg',
-        'png',
-        'gif',
-    ];
+    protected $allowedExtensions = 'jpg,jpeg,png,gif';
 
     /**
      * Create all the needed copies of the image.
      *
      * @param $imagePath
+     *
+     * @throws RemotePathException
+     * @throws FileNotFoundException
+     * @throws UnallowedFileTypeException
      */
     public function __construct($imagePath)
     {
-        $imagePath = urldecode($imagePath);
+        $imagePath  = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
 
         if ( ! FileHelper::isLocalPath($this->path)) {
-            throw new \RemotePathException('The specified path is not local.');
+            throw new RemotePathException('The specified path is not local.');
         }
 
         if ( ! file_exists($this->path)) {
-            throw new \InvalidArgumentException('The specified file does not exist.');
+            throw new FileNotFoundException('The specified file does not exist.');
         }
 
-        $this->setConfigValues();
+        $this->loadSettings();
         $this->parseImagePath();
 
         $this->sourceSet = new SourceSet($this->path, $this->getWidth());
@@ -165,12 +166,14 @@ class ResponsiveImage
         }
 
         try {
-            $this->resizer
-                ->resize($size, null)
-                ->save($this->getStoragePath($size));
+            $this->resizer->resize($size, null)->save($this->getStoragePath($size));
         } catch (\Exception $e) {
             // Cannot resize image to this size. Remove it from the srcset.
             $this->sourceSet->remove($size);
+
+            if (Settings::get('log_unprocessable', false)) {
+                Log::warning(sprintf('Failed to create size "%s" for image "%s"', $size, $this->path));
+            }
         }
     }
 
@@ -251,15 +254,17 @@ class ResponsiveImage
      * Overwrites the defaults with user specified
      * config values.
      */
-    private function setConfigValues()
+    private function loadSettings()
     {
-        $this->dimensions        = Config::get('offline.responsiveimages::dimensions', $this->dimensions);
-        $this->allowedExtensions = Config::get('offline.responsiveimages::allowedExtensions', $this->allowedExtensions);
+        $this->dimensions        = Settings::getCommaSeparated('dimensions', $this->dimensions);
+        $this->allowedExtensions = Settings::getCommaSeparated('allowed_extensions', $this->allowedExtensions);
     }
 
     /**
      * Extracts the filename and extension
      * out of the image path.
+     *
+     * @throws UnallowedFileTypeException
      */
     protected function parseImagePath()
     {
@@ -267,8 +272,11 @@ class ResponsiveImage
 
         $this->filename  = pathinfo($basename, PATHINFO_FILENAME);
         $this->extension = pathinfo($basename, PATHINFO_EXTENSION);
+
         if ( ! in_array($this->extension, $this->allowedExtensions)) {
-            throw new \InvalidArgumentException('The specified file type is not allowed.');
+            throw new UnallowedFileTypeException(
+                sprintf('The specified file type "%s" is not allowed.', $this->extension)
+            );
         }
     }
 

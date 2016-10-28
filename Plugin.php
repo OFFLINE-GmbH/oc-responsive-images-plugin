@@ -26,11 +26,47 @@ class Plugin extends PluginBase
     public function pluginDetails()
     {
         return [
-            'name'        => 'ResponsiveImages',
-            'description' => 'Adds srcset and sizes attributes to your images',
-            'author'      => 'OFFLINE GmbH',
-            'icon'        => 'icon-file-image-o',
+            'name'        => 'offline.responsiveimages::lang.plugin.name',
+            'description' => 'offline.responsiveimages::lang.plugin.description',
+            'author'      => 'offline.responsiveimages::lang.plugin.author',
+            'homepage'    => 'https://github.com/OFFLINE-GmbH/oc-responsive-images-plugin',
+            'icon'        => 'icon-file-image-o'
         ];
     }
 
+    /**
+     * Registers any back-end permissions.
+     *
+     * @return array
+     */
+    public function registerPermissions()
+    {
+        return [
+            'offline.responsiveimages.manage_settings' => [
+                    'tab'   => 'offline.responsiveimages::lang.plugin.name',
+                'label' => 'offline.responsiveimages::lang.plugin.manage_settings_permission',
+            ],
+        ];
+    }
+
+    /**
+     * Registers any back-end settings.
+     *
+     * @return array
+     */
+    public function registerSettings()
+    {
+        return [
+            'config' => [
+                'label'       => 'offline.responsiveimages::lang.plugin.name',
+                'description' => 'offline.responsiveimages::lang.plugin.manage_settings',
+                'category'    => 'system::lang.system.categories.cms',
+                'icon'        => 'icon-file-image-o',
+                'class'       => 'Offline\ResponsiveImages\Models\Settings',
+                'order'       => 500,
+                'keywords'    => 'responsive images',
+                'permissions' => ['offline.responsiveimages.manage_settings']
+            ],
+        ];
+    }
 }

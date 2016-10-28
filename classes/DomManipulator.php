@@ -3,6 +3,7 @@
 namespace OFFLINE\ResponsiveImages\Classes;
 
 use Config;
+use OFFLINE\ResponsiveImages\Models\Settings;
 
 /**
  * Manipulates images in a DOMDocument.
@@ -72,6 +73,7 @@ class DomManipulator
 
             $this->setSrcSetAttribute($node, $srcSets[$src]);
             $this->setSizesAttribute($node, $srcSets[$src]);
+            $this->setClassAttribute($node);
         }
 
         return $this->dom->saveHTML();
@@ -83,7 +85,7 @@ class DomManipulator
      * @param           $node
      * @param SourceSet $sourceSet
      */
-    protected function setSizesAttribute($node, SourceSet $sourceSet)
+    protected function setSizesAttribute(\DOMElement $node, SourceSet $sourceSet)
     {
         // Don't overwrite existing attributes
         if ($node->getAttribute('sizes') !== '') {
@@ -99,14 +101,35 @@ class DomManipulator
      * @param $node
      * @param $sourceSet
      */
-    protected function setSrcSetAttribute($node, SourceSet $sourceSet)
+    protected function setSrcSetAttribute(\DOMElement $node, SourceSet $sourceSet)
     {
+        $targetAttribute = Settings::get('alternative_src_set', 'srcset');
+        if ( ! $targetAttribute) {
+            $targetAttribute = 'srcset';
+        }
+
         // Don't overwrite existing attributes
-        if ($node->getAttribute('srcset') !== '') {
+        if ($node->getAttribute($targetAttribute) !== '') {
             return;
         }
 
-        $node->setAttribute('srcset', $sourceSet->getSrcSetAttribute());
+        $node->setAttribute($targetAttribute, $sourceSet->getSrcSetAttribute());
+    }
+
+    /**
+     * Set the class attribute.
+     *
+     * @param $node
+     */
+    protected function setClassAttribute(\DOMElement $node)
+    {
+        if ( ! $class = Settings::get('add_class')) {
+            return;
+        }
+
+        $classes = $node->getAttribute('class');
+
+        $node->setAttribute('class', "$classes $class");
     }
 
     /**
@@ -120,7 +143,7 @@ class DomManipulator
     {
         $src = $node->getAttribute('src');
 
-        $altSrc = Config::get('offline.responsiveimages::alternative-src', false);
+        $altSrc = Settings::get('alternative_src', false);
 
         if ($altSrc && $node->getAttribute($altSrc) !== '') {
             $src = $node->getAttribute($altSrc);
