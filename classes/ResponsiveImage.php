@@ -247,7 +247,24 @@ class ResponsiveImage
      */
     protected function normalizeImagePath($imagePath)
     {
-        return str_replace(URL::to('/'), '', base_path($imagePath));
+        // If a relative path gets processed make sure to remove
+        // any subdirectory from the URL.
+        if(substr($imagePath, 0, 4) !== 'http') {
+            $base = $this->getBase();
+            $subdir = trim(str_replace($base, '', env('APP_URL')), '/') . '/';
+            return base_path(str_replace($subdir, '', $imagePath));
+        } else {
+            $imagePath = trim(str_replace(env('APP_URL'), '', $imagePath), '/');
+            return base_path($imagePath);
+        }
+    }
+
+    /**
+     * Returns the host base without subdirectories.
+     */
+    protected function getBase() {
+         $protocol = \Request::server('HTTPS') ? 'https://' : 'http://';
+         return $protocol . \Request::server('HTTP_HOST');
     }
 
     /**
