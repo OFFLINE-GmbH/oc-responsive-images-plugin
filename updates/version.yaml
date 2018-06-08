@@ -7,3 +7,4 @@
 1.1.0: Added settings page, support for lazy-loading plugins and responsive class attributes
 1.1.1: Added compatibility with current edgeUpdate builds
 1.1.2: Fixed processing of relative pahts when October runs in a subdirectory
+1.1.3: Added french translation (thanks to damsfx)
