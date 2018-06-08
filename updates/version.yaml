@@ -8,3 +8,4 @@
 1.1.1: Added compatibility with current edgeUpdate builds
 1.1.2: Fixed processing of relative pahts when October runs in a subdirectory
 1.1.3: Added french translation (thanks to damsfx)
+1.1.4: Optimized support for multi-byte character strings (thanks to sergei3456)
