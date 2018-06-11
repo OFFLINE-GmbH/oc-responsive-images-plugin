@@ -76,7 +76,7 @@ class DomManipulator
             $this->setClassAttribute($node);
         }
 
-        return $this->dom->saveHTML($this->dom->documentElement);
+        return $this->dom->saveHTML();
     }
 
     /**
