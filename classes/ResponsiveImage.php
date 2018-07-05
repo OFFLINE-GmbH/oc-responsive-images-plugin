@@ -3,7 +3,7 @@
 namespace OFFLINE\ResponsiveImages\Classes;
 
 use Cache;
-use Cms\Classes\MediaLibrary;
+use System\Classes\MediaLibrary;
 use Config;
 use File as FileHelper;
 use Log;
@@ -254,7 +254,7 @@ class ResponsiveImage
             $subdir = trim(str_replace($base, '', env('APP_URL')), '/') . '/';
             return base_path(str_replace($subdir, '', $imagePath));
         } else {
-            $imagePath = trim(str_replace(env('APP_URL'), '', $imagePath), '/');
+            $imagePath = trim(str_replace(config('app.url'), '', $imagePath), '/');
             return base_path($imagePath);
         }
     }
