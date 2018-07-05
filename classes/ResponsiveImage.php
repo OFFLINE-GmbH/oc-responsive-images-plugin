@@ -3,7 +3,7 @@
 namespace OFFLINE\ResponsiveImages\Classes;
 
 use Cache;
-use Cms\Classes\MediaLibrary;
+use System\Classes\MediaLibrary;
 use Config;
 use File as FileHelper;
 use Log;
