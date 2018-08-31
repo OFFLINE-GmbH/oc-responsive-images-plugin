@@ -247,16 +247,11 @@ class ResponsiveImage
      */
     protected function normalizeImagePath($imagePath)
     {
-        // If a relative path gets processed make sure to remove
-        // any subdirectory from the URL.
-        if(substr($imagePath, 0, 4) !== 'http') {
-            $base = $this->getBase();
-            $subdir = trim(str_replace($base, '', env('APP_URL')), '/') . '/';
-            return base_path(str_replace($subdir, '', $imagePath));
-        } else {
-            $imagePath = trim(str_replace(config('app.url'), '', $imagePath), '/');
-            return base_path($imagePath);
-        }
+        $base = $this->getBase();
+
+        $imagePath = trim(str_replace($base, '', $imagePath), '/');
+
+        return base_path($imagePath);
     }
 
     /**
