@@ -71,7 +71,10 @@ class SourceSet
         $filename = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
-        return URL::to('/') . $relativeFolderPath . rawurlencode($filename) ;
+        $url = rawurlencode(URL::to('/') . $relativeFolderPath . $filename);
+
+        // Bring encoded colon and slashes back
+        return str_replace(['%2F', '%3A'], ['/', ':'], $url);
     }
 
     /**
