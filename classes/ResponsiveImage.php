@@ -85,7 +85,6 @@ class ResponsiveImage
     {
         $imagePath  = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
-
         if ( ! FileHelper::isLocalPath($this->path)) {
             throw new RemotePathException('The specified path is not local.');
         }
