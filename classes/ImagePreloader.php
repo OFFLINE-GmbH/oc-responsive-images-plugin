@@ -44,23 +44,32 @@ class ImagePreloader
             return [$type => $this->getTypeInfo($type)];
         });
 
-        $urls = $this->getPageUrls($definitions);
+        $urls = $this->getPageUrls($definitions);       
+        
 
-        foreach ($urls as $url) {
+        foreach ($urls->sort() as $url) {
             $urlParts = parse_url($url);
             $path     = data_get($urlParts, 'path', '/');
             $query    = array_key_exists('query', $urlParts) ? '?' . $urlParts['query'] : '';
             $fragment = array_key_exists('fragment', $urlParts) ? '#' . $urlParts['fragment'] : '';
 
             $relative = implode('', [$path, $query, $fragment]);
-
-            $this->output->writeln('Processing url ' . $relative);
+            
             try {
                 $response = App::make(Controller::class)->run($relative);
 
-                (new ResponsiveImageService($response->getContent()))->process();
+                $content = $response->getContent();
+                if(empty($content)){
+                    $this->output->writeln("Skipping empty page: \t$relative");
+                    continue;
+                }
+
+                $this->output->writeln("Processing page: \t$relative");
+
+                (new ResponsiveImageService($content))->process();
+
             } catch (\Exception $e) {
-                $this->output->writeln('Failed to process: ' . $e->getMessage());
+                $this->output->writeln("Failed to process page: \t$relative \t".$e->getMessage());
             }
         }
     }
@@ -147,27 +156,28 @@ class ImagePreloader
     public function getPageUrls(Collection $definitions): Collection
     {
         return $definitions->flatMap(function ($definition, $type) {
-            $urls       = [];
-            $references = data_get($definition, 'references', []);
+            $urls       = new Collection();
+            $references = data_get($definition, 'references', []);            
             foreach ($references as $reference => $name) {
                 if ( ! isset($definition['cmsPages'])) {
                     $item = (object)[
                         'type'      => $type,
                         'reference' => $reference,
                         'nesting'   => data_get($definition, 'nesting', false),
-                    ];
-                    $urls += $this->getUrlsForItem($type, $item);
+                    ];       
+                    $urls = $urls->concat($this->getUrlsForItem($type, $item));
+
                     continue;
                 }
 
-                foreach ($definition['cmsPages'] as $cmsPage) {
+                foreach ($definition['cmsPages'] as $cmsPage => $name) {
                     $item = (object)[
                         'type'      => $type,
                         'reference' => $reference,
                         'cmsPage'   => $cmsPage,
                         'nesting'   => data_get($definition, 'nesting', false),
                     ];
-                    $urls += $this->getUrlsForItem($type, $item);
+                    $urls = $urls->concat($this->getUrlsForItem($type, $item));
                 }
             }
 
