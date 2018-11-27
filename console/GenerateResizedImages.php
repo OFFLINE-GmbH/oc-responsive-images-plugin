@@ -3,30 +3,30 @@
 namespace OFFLINE\ResponsiveImages\Console;
 
 
+use Cms\Classes\Theme;
 use Illuminate\Console\Command;
 use OFFLINE\ResponsiveImages\Classes\ImagePreloader;
 use Symfony\Component\Console\Input\InputArgument;
 
 class GenerateResizedImages extends Command
 {
-
-    protected $name = 'responsiveimages:generate';
-
-    protected $description = 'Trys to generate all needed resized images';
+    protected $name = 'responsive-images:generate';
+    protected $description = 'Tries to resize all used images.';
 
     protected function getArguments()
     {
         return [
-            ['theme', InputArgument::REQUIRED, 'The Theme to use.'],
+            ['theme', InputArgument::OPTIONAL, 'The theme to use.'],
         ];
     }
 
     public function handle()
     {
+        $theme = $this->argument('theme');
+        if ( ! $theme) {
+            $theme = Theme::getActiveThemeCode();
+        }
 
-        $preloader = new ImagePreloader($this->argument('theme'));
-        $preloader->preloadImages();
-
+        (new ImagePreloader($theme, $this->getOutput()))->preload();
     }
-
 }
