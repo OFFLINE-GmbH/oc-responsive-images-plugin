@@ -14,3 +14,4 @@
 1.1.7: Optimized support for multi-byte character strings (thanks to sergei3456)
 1.1.8: Optimized support for installations that serve multiple domains
 1.1.9: Fixed resizing of image paths that contain spaces (thanks to adamo)
+1.2.0: Added `responsive-images:generate` artisan command to pre-generate all image sizes (thanks to kiselli)
