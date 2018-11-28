@@ -1,5 +1,7 @@
 <?php namespace OFFLINE\ResponsiveImages;
 
+use OFFLINE\ResponsiveImages\Classes\ImagePreloader;
+use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use System\Classes\PluginBase;
 
 /**
@@ -68,5 +70,9 @@ class Plugin extends PluginBase
                 'permissions' => ['offline.responsiveimages.manage_settings']
             ],
         ];
+    }
+
+    public function register(){
+        $this->registerConsoleCommand('responsiveimages:generate', GenerateResizedImages::class);
     }
 }

@@ -48,6 +48,12 @@ If you want to add a class to every processed image you can configure this via t
 
 This is useful if you want to add Bootstrap's `img-responsive` class to all images on your website.
 
+## Pre-generate images
+
+You can use the `php artisan responsive-images:generate` command to pre-generate responsive images. The command uses 
+October's `pages.menuitem.*` events to build a list of all available URLs and pre-generates all images used on these 
+pages. 
+
 ## Test results
 
 I have tested this plugin on a page with 20 hd wallpapers from pixabay.
