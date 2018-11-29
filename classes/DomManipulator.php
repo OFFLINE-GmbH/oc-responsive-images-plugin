@@ -81,8 +81,8 @@ class DomManipulator
 
             $responsiveImage = $this->getResponsiveImage($source);
             if ($responsiveImage === null) {
-                // The processing of the image failed. Do nothing.
-                return null;
+                // The processing of the image failed return original tag.
+                return $matches[0];
             }
 
             $sourceSet = $responsiveImage->getSourceSet();
