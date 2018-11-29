@@ -6,6 +6,7 @@ use Closure;
 use Config;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OFFLINE\ResponsiveImages\Models\Settings;
 
 /**
  * Class ResponsiveImagesMiddleware
@@ -33,9 +34,13 @@ class ResponsiveImagesMiddleware
             return $response;
         }
 
-        $response->setContent(
-            (new ResponsiveImageService($response->getContent()))->process()
+        $manipulator = new DomManipulator(
+            $response->getContent(),
+            $this->getSettings(),
+            app('log')
         );
+
+        $response->setContent($manipulator->process());
 
         return $response;
 
@@ -51,7 +56,10 @@ class ResponsiveImagesMiddleware
      */
     private function isBackendRequest(Request $request)
     {
-        return starts_with(trim($request->getPathInfo(), '/'), trim(Config::get('cms.backendUri', 'backend'), '/'));
+        return starts_with(
+            trim($request->getPathInfo(), '/'),
+            trim(Config::get('cms.backendUri', 'backend'), '/')
+        );
     }
 
     /**
@@ -94,4 +102,13 @@ class ResponsiveImagesMiddleware
         return true;
     }
 
+    /**
+     * Load all relevant Settings for the DomManipulator.
+     *
+     * @return DomManipulatorSettings
+     */
+    protected function getSettings(): DomManipulatorSettings
+    {
+        return DomManipulatorSettings::fromSettingsModel(Settings::instance());
+    }
 }
