@@ -62,7 +62,10 @@ class SourceSet
      */
     protected function getPublicUrl($path)
     {
-        $relativePath       = str_replace(base_path(), '', $path);
+        $relativePath = str_replace(base_path(), '', $path);
+        // Replace any Backslashes for Windows compatibility
+        $relativePath = str_replace('\\', '/', $relativePath);
+
         $filename           = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
