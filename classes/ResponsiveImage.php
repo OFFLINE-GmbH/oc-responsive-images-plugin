@@ -53,6 +53,12 @@ class ResponsiveImage
      */
     protected $srcSet;
     /**
+     * ImageResizer instance.
+     *
+     * @var ImageResizer
+     */
+    protected $resizer;
+    /**
      * What copies of the image need to be created.
      *
      * These values are overridden by the plugin's
@@ -122,7 +128,7 @@ class ResponsiveImage
      * Returns an associative array of all available
      * image sizes and their storage locations.
      *
-     * @return array
+     * @return SourceSet
      */
     public function getSourceSet()
     {
@@ -140,7 +146,7 @@ class ResponsiveImage
 
         // Only create ImageResizer if there are copies to be made.
         if (count($unavailableSizes) < 1) {
-            return;
+            return false;
         }
 
         $this->resizer = new ImageResizer($this->path);
@@ -204,7 +210,9 @@ class ResponsiveImage
      */
     protected function getPartitionDirectory()
     {
-        return implode('/', array_slice(str_split($this->getPathHash(), 3), 0, 3)) . '/';
+        $pieces = array_slice(str_split($this->getPathHash(), 3), 0, 3);
+
+        return implode('/', $pieces) . '/';
     }
 
     /**
@@ -256,9 +264,11 @@ class ResponsiveImage
     /**
      * Returns the host base without subdirectories.
      */
-    protected function getBase() {
-         $protocol = \Request::server('HTTPS') ? 'https://' : 'http://';
-         return $protocol . \Request::server('HTTP_HOST');
+    protected function getBase()
+    {
+        $protocol = \Request::server('HTTPS') ? 'https://' : 'http://';
+
+        return $protocol . \Request::server('HTTP_HOST');
     }
 
     /**
