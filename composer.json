@@ -19,6 +19,7 @@
   "require": {
     "php": ">=7.1",
     "composer/installers": "~1.0",
-    "psr/log": "^1.1.0"
+    "psr/log": "^1.1.0",
+    "ext-dom": "*"
   }
 }
