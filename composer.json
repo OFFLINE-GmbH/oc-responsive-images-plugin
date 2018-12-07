@@ -1,0 +1,25 @@
+{
+  "name": "offline/oc-responsive-images-plugin",
+  "type": "october-plugin",
+  "description": "ResponsiveImages Plugin for October CMS",
+  "keywords": [
+    "october",
+    "cms",
+    "responsive",
+    "images",
+    "plugin"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tobias Kündig",
+      "email": "tobias@offline.ch"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "composer/installers": "~1.0",
+    "psr/log": "^1.1.0",
+    "ext-dom": "*"
+  }
+}

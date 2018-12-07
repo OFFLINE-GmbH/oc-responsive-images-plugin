@@ -6,6 +6,8 @@ use Closure;
 use Config;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use OFFLINE\ResponsiveImages\Models\Settings;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ResponsiveImagesMiddleware
@@ -33,9 +35,24 @@ class ResponsiveImagesMiddleware
             return $response;
         }
 
-        $response->setContent(
-            (new ResponsiveImageService($response->getContent()))->process()
-        );
+        /** @var LoggerInterface $logger */
+        $logger = app('log');
+
+        try {
+            $manipulator = new DomManipulator(
+                $response->getContent(),
+                $this->getSettings(),
+                $logger
+            );
+
+            $response->setContent($manipulator->process());
+        } catch (\Throwable $e) {
+            $logger->warning(
+                '[OFFLINE.ResponsiveImages] DOM manipulation failed: ' . $e->getMessage(),
+                ['exception' => $e]
+            );
+        }
+
 
         return $response;
 
@@ -51,7 +68,10 @@ class ResponsiveImagesMiddleware
      */
     private function isBackendRequest(Request $request)
     {
-        return starts_with(trim($request->getPathInfo(), '/'), trim(Config::get('cms.backendUri', 'backend'), '/'));
+        return starts_with(
+            trim($request->getPathInfo(), '/'),
+            trim(Config::get('cms.backendUri', 'backend'), '/')
+        );
     }
 
     /**
@@ -94,4 +114,13 @@ class ResponsiveImagesMiddleware
         return true;
     }
 
+    /**
+     * Load all relevant Settings for the DomManipulator.
+     *
+     * @return DomManipulatorSettings
+     */
+    protected function getSettings(): DomManipulatorSettings
+    {
+        return DomManipulatorSettings::fromSettingsModel(Settings::instance());
+    }
 }

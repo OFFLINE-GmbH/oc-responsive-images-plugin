@@ -9,6 +9,7 @@ use Cms\Classes\Theme;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
+use OFFLINE\ResponsiveImages\Models\Settings;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,8 +45,8 @@ class ImagePreloader
             return [$type => $this->getTypeInfo($type)];
         });
 
-        $urls = $this->getPageUrls($definitions);       
-        
+        $urls = $this->getPageUrls($definitions);
+
 
         foreach ($urls->sort() as $url) {
             $urlParts = parse_url($url);
@@ -54,22 +55,22 @@ class ImagePreloader
             $fragment = array_key_exists('fragment', $urlParts) ? '#' . $urlParts['fragment'] : '';
 
             $relative = implode('', [$path, $query, $fragment]);
-            
+
             try {
                 $response = App::make(Controller::class)->run($relative);
 
                 $content = $response->getContent();
-                if(empty($content)){
+                if (empty($content)) {
                     $this->output->writeln("Skipping empty page: \t$relative");
                     continue;
                 }
 
                 $this->output->writeln("Processing page: \t$relative");
 
-                (new ResponsiveImageService($content))->process();
+                (new DomManipulator($content, $this->getSettings(), app('log')))->process();
 
             } catch (\Exception $e) {
-                $this->output->writeln("Failed to process page: \t$relative \t".$e->getMessage());
+                $this->output->writeln("Failed to process page: \t$relative \t" . $e->getMessage());
             }
         }
     }
@@ -157,14 +158,14 @@ class ImagePreloader
     {
         return $definitions->flatMap(function ($definition, $type) {
             $urls       = new Collection();
-            $references = data_get($definition, 'references', []);            
+            $references = data_get($definition, 'references', []);
             foreach ($references as $reference => $name) {
                 if ( ! isset($definition['cmsPages'])) {
                     $item = (object)[
                         'type'      => $type,
                         'reference' => $reference,
                         'nesting'   => data_get($definition, 'nesting', false),
-                    ];       
+                    ];
                     $urls = $urls->concat($this->getUrlsForItem($type, $item));
 
                     continue;
@@ -225,5 +226,15 @@ class ImagePreloader
         }
 
         return $urls;
+    }
+
+    /**
+     * Load all relevant Settings for the DomManipulator.
+     *
+     * @return DomManipulatorSettings
+     */
+    protected function getSettings(): DomManipulatorSettings
+    {
+        return DomManipulatorSettings::fromSettingsModel(Settings::instance());
     }
 }

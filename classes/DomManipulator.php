@@ -3,80 +3,133 @@
 namespace OFFLINE\ResponsiveImages\Classes;
 
 use Config;
-use OFFLINE\ResponsiveImages\Models\Settings;
+use DOMDocument;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
- * Manipulates images in a DOMDocument.
+ * Replaces all images in the HTML document.
  *
  * @package OFFLINE\ResponsiveImages\Classes
  */
 class DomManipulator
 {
     /**
-     * @var \DOMNodeList
+     * @var string
      */
-    public $imgNodes;
+    public $html;
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+    /**
+     * RegEx to find all images in the document.
+     * @var string
+     */
+    protected $pattern = '/<img[\s\S][^>]?(?:src)=[\s\S]*?>/mis';
+    /**
+     * DOMDocument instance to process each img tag.
+     * @var DOMDocument
+     */
+    protected $dom;
+    /**
+     * @var DomManipulatorSettings
+     */
+    protected $settings;
 
     /**
      * Loads the html.
      *
-     * @param                   $html
-     * @param \DOMDocument|null $dom
+     * @param                      $html
+     * @param LoggerInterface|null $logger
      */
-    public function __construct($html, \DOMDocument $dom = null)
+    public function __construct($html, DomManipulatorSettings $settings, LoggerInterface $logger = null)
     {
-        // suppress errors in case of invalid html
-        libxml_use_internal_errors(true);
-
-        if ($dom === null) {
-            $this->dom = new \DOMDocument;
-        }
-
-        $this->dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
-        $this->imgNodes = (new \DOMXPath($this->dom))->query("//img");
+        $this->html     = $html;
+        $this->logger   = $logger ?? new NullLogger();
+        $this->settings = $settings;
+        $this->dom      = new DOMDocument();
     }
 
     /**
-     * Returns an array of all img src attributes.
-     *
-     * @return array
-     */
-    public function getImageSources()
-    {
-        $images = [];
-
-        foreach ($this->imgNodes as $node) {
-            $images[] = $this->getSrcAttribute($node);
-        }
-
-        return $images;
-    }
-
-    /**
-     * Adds srcset and sizes attributes to all local images
-     * in the DOMDocument.
-     *
-     * @param $srcSets
+     * Returns the processed html document.
      *
      * @return string
      */
-    public function addSrcSetAttributes(array $srcSets)
+    public function process(): string
     {
-        foreach ($this->imgNodes as $node) {
+        return preg_replace_callback(
+            $this->pattern,
+            $this->replaceCallback(),
+            $this->html
+        );
+    }
 
-            $src = $this->getSrcAttribute($node);
+    /**
+     * Set sizes and srcset attributes for every single image tag.
+     *
+     * @return \Closure
+     */
+    protected function replaceCallback()
+    {
+        return function ($matches) {
+            $node   = $this->loadImageTag($matches[0]);
+            $source = $this->getSrcAttribute($node);
 
-            if ( ! array_key_exists($src, $srcSets)) {
-                // There are no alternative sizes available for this image
-                continue;
+            $responsiveImage = $this->getResponsiveImage($source);
+            if ($responsiveImage === null) {
+                // The processing of the image failed return original tag.
+                return $matches[0];
             }
 
-            $this->setSrcSetAttribute($node, $srcSets[$src]);
-            $this->setSizesAttribute($node, $srcSets[$src]);
+            $sourceSet = $responsiveImage->getSourceSet();
+            $this->setSrcSetAttribute($node, $sourceSet);
+            $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
+
+            return $node->ownerDocument->saveHTML($node);
+        };
+    }
+
+    /**
+     * Loads a single img tag into the DOMDocument.
+     *
+     * @param string $tag
+     *
+     * @return \DOMElement
+     */
+    protected function loadImageTag(string $tag): \DOMElement
+    {
+        $this->dom->loadHTML(mb_convert_encoding($tag, 'HTML-ENTITIES', 'UTF-8'));
+
+        return $this->dom->getElementsByTagName('img')->item(0);
+    }
+
+    /**
+     * Build a ResponsiveImage instance from $source.
+     *
+     * @param $source
+     *
+     * @return ResponsiveImage|null
+     */
+    protected function getResponsiveImage($source)
+    {
+        try {
+            return new ResponsiveImage($source);
+        } catch (RemotePathException $e) {
+            // Ignore remote images completely
+        } catch (UnallowedFileTypeException $e) {
+            // Ignore file types that are not allowed
+        } catch (FileNotFoundException $e) {
+            $this->log(sprintf('Image %s does not exist', $source), $e);
+        } catch (\Throwable $e) {
+            $this->log(sprintf('Could not process image %s', $source), $e, true);
         }
 
-        return $this->dom->saveHTML($this->dom);
+        return null;
     }
 
     /**
@@ -103,10 +156,7 @@ class DomManipulator
      */
     protected function setSrcSetAttribute(\DOMElement $node, SourceSet $sourceSet)
     {
-        $targetAttribute = Settings::get('alternative_src_set', 'srcset');
-        if ( ! $targetAttribute) {
-            $targetAttribute = 'srcset';
-        }
+        $targetAttribute = $this->settings->targetAttribute;
 
         // Don't overwrite existing attributes
         if ($node->getAttribute($targetAttribute) !== '') {
@@ -123,7 +173,7 @@ class DomManipulator
      */
     protected function setClassAttribute(\DOMElement $node)
     {
-        if ( ! $class = Settings::get('add_class')) {
+        if ( ! $class = $this->settings->class) {
             return;
         }
 
@@ -143,7 +193,7 @@ class DomManipulator
     {
         $src = $node->getAttribute('src');
 
-        $altSrc = Settings::get('alternative_src', false);
+        $altSrc = $this->settings->sourceAttribute;
 
         if ($altSrc && $node->getAttribute($altSrc) !== '') {
             $src = $node->getAttribute($altSrc);
@@ -152,4 +202,20 @@ class DomManipulator
         return trim($src, '/');
     }
 
+    /**
+     * Log an error message.
+     *
+     * @param      $message
+     * @param      $exception
+     * @param bool $forceLogEntry
+     */
+    protected function log($message, $exception, $forceLogEntry = false)
+    {
+        if ($this->settings->logErrors || $forceLogEntry) {
+            $this->logger->warning(
+                sprintf('[OFFLINE.ResponsiveImages] %s', $message),
+                compact('exception')
+            );
+        }
+    }
 }

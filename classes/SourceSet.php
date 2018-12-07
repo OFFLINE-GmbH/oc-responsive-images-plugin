@@ -18,10 +18,6 @@ class SourceSet
      * @var array
      */
     public $rules = [];
-    /**
-     * @var string
-     */
-    private $originalPath;
 
     /**
      * SourceSet constructor.
@@ -32,7 +28,6 @@ class SourceSet
     public function __construct($originalPath, $originalWidth)
     {
         $this->originalWidth = $originalWidth;
-        $this->originalPath  = $originalPath;
 
         $this->push($originalWidth, $originalPath);
     }
@@ -68,7 +63,10 @@ class SourceSet
     protected function getPublicUrl($path)
     {
         $relativePath = str_replace(base_path(), '', $path);
-        $filename = basename($relativePath);
+        // Replace any Backslashes for Windows compatibility
+        $relativePath = str_replace('\\', '/', $relativePath);
+
+        $filename           = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
         $url = rawurlencode(URL::to('/') . $relativeFolderPath . $filename);
@@ -108,5 +106,4 @@ class SourceSet
 
         return $width === '' ? '100vw' : sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width);
     }
-
 }
