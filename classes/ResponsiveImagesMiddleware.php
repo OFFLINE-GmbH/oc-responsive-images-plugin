@@ -7,6 +7,7 @@ use Config;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OFFLINE\ResponsiveImages\Models\Settings;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ResponsiveImagesMiddleware
@@ -34,13 +35,24 @@ class ResponsiveImagesMiddleware
             return $response;
         }
 
-        $manipulator = new DomManipulator(
-            $response->getContent(),
-            $this->getSettings(),
-            app('log')
-        );
+        /** @var LoggerInterface $logger */
+        $logger = app('log');
 
-        $response->setContent($manipulator->process());
+        try {
+            $manipulator = new DomManipulator(
+                $response->getContent(),
+                $this->getSettings(),
+                $logger
+            );
+
+            $response->setContent($manipulator->process());
+        } catch (\Throwable $e) {
+            $logger->warning(
+                '[OFFLINE.ResponsiveImages] DOM manipulation failed: ' . $e->getMessage(),
+                ['exception' => $e]
+            );
+        }
+
 
         return $response;
 
