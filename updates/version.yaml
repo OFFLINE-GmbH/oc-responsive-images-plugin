@@ -16,3 +16,4 @@
 1.1.9: Fixed resizing of image paths that contain spaces (thanks to adamo)
 1.2.0: Added `responsive-images:generate` artisan command to pre-generate all image sizes (thanks to kiselli)
 2.0.0: Implemented new image replacement technique (fixes lots of compatibility problems with other plugins)
+2.0.1: Ignore image tags that don't have a src attribute
