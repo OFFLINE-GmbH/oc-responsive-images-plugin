@@ -86,6 +86,7 @@ class DomManipulator
             }
 
             $sourceSet = $responsiveImage->getSourceSet();
+            $this->setSrcAttribute($node, $sourceSet);
             $this->setSrcSetAttribute($node, $sourceSet);
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
@@ -181,6 +182,18 @@ class DomManipulator
 
         $node->setAttribute('class', "$classes $class");
     }
+
+    /**
+     * Set the images's src attribute.
+     *
+     * @param $node
+     * @param $sourceSet
+     */
+    protected function setSrcAttribute(\DOMElement $node, SourceSet $sourceSet)
+    {
+        $node->setAttribute('src', $sourceSet->getSrcAttribute());
+    }
+
 
     /**
      * Normalize the image's src attribute and return it.
