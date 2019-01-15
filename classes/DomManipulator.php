@@ -86,7 +86,6 @@ class DomManipulator
             }
 
             $sourceSet = $responsiveImage->getSourceSet();
-            $this->setSrcAttribute($node, $sourceSet);
             $this->setSrcSetAttribute($node, $sourceSet);
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
