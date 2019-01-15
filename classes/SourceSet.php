@@ -76,6 +76,16 @@ class SourceSet
     }
 
     /**
+     * Generates the src attribute.
+     *
+     * @return string
+     */
+    public function getSrcAttribute()
+    {
+        return $this->rules[$this->originalWidth]['public_url'] ?? '';
+    }
+
+    /**
      * Generates the srcset attribute.
      *
      * @return string
