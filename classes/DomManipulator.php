@@ -212,6 +212,14 @@ class DomManipulator
             $src = $node->getAttribute($altSrc);
         }
 
+        // If the protocol is missing from the URL prepend it.
+        // It doesn't matter if it matches the actual protocol since it will
+        // be striped out later anyway. We just need it to make sure the
+        // parsing of the image path works as intended.
+        if (starts_with($src, '//')) {
+            $src = 'http:' . $src;
+        }
+
         return trim($src, '/');
     }
 
