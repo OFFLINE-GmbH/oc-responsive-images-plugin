@@ -91,6 +91,15 @@ class DomManipulator
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
 
+            // If it's a Image with focuspoint
+            if (strpos($source, 'focus')) {
+                $sourceAttributes = explode('_', $this->getSrcAttribute($node));
+
+                $node = $this->focuspointImage($node, $sourceAttributes, $this->settings);
+
+                return $node->ownerDocument->saveHTML($node);
+            }
+
             return $node->ownerDocument->saveHTML($node);
         };
     }
@@ -230,5 +239,45 @@ class DomManipulator
                 compact('exception')
             );
         }
+    }
+
+    /**
+     * Set Focuspoint Attributes based on the settings
+     *
+     * @param $node
+     * @param $attributes
+     * @param $settings
+     *
+     * @return mixed
+     */
+    protected function focuspointImage($node, $attributes, $settings)
+    {
+
+        $classes = $node->getAttribute('class');
+
+        $node->setAttribute('class', "$classes $settings->focuspointClass");
+
+        if ($settings->focuspointDataX && $settings->focuspointDataY) {
+            $node->setAttribute('data-' . $settings->focuspointDataX, $attributes[4]);
+            $node->setAttribute('data-' . $settings->focuspointDataY, $attributes[5]);
+        }
+
+        if ($settings->focuspointAllowInlineObject && $settings->focuspointAllowInlineSizing) {
+            $node->setAttribute('style',
+                'width:' . $attributes[2] . 'px;height:' . $attributes[3] . 'px;object-fit:cover;object-position:'
+                . $attributes[4]
+                . '% '
+                . $attributes[5] . '%');
+        } elseif ($settings->focuspointAllowInlineObject && ! $settings->focuspointAllowInlineSizing) {
+            $node->setAttribute('style',
+                'object-fit:cover;object-position:'
+                . $attributes[4]
+                . '% '
+                . $attributes[5] . '%');
+        } elseif ( ! $settings->focuspointAllowInlineObject && $settings->focuspointAllowInlineSizing) {
+            $node->setAttribute('style', 'width:' . $attributes[2] . 'px;height:' . $attributes[3] . 'px;');
+        }
+
+        return $node;
     }
 }

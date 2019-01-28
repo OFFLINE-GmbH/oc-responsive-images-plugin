@@ -79,6 +79,13 @@ class ResponsiveImage
     protected $allowedExtensions = 'jpg,jpeg,png,gif';
 
     /**
+     * Focus-Coordinates
+     *
+     * @var array
+     */
+    protected $focus = [];
+
+    /**
      * Create all the needed copies of the image.
      *
      * @param $imagePath
@@ -102,6 +109,8 @@ class ResponsiveImage
 
         $this->loadSettings();
         $this->parseImagePath();
+
+        $this->focus = [];
 
         $this->sourceSet = new SourceSet($this->path, $this->getWidth());
 

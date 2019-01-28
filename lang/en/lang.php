@@ -9,6 +9,11 @@
 
     'settings' => [
 
+        'tabs' => [
+            'responsive_image' => 'Responsive Image',
+            'focuspoint' => 'Focus-Point'
+        ],
+
         'sections' => [
             'processing' => 'Processing',
             'processing_comment' => 'Configure the processing of your images',
@@ -34,5 +39,20 @@
 
         'add_class' => 'class attribute',
         'add_class_comment' => 'Add this class to every processed image. Useful if you use a css framework like Bootstrap.',
-    ]
+
+        'focuspoint_class' => 'class attribute',
+        'focuspoint_class_comment' => 'Individual class for focuspoint-image (standard: .focuspoint-image)',
+
+        'focuspoint_data_x' => 'data-attribute for x-axis',
+        'focuspoint_data_x_comment' => 'Data-Field for own JavaScript-Libraries (only works if data-attribute for y-axis is set)',
+
+        'focuspoint_data_y' => 'data-attribute for y-axis',
+        'focuspoint_data_y_comment' => 'Data-Field for own JavaScript-Libraries (only works if data-attribute for y-axis is set)',
+
+        'allow_inline_object' => 'Inline-CSS for object-fit and object-position',
+        'allow_inline_object_comment' => 'Deactivate, if you wish to process on your own.',
+
+        'allow_inline_sizing' => 'Inline-CSS for image width and height',
+        'allow_inline_sizing_comment' => 'Deactivate, if you wish to process on your own.',
+    ],
 ];
