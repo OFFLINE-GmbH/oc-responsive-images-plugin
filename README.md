@@ -52,7 +52,8 @@ style="width: 400px; height: 500px; object-fit: cover; object-position: 50% 50%;
 
 #### Browser-Compatibility
 We're aware that 
-the CSS-compatibility isn't fully given in several browsers. Therefore, you are also able to store the values to own 
+the CSS-compatibility isn't yet fully given in several browsers. Therefore, you are also able to store the values to 
+own 
 named 
 `data` attributes and turn off the inline-styling-options in the backend-settings. So you can use own libraries for 
 the 
