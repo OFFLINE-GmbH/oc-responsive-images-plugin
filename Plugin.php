@@ -32,10 +32,7 @@ class Plugin extends PluginBase
 
         File::extend(function(File $file) {
             $file->addDynamicMethod('focus', function($width, $height, $options = []) use ($file) {
-                $focusFile = new FocusFile($file->attributesToArray());
-                $focusFile->originalFile = $file;
-                $focusFile->disk_name = $file->disk_name;
-                return $focusFile->focus($width, $height, $options);
+                return FocusFile::fromFileModel($file)->focus($width, $height, $options);
             });
         });
 

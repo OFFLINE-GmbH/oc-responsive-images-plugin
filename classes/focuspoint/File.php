@@ -17,7 +17,7 @@ class File extends FileBase
     {
         list($width, $height) = $this->normalizeSizes($width, $height);
 
-        return 'focus_' .
+        return 'offline-focus_' .
             $this->id . '_' .
             $width . '_' .
             $height . '_' .
@@ -37,7 +37,8 @@ class File extends FileBase
         return $this->originalFile->getPublicPath();
     }
 
-    protected function calcSize($target, $originalSame, $originalOther) {
+    protected function calcSize($target, $originalSame, $originalOther)
+    {
         return round($target / $originalSame * $originalOther);
     }
 
@@ -61,6 +62,15 @@ class File extends FileBase
         }
 
         return [$width, $height];
+    }
+
+    public static function fromFileModel(FileBase $file): File
+    {
+        $focusFile               = new self($file->attributesToArray());
+        $focusFile->originalFile = $file;
+        $focusFile->disk_name    = $file->disk_name;
+
+        return $focusFile;
     }
 
 }
