@@ -37,8 +37,11 @@ class Plugin extends PluginBase
         });
 
         FileUpload::extend(function (FileUpload $widget) {
+            $isEnabled = (bool) ($widget->config->focuspoint ?? false);
+            if ($isEnabled !== true){
+                return;
+            }
             $widget->addViewPath(plugins_path() . '/offline/responsiveimages/widgets/fileupload/partials/');
-
             $widget->addDynamicMethod('onSaveAttachmentConfigFocuspoint', function () use ($widget) {
                 $original = $widget->onSaveAttachmentConfig();
 
