@@ -92,10 +92,17 @@ class DomManipulator
             $this->setClassAttribute($node);
 
             // If it's a Image with focuspoint
-            if (strpos($source, 'focus')) {
+            if (strpos($source, 'offline-focus')) {
                 $sourceAttributes = explode('_', $this->getSrcAttribute($node));
 
-                $node = $this->focuspointImage($node, $sourceAttributes, $this->settings);
+                $focusImageValues = [
+                    'width'  => $sourceAttributes[2],
+                    'height' => $sourceAttributes[3],
+                    'x'      => $sourceAttributes[4],
+                    'y'      => $sourceAttributes[5],
+                ];
+
+                $node = $this->focuspointImage($node, $focusImageValues, $this->settings);
 
                 return $node->ownerDocument->saveHTML($node);
             }
@@ -258,25 +265,29 @@ class DomManipulator
         $node->setAttribute('class', "$classes $settings->focuspointClass");
 
         if ($settings->focuspointDataX && $settings->focuspointDataY) {
-            $node->setAttribute('data-' . $settings->focuspointDataX, $attributes[4]);
-            $node->setAttribute('data-' . $settings->focuspointDataY, $attributes[5]);
+            $node->setAttribute('data-' . $settings->focuspointDataX, $attributes['x']);
+            $node->setAttribute('data-' . $settings->focuspointDataY, $attributes['y']);
         }
 
-        if ($settings->focuspointAllowInlineObject && $settings->focuspointAllowInlineSizing) {
-            $node->setAttribute('style',
-                'width:' . $attributes[2] . 'px;height:' . $attributes[3] . 'px;object-fit:cover;object-position:'
-                . $attributes[4]
-                . '% '
-                . $attributes[5] . '%');
-        } elseif ($settings->focuspointAllowInlineObject && ! $settings->focuspointAllowInlineSizing) {
-            $node->setAttribute('style',
-                'object-fit:cover;object-position:'
-                . $attributes[4]
-                . '% '
-                . $attributes[5] . '%');
+        if ($settings->focuspointAllowInlineObject && ! $settings->focuspointAllowInlineSizing) {
+            unset($attributes['width'], $attributes['height']);
         } elseif ( ! $settings->focuspointAllowInlineObject && $settings->focuspointAllowInlineSizing) {
-            $node->setAttribute('style', 'width:' . $attributes[2] . 'px;height:' . $attributes[3] . 'px;');
+            unset($attributes['x'], $attributes['y']);
         }
+
+        $stylingAttributes = '';
+
+        foreach ($attributes as $attribute => $value) {
+            if ($attribute === 'width' || $attribute === 'height') {
+                $stylingAttributes .= $attribute . ':' . $value . 'px;';
+            } elseif ($attribute === 'x') {
+                $stylingAttributes .= 'object-fit: cover; object-position:' . $value . '% ';
+            } else {
+                $stylingAttributes .= $value . '%;';
+            }
+        }
+
+        $node->setAttribute('style', $stylingAttributes);
 
         return $node;
     }
