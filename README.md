@@ -34,7 +34,7 @@ fields:
 The frontend-functionality is able to manipulate the img-node with the individual given 
 focuspoint. By default, it will set the x- and y-axis values to object-position CSS-property. To use it in the 
 frontend, you can pass `{{ image.focus(width, height) }}` to your twig component (similar like image.thumb()). It 
-will then also pass the width and height of the image, which is require for the object-position property.
+will then also pass the width and height of the image, which is required for the object-position property.
 
 To make things a little bit easier and codefriendly, there is also a default `class` attribute named 
 `focuspoint-image` plus you can put your own class in the settings. Also you are able to switch off the inlined 
