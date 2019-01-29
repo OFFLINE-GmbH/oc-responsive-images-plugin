@@ -42,8 +42,8 @@ sizing-properties.
 
 The default markup then looks like this:
 ```
-<img src="http://base-theme.test/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_22.83_73.56_0_0_auto__400.jpg" 
-srcset="http://base-theme.test/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_120_0_0_0_auto.jpg 1x, http://base-theme.test/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_240_0_0_0_auto.jpg 2x" 
+<img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
+srcset="/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_120_0_0_0_auto.jpg 1x, http://base-theme.test/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_240_0_0_0_auto.jpg 2x" 
 alt="" 
 sizes="(max-width: 400px) 100vw, 400px" 
 class=" focuspoint-image" 
