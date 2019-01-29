@@ -63,7 +63,7 @@ tabs:
             span: left
             tab: offline.responsiveimages::lang.settings.tabs.focuspoint
             label: offline.responsiveimages::lang.settings.focuspoint_class
-            comment: offline.responsiveimages::lang.settings.focuspoint_comment
+            comment: offline.responsiveimages::lang.settings.focuspoint_class_comment
             placeholder: "focuspoint-image"
 
         focuspoint_data_x:
