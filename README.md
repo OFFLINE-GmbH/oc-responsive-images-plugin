@@ -2,7 +2,64 @@
 
 Automatically generate and serve images for your visitor's viewport size without changing your theme!
 
-## How it works
+## Focuspoint
+As a new feature, it is possible to set a focuspoint to responsive images. 
+
+### How it works
+This feature serves two major functionalities. One in the October CMS backend, and one in the frontend.
+ 
+#### Backend 
+In the backend, it extends the 
+fileupload-widget's config-form with two hidden fields for x-axis and y-axis of the image. It calculates its 
+percentual space from left and top of a clicked point on the image.
+To enable the extension of the fileupload-widget, simply pass `focuspoint: true` to the fileupload-widget of your 
+plugin's fields.yaml. By default it will be treated as `false`.
+
+For example: 
+```
+fields:
+    images:
+        label: Images
+        mode: image
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: full
+        type: fileupload
+        focuspoint: true
+```
+
+#### Frontend
+The frontend-functionality is able to manipulate the img-node with the individual given 
+focuspoint. By default, it will set the x- and y-axis values to object-position CSS-property. To use it in the 
+frontend, you can pass `{{ image.focus(width, height) }}` to your twig component (similar like image.thumb()). It 
+will then also pass the width and height of the image, which is require for the object-position property.
+
+To make things a little bit easier and codefriendly, there is also a default `class` attribute named 
+`focuspoint-image` plus you can put your own class in the settings. Also you are able to switch off the inlined 
+sizing-properties.
+
+The default markup then looks like this:
+```
+<img src="http://base-theme.test/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_22.83_73.56_0_0_auto__400.jpg" 
+srcset="http://base-theme.test/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_120_0_0_0_auto.jpg 1x, http://base-theme.test/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_240_0_0_0_auto.jpg 2x" 
+alt="" 
+sizes="(max-width: 400px) 100vw, 400px" 
+class=" focuspoint-image" 
+style="width: 400px; height: 500px; object-fit: cover; object-position: 50% 50%;">
+``` 
+
+#### Browser-Compatibility
+We're aware that 
+the CSS-compatibility isn't fully given in several browsers. Therefore, you are also able to store the values to own 
+named 
+`data` attributes and turn off the inline-styling-options in the backend-settings. So you can use own libraries for 
+the 
+focuspoint.
+
+## Image Rendering
+### How it works
 
 This plugin provides a middleware that adds `srcset` and `sizes` attributes to all locally served images in your html
  response.
@@ -26,13 +83,13 @@ All image copies are saved in your public temp path. Remote file systems are cur
 The images are generated on the first page load. Depending on the source image size this may take a few seconds. 
 Subsequent page loads will be faster since the images are only resized once.
 
-## Configuration
+### Configuration
 
 Three image sizes are created by default: 400, 768 and 1024 pixels. 
 
 You can change these values by changing the settings in the backend.
 
-### Alternative `src` and `srcset` attributes
+#### Alternative `src` and `srcset` attributes
 
 If you want to use an alternative `src` attribute you can change this via the backend settings page.
  
@@ -42,19 +99,19 @@ This is useful if you are using a plugin like [jQuery.lazyLoad](http://www.appel
  If your plugin requires an alternative srcset attribute (like [verlok/LazyLoad](https://github.com/verlok/lazyload)) this can also be specified via the backend settings. 
 
 
-### Global `class` attributes
+#### Global `class` attributes
 
 If you want to add a class to every processed image you can configure this via the backend settings.
 
 This is useful if you want to add Bootstrap's `img-responsive` class to all images on your website.
 
-## Pre-generate images
+### Pre-generate images
 
 You can use the `php artisan responsive-images:generate` command to pre-generate responsive images. The command uses 
 October's `pages.menuitem.*` events to build a list of all available URLs and pre-generates all images used on these 
 pages. 
 
-## Test results
+### Test results
 
 I have tested this plugin on a page with 20 hd wallpapers from pixabay.
 
