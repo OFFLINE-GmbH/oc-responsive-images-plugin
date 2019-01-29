@@ -26,7 +26,7 @@ function initFocuspointTool () {
                     let point = fileuploadConfigForm.querySelector('.focuspoint')
 
                     // Load image dimensions
-                    focuspointImage.dimensions = el.getBoundingClientRect()
+                    focuspointImage.dimensions = img.getBoundingClientRect()
 
                     // Set focuspoint-attributes to default x=50, y=50 (center, center)
                     focuspointImage.focuspoint = {
@@ -34,7 +34,7 @@ function initFocuspointTool () {
                         y: document.getElementById('y-axis').value || 50
                     }
 
-                    // Set the initial values to Axis-Fields
+                    // Initial set values to Axis-Fields
                     document.getElementById('x-axis').value = focuspointImage.focuspoint.x
                     document.getElementById('y-axis').value = focuspointImage.focuspoint.y
 
@@ -45,7 +45,7 @@ function initFocuspointTool () {
                     img.addEventListener('click', function (e) {
 
                         // Reload dimensions to prevent loading issues
-                        focuspointImage.dimensions = el.getBoundingClientRect()
+                        focuspointImage.dimensions = img.getBoundingClientRect()
 
                         // Move the point to the clicked area
                         point.style.left = e.offsetX + 'px'
