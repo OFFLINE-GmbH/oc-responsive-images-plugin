@@ -3,7 +3,7 @@
 Automatically generate and serve images for your visitor's viewport size without changing your theme!
 
 ## Focuspoint
-As a new feature, it is possible to set a focuspoint to responsive images. 
+With this feature, it is possible to set a focuspoint to responsive images. 
 
 ### How it works
 This feature serves two major functionalities. One in the October CMS backend, and one in the frontend.
