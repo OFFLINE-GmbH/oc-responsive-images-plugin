@@ -30,6 +30,9 @@ fields:
         focuspoint: true
 ```
 
+##### Example of a config-form with enabled focuspoint:
+![focuspoint-configform](https://user-images.githubusercontent.com/10140882/51920398-97a27480-23e5-11e9-91ee-612da085fdb3.JPG)
+
 #### Frontend
 The frontend-functionality is able to manipulate the img-node with the individual given 
 focuspoint. By default, it will set the x- and y-axis values to object-position CSS-property. To use it in the 
@@ -49,6 +52,9 @@ sizes="(max-width: 400px) 100vw, 400px"
 class=" focuspoint-image" 
 style="width: 400px; height: 500px; object-fit: cover; object-position: 50% 50%;">
 ``` 
+
+##### Frontend-Example with the above set focuspoint from backend
+![focuspoint-frontend](https://user-images.githubusercontent.com/10140882/51920548-ed771c80-23e5-11e9-8e1b-4c68448dc26b.JPG)
 
 #### Browser-Compatibility
 We're aware that 
