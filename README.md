@@ -35,11 +35,7 @@ fields:
         focuspoint: true
 ```
 
-<p align="center">
-
 ![focuspoint-configform](https://user-images.githubusercontent.com/10140882/51920398-97a27480-23e5-11e9-91ee-612da085fdb3.JPG)
-
-</p>
 
 #### Frontend
 
@@ -81,8 +77,8 @@ All of these settings are available on the plugin's backend settings page.
 
 ### Browser-Compatibility
 
-Be aware that `object-fit` is not supported in IE without [using a polyfill](https://github
-.com/bfred-it/object-fit-images).
+Be aware that `object-fit` is not supported in IE without
+[using a polyfill](https://github.com/bfred-it/object-fit-images).
 
 ## Responsive images
 
