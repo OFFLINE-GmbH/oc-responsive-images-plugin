@@ -41,18 +41,21 @@
         'add_class_comment' => 'Add this class to every processed image. Useful if you use a css framework like Bootstrap.',
 
         'focuspoint_class' => 'class attribute',
-        'focuspoint_class_comment' => 'Individual class for focuspoint-image (standard: .focuspoint-image)',
+        'focuspoint_class_comment' => 'Custom class for focuspoint image (standard: .focuspoint-image)',
+
+        'focuspoint_container_class' => 'container class Attribute',
+        'focuspoint_container_class_comment' => 'Class for focuspoint container (empty = don\' add container, Standard: disabled)',
 
         'focuspoint_data_x' => 'data-attribute for x-axis',
-        'focuspoint_data_x_comment' => 'Data-Field for own JavaScript-Libraries (only works if data-attribute for y-axis is set)',
+        'focuspoint_data_x_comment' => 'The X-coordinate of the focus point will be injected into this data attribute (eg. data-focus-x="40", Standard: disabled)',
 
         'focuspoint_data_y' => 'data-attribute for y-axis',
-        'focuspoint_data_y_comment' => 'Data-Field for own JavaScript-Libraries (only works if data-attribute for y-axis is set)',
+        'focuspoint_data_y_comment' => 'The Y-coordinate of the focus point will be injected into this data attribute (eg. data-focus-y="40", Standard: disabled)',
 
         'allow_inline_object' => 'Inline-CSS for object-fit and object-position',
-        'allow_inline_object_comment' => 'Deactivate, if you wish to process on your own.',
+        'allow_inline_object_comment' => 'Inject the object-* CSS rules directly as style attribute into the HTML source',
 
         'allow_inline_sizing' => 'Inline-CSS for image width and height',
-        'allow_inline_sizing_comment' => 'Deactivate, if you wish to process on your own.',
+        'allow_inline_sizing_comment' => 'Inject the width and height CSS rules directly as style attribute into the HTML source',
     ],
 ];

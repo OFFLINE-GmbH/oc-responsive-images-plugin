@@ -9,7 +9,7 @@ window.addEventListener('load', function () {
 function initFocuspointTool () {
     const uploadedImages = document.querySelectorAll('.upload-object')
 
-    var focuspointImage = new Object()
+    var focuspointImage = {}
 
     Array.prototype.forEach.call(uploadedImages, el => {
         // Click on the uploaded image will open the customized config form
@@ -19,8 +19,8 @@ function initFocuspointTool () {
             let modalObserver = new MutationObserver(function () {
                 let fileuploadConfigForm = document.querySelector('.fileupload-config-form')
 
-                // Check if fileupload config form was loaded
-                if (fileuploadConfigForm) {
+                // Check if fileupload config form was loaded and foucspoint is enabled (x-axis field)
+                if (fileuploadConfigForm && document.getElementById('x-axis')) {
 
                     let img = fileuploadConfigForm.querySelector('.img-responsive')
                     let point = fileuploadConfigForm.querySelector('.focuspoint')

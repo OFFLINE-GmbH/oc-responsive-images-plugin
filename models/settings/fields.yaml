@@ -1,99 +1,100 @@
 tabs:
-    stretch: true
-    defaultTab: offline.responsiveimages::lang.settings.tabs.responsive_image
     fields:
         processing_section:
-            label: offline.responsiveimages::lang.settings.sections.processing
+            label: 'offline.responsiveimages::lang.settings.sections.processing'
             type: section
-            comment: offline.responsiveimages::lang.settings.sections.processing_comment
-
+            comment: 'offline.responsiveimages::lang.settings.sections.processing_comment'
+            tab: 'Responsive Image'
         dimensions:
             type: text
             span: left
-            label: offline.responsiveimages::lang.settings.dimensions
-            comment: offline.responsiveimages::lang.settings.dimensions_comment
-            placeholder: "400,768,1024"
-
+            label: 'offline.responsiveimages::lang.settings.dimensions'
+            comment: 'offline.responsiveimages::lang.settings.dimensions_comment'
+            placeholder: '400,768,1024'
+            tab: 'Responsive Image'
         allowed_extensions:
             type: text
             span: right
-            label: offline.responsiveimages::lang.settings.allowed_extensions
-            comment: offline.responsiveimages::lang.settings.allowed_extensions_comment
-            placeholder: "jpg,jpeg,png,gif"
-
+            label: 'offline.responsiveimages::lang.settings.allowed_extensions'
+            comment: 'offline.responsiveimages::lang.settings.allowed_extensions_comment'
+            placeholder: 'jpg,jpeg,png,gif'
+            tab: 'Responsive Image'
         log_unprocessable:
             type: switch
             span: right
-            label: offline.responsiveimages::lang.settings.log_unprocessable
-            comment: offline.responsiveimages::lang.settings.log_unprocessable_comment
-
+            label: 'offline.responsiveimages::lang.settings.log_unprocessable'
+            comment: 'offline.responsiveimages::lang.settings.log_unprocessable_comment'
+            tab: 'Responsive Image'
         html_section:
-            label: offline.responsiveimages::lang.settings.sections.html
+            label: 'offline.responsiveimages::lang.settings.sections.html'
             type: section
-            comment: offline.responsiveimages::lang.settings.sections.html_comment
-
+            comment: 'offline.responsiveimages::lang.settings.sections.html_comment'
+            tab: 'Responsive Image'
         alternative_src:
             type: text
             span: left
-            label: offline.responsiveimages::lang.settings.alternative_src
-            comment: offline.responsiveimages::lang.settings.alternative_src_comment
-            placeholder: "data-original"
-
+            label: 'offline.responsiveimages::lang.settings.alternative_src'
+            comment: 'offline.responsiveimages::lang.settings.alternative_src_comment'
+            placeholder: data-original
+            tab: 'Responsive Image'
         alternative_src_set:
             type: text
             span: right
-            label: offline.responsiveimages::lang.settings.alternative_src_set
-            comment: offline.responsiveimages::lang.settings.alternative_src_set_comment
-            placeholder: "data-original-set"
-
+            label: 'offline.responsiveimages::lang.settings.alternative_src_set'
+            comment: 'offline.responsiveimages::lang.settings.alternative_src_set_comment'
+            placeholder: data-original-set
+            tab: 'Responsive Image'
         add_class:
             type: text
             span: left
-            label: offline.responsiveimages::lang.settings.add_class
-            comment: offline.responsiveimages::lang.settings.add_class_comment
-            placeholder: "img-responsive"
-
+            label: 'offline.responsiveimages::lang.settings.add_class'
+            comment: 'offline.responsiveimages::lang.settings.add_class_comment'
+            placeholder: img-responsive
+            tab: 'Responsive Image'
         focuspoint_section:
-            label: offline.responsiveimages::lang.settings.sections.focuspoint
+            label: 'offline.responsiveimages::lang.settings.sections.focuspoint'
             type: section
-            comment: offline.responsiveimages::lang.settings.sections.focuspoint_comment
-
+            comment: 'offline.responsiveimages::lang.settings.sections.focuspoint_comment'
+            tab: 'Responsive Image'
         focuspoint_class:
             type: text
             span: left
-            tab: offline.responsiveimages::lang.settings.tabs.focuspoint
-            label: offline.responsiveimages::lang.settings.focuspoint_class
-            comment: offline.responsiveimages::lang.settings.focuspoint_class_comment
-            placeholder: "focuspoint-image"
-
-        focuspoint_data_x:
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
+            label: 'offline.responsiveimages::lang.settings.focuspoint_class'
+            comment: 'offline.responsiveimages::lang.settings.focuspoint_class_comment'
+            placeholder: focuspoint-image
+        focuspoint_container_class:
             type: text
             span: left
-            tab: offline.responsiveimages::lang.settings.tabs.focuspoint
-            label: offline.responsiveimages::lang.settings.focuspoint_data_x
-            comment: offline.responsiveimages::lang.settings.focuspoint_data_x_comment
-            placeholder: "focus-x"
-
-        focuspoint_data_y:
-            type: text
-            span: left
-            tab: offline.responsiveimages::lang.settings.tabs.focuspoint
-            label: offline.responsiveimages::lang.settings.focuspoint_data_y
-            comment: offline.responsiveimages::lang.settings.focuspoint_data_y_comment
-            placeholder: "focus-y"
-
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
+            label: 'offline.responsiveimages::lang.settings.focuspoint_container_class'
+            comment: 'offline.responsiveimages::lang.settings.focuspoint_container_class_comment'
+            placeholder: focuspoint-container
         allow_inline_object:
             type: switch
             span: right
-            default: true
-            tab: offline.responsiveimages::lang.settings.tabs.focuspoint
-            label: offline.responsiveimages::lang.settings.allow_inline_object
-            comment: offline.responsiveimages::lang.settings.allow_inline_object_comment
-
+            default: 1
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
+            label: 'offline.responsiveimages::lang.settings.allow_inline_object'
+            comment: 'offline.responsiveimages::lang.settings.allow_inline_object_comment'
         allow_inline_sizing:
-            type: switch
+            label: 'offline.responsiveimages::lang.settings.allow_inline_sizing'
             span: right
-            default: true
-            tab: offline.responsiveimages::lang.settings.tabs.focuspoint
-            label: offline.responsiveimages::lang.settings.allow_inline_sizing
-            comment: offline.responsiveimages::lang.settings.allow_inline_sizing_comment
+            default: 1
+            type: switch
+            comment: 'offline.responsiveimages::lang.settings.allow_inline_sizing_comment'
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
+        focuspoint_data_x:
+            type: text
+            span: left
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
+            label: 'offline.responsiveimages::lang.settings.focuspoint_data_x'
+            comment: 'offline.responsiveimages::lang.settings.focuspoint_data_x_comment'
+            placeholder: focus-x
+        focuspoint_data_y:
+            type: text
+            span: left
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
+            label: 'offline.responsiveimages::lang.settings.focuspoint_data_y'
+            comment: 'offline.responsiveimages::lang.settings.focuspoint_data_y_comment'
+            placeholder: focus-y

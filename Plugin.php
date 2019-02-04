@@ -2,6 +2,7 @@
 
 use Backend\FormWidgets\FileUpload;
 use Illuminate\Support\Facades\Event;
+use October\Rain\Exception\ApplicationException;
 use OFFLINE\ResponsiveImages\Classes\ImagePreloader;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
@@ -41,27 +42,28 @@ class Plugin extends PluginBase
             if ($isEnabled !== true) {
                 return;
             }
-            $widget->addViewPath(plugins_path() . '/offline/responsiveimages/widgets/fileupload/partials/');
+            $widget->addViewPath('plugins/offline/responsiveimages/widgets/fileupload/partials');
             $widget->addDynamicMethod('onSaveAttachmentConfigFocuspoint', function () use ($widget) {
                 $original = $widget->onSaveAttachmentConfig();
 
                 if (is_array($original) === false || array_key_exists('displayName', $original) === false) {
                     return $original;
                 }
+
                 try {
                     list($model, $attribute) = $widget->resolveModelAttribute($widget->valueFrom);
                     $fileModel = $model->makeRelation($attribute);
 
                     if (($fileId = post('file_id')) && ($file = $fileModel::find($fileId))) {
-                        $file->offline_responsiveimages_focus_y_axis = post('offline_responsiveimages_focus_y_axis');
                         $file->offline_responsiveimages_focus_x_axis = post('offline_responsiveimages_focus_x_axis');
+                        $file->offline_responsiveimages_focus_y_axis = post('offline_responsiveimages_focus_y_axis');
                         $file->save();
 
                         return $original;
                     }
 
                     throw new ApplicationException('Unable to find file, it may no longer exist');
-                } catch (Exception $ex) {
+                } catch (\Throwable $ex) {
                     return json_encode(['error' => $ex->getMessage()]);
                 }
             });

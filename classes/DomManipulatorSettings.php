@@ -36,11 +36,18 @@ class DomManipulatorSettings
     public $logErrors = true;
 
     /**
-     * Specific class for Focuspoint-Images
+     * Specific class for focus point images
      *
      * @var boolean
      */
     public $focuspointClass;
+
+    /**
+     * Container class for focus point image.
+     *
+     * @var boolean
+     */
+    public $focuspointContainerClass;
 
     /**
      * Data-Attribute for x-axis
@@ -85,10 +92,11 @@ class DomManipulatorSettings
         $settings->targetAttribute             = $model->get('alternative_src_set') ?: 'srcset';
         $settings->class                       = $model->get('add_class') ?: '';
         $settings->focuspointClass             = $model->get('focuspoint_class') ?: 'focuspoint-image';
+        $settings->focuspointContainerClass    = $model->get('focuspoint_container_class') ?: '';
         $settings->focuspointDataX             = $model->get('focuspoint_data_x') ?: '';
         $settings->focuspointDataY             = $model->get('focuspoint_data_y') ?: '';
-        $settings->focuspointAllowInlineObject = (bool)$model->get('allow_inline_object', false);
-        $settings->focuspointAllowInlineSizing = (bool)$model->get('allow_inline_sizing', false);
+        $settings->focuspointAllowInlineObject = (bool)$model->get('allow_inline_object', true);
+        $settings->focuspointAllowInlineSizing = (bool)$model->get('allow_inline_sizing', true);
 
         return $settings;
     }

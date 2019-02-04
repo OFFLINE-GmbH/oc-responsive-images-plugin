@@ -4,9 +4,11 @@ namespace OFFLINE\ResponsiveImages\Classes;
 
 use Config;
 use DOMDocument;
+use DOMElement;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
+use OpenCloud\Common\Exceptions\DomainError;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -91,7 +93,7 @@ class DomManipulator
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
 
-            // If it's a Image with focuspoint
+            // If it's an Image with a focuspoint add additional properties.
             if (strpos($source, 'offline-focus')) {
                 $sourceAttributes = explode('_', $this->getSrcAttribute($node));
 
@@ -103,8 +105,6 @@ class DomManipulator
                 ];
 
                 $node = $this->focuspointImage($node, $focusImageValues, $this->settings);
-
-                return $node->ownerDocument->saveHTML($node);
             }
 
             return $node->ownerDocument->saveHTML($node);
@@ -116,9 +116,9 @@ class DomManipulator
      *
      * @param string $tag
      *
-     * @return \DOMElement
+     * @return DOMElement
      */
-    protected function loadImageTag(string $tag): \DOMElement
+    protected function loadImageTag(string $tag): DOMElement
     {
         $this->dom->loadHTML(mb_convert_encoding($tag, 'HTML-ENTITIES', 'UTF-8'));
 
@@ -155,7 +155,7 @@ class DomManipulator
      * @param           $node
      * @param SourceSet $sourceSet
      */
-    protected function setSizesAttribute(\DOMElement $node, SourceSet $sourceSet)
+    protected function setSizesAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         // Don't overwrite existing attributes
         if ($node->getAttribute('sizes') !== '') {
@@ -171,7 +171,7 @@ class DomManipulator
      * @param $node
      * @param $sourceSet
      */
-    protected function setSrcSetAttribute(\DOMElement $node, SourceSet $sourceSet)
+    protected function setSrcSetAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         $targetAttribute = $this->settings->targetAttribute;
 
@@ -188,7 +188,7 @@ class DomManipulator
      *
      * @param $node
      */
-    protected function setClassAttribute(\DOMElement $node)
+    protected function setClassAttribute(DOMElement $node)
     {
         if ( ! $class = $this->settings->class) {
             return;
@@ -205,7 +205,7 @@ class DomManipulator
      * @param $node
      * @param $sourceSet
      */
-    protected function setSrcAttribute(\DOMElement $node, SourceSet $sourceSet)
+    protected function setSrcAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         $node->setAttribute('src', $sourceSet->getSrcAttribute());
     }
@@ -249,45 +249,77 @@ class DomManipulator
     }
 
     /**
-     * Set Focuspoint Attributes based on the settings
+     * Set Focuspoint Attributes based on the settings.
      *
      * @param $node
      * @param $attributes
      * @param $settings
      *
-     * @return mixed
+     * @return DOMElement
      */
-    protected function focuspointImage($node, $attributes, $settings)
-    {
-
+    protected function focuspointImage(
+        DOMElement $node,
+        array $attributes,
+        DomManipulatorSettings $settings
+    ): DOMElement {
         $classes = $node->getAttribute('class');
 
-        $node->setAttribute('class', "$classes $settings->focuspointClass");
+        $x = $attributes['x'] === '' ? 50 : $attributes['x'];
+        $y = $attributes['y'] === '' ? 50 : $attributes['y'];
 
-        if ($settings->focuspointDataX && $settings->focuspointDataY) {
-            $node->setAttribute('data-' . $settings->focuspointDataX, $attributes['x']);
-            $node->setAttribute('data-' . $settings->focuspointDataY, $attributes['y']);
+        $node->setAttribute('class', trim("$classes $settings->focuspointClass"));
+
+        $stylingAttributes = [];
+
+        if ($settings->focuspointAllowInlineSizing) {
+            $stylingAttributes[] = sprintf('width: %spx', $attributes['width']);
+            $stylingAttributes[] = sprintf('height: %spx', $attributes['height']);
         }
 
-        if ($settings->focuspointAllowInlineObject && ! $settings->focuspointAllowInlineSizing) {
-            unset($attributes['width'], $attributes['height']);
-        } elseif ( ! $settings->focuspointAllowInlineObject && $settings->focuspointAllowInlineSizing) {
-            unset($attributes['x'], $attributes['y']);
+        if ($settings->focuspointAllowInlineObject) {
+            $stylingAttributes[] = sprintf('object-position: %s%% %s%%', $x, $y);
+            $stylingAttributes[] = 'object-fit: cover';
         }
 
-        $stylingAttributes = '';
-
-        foreach ($attributes as $attribute => $value) {
-            if ($attribute === 'width' || $attribute === 'height') {
-                $stylingAttributes .= $attribute . ':' . $value . 'px;';
-            } elseif ($attribute === 'x') {
-                $stylingAttributes .= 'object-fit: cover; object-position:' . $value . '% ';
-            } else {
-                $stylingAttributes .= $value . '%;';
-            }
+        if ($stylingAttributes) {
+            $node->setAttribute('style', implode($stylingAttributes, '; '));
         }
 
-        $node->setAttribute('style', $stylingAttributes);
+        // Set data-* attributes on the image to enable use of JS plugins.
+        $node = $this->setFocusDataAttributes($node, $settings, $x, $y);
+
+        if ($settings->focuspointContainerClass) {
+            $container = $this->dom->createElement('div');
+            $container->setAttribute('class', $settings->focuspointContainerClass);
+            $container->appendChild($node);
+
+            // Set the data-* attributes on the container as well. There are JS plugins that require it.
+            $node = $this->setFocusDataAttributes($container, $settings, $x, $y);
+        }
+
+        return $node;
+    }
+
+    /**
+     * Add data-* Attributes with focus point coordinates.
+     *
+     * @param DOMElement             $node
+     * @param DomManipulatorSettings $settings
+     *
+     * @param                        $x
+     * @param                        $y
+     *
+     * @return DOMElement
+     */
+    private function setFocusDataAttributes(DOMElement $node, DomManipulatorSettings $settings, $x, $y): DOMElement
+    {
+        if ($settings->focuspointDataX) {
+            $node->setAttribute('data-' . $settings->focuspointDataX, $x);
+        }
+
+        if ($settings->focuspointDataY) {
+            $node->setAttribute('data-' . $settings->focuspointDataY, $y);
+        }
 
         return $node;
     }

@@ -2,21 +2,23 @@
 
 Automatically generate and serve images for your visitor's viewport size without changing your theme!
 
-## Focuspoint
-With this feature, it is possible to set a focuspoint to responsive images. 
+## Focus point
+
+With this feature, it is possible to define a focus point on any image attachment and display it responsive 
+in your theme. 
 
 ### How it works
-This feature serves two major functionalities. One in the October CMS backend, and one in the frontend.
- 
-#### Backend 
-In the backend, it extends the 
-fileupload-widget's config-form with two hidden fields for x-axis and y-axis of the image. It calculates its 
-percentual space from left and top of a clicked point on the image.
-To enable the extension of the fileupload-widget, simply pass `focuspoint: true` to the fileupload-widget of your 
-plugin's fields.yaml. By default it will be treated as `false`.
 
-For example: 
-```
+This feature has two components to it:
+
+#### Backend 
+
+In the backend, the FileUpload widget is extended with a simple focus point selector.
+
+To enable this extension simply set `focuspoint: true` to any fileupload widget in your 
+plugin's `fields.yaml`. If not specified, the feature is off by default.
+
+```yaml
 fields:
     images:
         label: Images
@@ -27,45 +29,55 @@ fields:
             extension: auto
         span: full
         type: fileupload
+        # Enable the focus point selector
         focuspoint: true
 ```
 
-##### Example of a config-form with enabled focuspoint:
+##### Example of a config form with enabled focus point selector:
+
 ![focuspoint-configform](https://user-images.githubusercontent.com/10140882/51920398-97a27480-23e5-11e9-91ee-612da085fdb3.JPG)
 
 #### Frontend
-The frontend-functionality is able to manipulate the img-node with the individual given 
-focuspoint. By default, it will set the x- and y-axis values to object-position CSS-property. To use it in the 
-frontend, you can pass `{{ image.focus(width, height) }}` to your twig component (similar like image.thumb()). It 
-will then also pass the width and height of the image, which is required for the object-position property.
 
-To make things a little bit easier and codefriendly, there is also a default `class` attribute named 
-`focuspoint-image` plus you can put your own class in the settings. Also you are able to switch off the inlined 
-sizing-properties.
+You can use the new `focus` method on any `File` model to get the source to a focus point image.
 
-The default markup then looks like this:
+The `focus` method has the exact same API as the `thumb` method, you can specify a `height`, `width` and a `mode`.
+
+```twig
+<img src="{{ image.focus(200, 300) }}" alt="">
 ```
+
+This call will result in the following HTML:
+
+
+```html
 <img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
-srcset="/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_120_0_0_0_auto.jpg 1x, http://base-theme.test/storage/app/uploads/public/5c3/c4d/1dd/thumb_30_240_0_0_0_auto.jpg 2x" 
-alt="" 
-sizes="(max-width: 400px) 100vw, 400px" 
-class=" focuspoint-image" 
-style="width: 400px; height: 500px; object-fit: cover; object-position: 50% 50%;">
+     alt="" 
+     class="focuspoint-image" 
+     style="width: 400px; height: 500px; object-fit: cover; object-position: 50% 50%;">
 ``` 
 
-##### Frontend-Example with the above set focuspoint from backend
-![focuspoint-frontend](https://user-images.githubusercontent.com/10140882/51920548-ed771c80-23e5-11e9-8e1b-4c68448dc26b.JPG)
+You can disable the injection of the inline styles via the plugin's backend settings.
+
+If you want to use any of the existing focus point JS libraries you can also define a custom container
+that will be place around the image. The focus coordinates can be injected as custom `data-*` attributes. 
+
+```html
+<div class="focuspoint-container" data-focus-x="50" data-focus-y="30">
+    <img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
+         alt="" 
+         class="focuspoint-image" 
+         data-focus-x="50"
+         data-focus-y="30"
+ </div>
+``` 
 
 #### Browser-Compatibility
-We're aware that 
-the CSS-compatibility isn't yet fully given in several browsers. Therefore, you are also able to store the values to 
-own 
-named 
-`data` attributes and turn off the inline-styling-options in the backend-settings. So you can use own libraries for 
-the 
-focuspoint.
 
-## Image Rendering
+Be aware that `object-fit` is not supported in IE without using a polyfill.
+
+## Responsive images
+
 ### How it works
 
 This plugin provides a middleware that adds `srcset` and `sizes` attributes to all locally served images in your html
