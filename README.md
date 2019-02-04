@@ -13,10 +13,12 @@ This feature has two components to it:
 
 #### Backend 
 
-In the backend, the FileUpload widget is extended with a simple focus point selector.
+In the backend, the file upload widget is extended with a simple focus point selector.
 
 To enable this extension simply set `focuspoint: true` to any fileupload widget in your 
-plugin's `fields.yaml`. If not specified, the feature is off by default.
+plugin's `fields.yaml`. This feature is off by default. 
+
+Once it is enabled you can click on an uploaded image to select the focus point.
 
 ```yaml
 fields:
@@ -33,9 +35,11 @@ fields:
         focuspoint: true
 ```
 
-##### Example of a config form with enabled focus point selector:
+<p align="center">
 
 ![focuspoint-configform](https://user-images.githubusercontent.com/10140882/51920398-97a27480-23e5-11e9-91ee-612da085fdb3.JPG)
+
+</p>
 
 #### Frontend
 
@@ -44,7 +48,7 @@ You can use the new `focus` method on any `File` model to get the source to a fo
 The `focus` method has the exact same API as the `thumb` method, you can specify a `height`, `width` and a `mode`.
 
 ```twig
-<img src="{{ image.focus(200, 300) }}" alt="">
+<img src="{{ image.focus(200, 300, 'auto') }}" alt="">
 ```
 
 This call will result in the following HTML:
@@ -54,13 +58,15 @@ This call will result in the following HTML:
 <img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
      alt="" 
      class="focuspoint-image" 
-     style="width: 400px; height: 500px; object-fit: cover; object-position: 50% 50%;">
+     style="width: 400px; height: 500px; object-fit: cover; object-position: 30% 80%;">
 ``` 
 
 You can disable the injection of the inline styles via the plugin's backend settings.
 
 If you want to use any of the existing focus point JS libraries you can also define a custom container
-that will be place around the image. The focus coordinates can be injected as custom `data-*` attributes. 
+that will be place around the image. The focus coordinates can be injected as custom `data-*` attributes.
+
+All of these settings are available on the plugin's backend settings page. 
 
 ```html
 <div class="focuspoint-container" data-focus-x="50" data-focus-y="30">
@@ -69,12 +75,14 @@ that will be place around the image. The focus coordinates can be injected as cu
          class="focuspoint-image" 
          data-focus-x="50"
          data-focus-y="30"
+     >
  </div>
 ``` 
 
-#### Browser-Compatibility
+### Browser-Compatibility
 
-Be aware that `object-fit` is not supported in IE without using a polyfill.
+Be aware that `object-fit` is not supported in IE without [using a polyfill](https://github
+.com/bfred-it/object-fit-images).
 
 ## Responsive images
 
