@@ -19,3 +19,4 @@
 2.0.1: Ignore image tags that don't have a src attribute
 2.0.2: Fixed problem when using custom src attributes
 2.0.3: Fixed handling of relative protocol urls
+2.0.4: Added `svg` helper function to inline SVGs (see README for usage)

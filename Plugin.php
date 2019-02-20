@@ -75,4 +75,18 @@ class Plugin extends PluginBase
     public function register(){
         $this->registerConsoleCommand('responsiveimages:generate', GenerateResizedImages::class);
     }
+
+    public function registerMarkupTags()
+    {
+        return [
+            'functions' => [
+                'svg' => function ($path, $vars = []) {
+                    $themeDir = Theme::getActiveThemeCode();
+
+                    return (new SVGInliner($themeDir))->inline($path, $vars);
+                },
+            ],
+        ];
+    }
+
 }
