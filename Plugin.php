@@ -1,5 +1,7 @@
 <?php namespace OFFLINE\ResponsiveImages;
 
+use Cms\Classes\Theme;
+use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Classes\ImagePreloader;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use System\Classes\PluginBase;
