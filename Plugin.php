@@ -3,6 +3,8 @@
 use Backend\FormWidgets\FileUpload;
 use Illuminate\Support\Facades\Event;
 use October\Rain\Exception\ApplicationException;
+use Cms\Classes\Theme;
+use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Classes\ImagePreloader;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
