@@ -2,12 +2,14 @@
 
 Automatically generate and serve images for your visitor's viewport size without changing your theme!
 
-## Focus point
 
-With this feature, it is possible to define a focus point on any image attachment and display it responsive 
-in your theme. 
+## Features
 
-### How it works
+* Focuspoint
+* Responsive images
+* Inline SVG helper function
+
+## Focuspoint
 
 This feature has two components to it:
 
@@ -106,13 +108,13 @@ All image copies are saved in your public temp path. Remote file systems are cur
 The images are generated on the first page load. Depending on the source image size this may take a few seconds. 
 Subsequent page loads will be faster since the images are only resized once.
 
-### Configuration
+## Configuration
 
 Three image sizes are created by default: 400, 768 and 1024 pixels. 
 
 You can change these values by changing the settings in the backend.
 
-#### Alternative `src` and `srcset` attributes
+### Alternative `src` and `srcset` attributes
 
 If you want to use an alternative `src` attribute you can change this via the backend settings page.
  
@@ -122,19 +124,19 @@ This is useful if you are using a plugin like [jQuery.lazyLoad](http://www.appel
  If your plugin requires an alternative srcset attribute (like [verlok/LazyLoad](https://github.com/verlok/lazyload)) this can also be specified via the backend settings. 
 
 
-#### Global `class` attributes
+### Global `class` attributes
 
 If you want to add a class to every processed image you can configure this via the backend settings.
 
 This is useful if you want to add Bootstrap's `img-responsive` class to all images on your website.
 
-### Pre-generate images
+## Pre-generate images
 
 You can use the `php artisan responsive-images:generate` command to pre-generate responsive images. The command uses 
 October's `pages.menuitem.*` events to build a list of all available URLs and pre-generates all images used on these 
 pages. 
 
-### Test results
+## Test results
 
 I have tested this plugin on a page with 20 hd wallpapers from pixabay.
 
@@ -144,6 +146,38 @@ I have tested this plugin on a page with 20 hd wallpapers from pixabay.
 |        1024 px |                3.1 MB |
 |         768 px |                2.0 MB |
 |         400 px |                0.8 MB |
+
+## Inlining SVG images
+
+This plugin registers a simple `svg` helper function that enables you to inline SVG images from your project.
+
+```twig
+<!-- search in theme directory -->
+<div class="inline-svg-wrapper">
+	{{ svg('assets/icon.svg') }}
+</div>
+
+<!-- start with a / to search relative to the project's root -->
+<div class="inline-svg-wrapper">
+	{{ svg('/plugins/vendor/plugin/assets/icon.svg') }}
+</div>
+```
+
+### Using variables
+
+Aside from inlining the SVG itself the helper function will also pass any variables
+along to the SVG and parse it using October's Twig parser. This means you can
+easily create dynamic SVGs.
+
+```svg
+<!-- icon.svg -->
+<svg fill="{{ fill }}" width="{{ width | default(800) }}"> ...
+```
+
+```html
+<!-- You can pass variables along as a second parameter -->
+<img src="{{ svg('/plugins/xy/assets/icon.svg', {fill: '#f00', width: '200'}) }}">
+```
 
 ## Bug reports
 
