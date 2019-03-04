@@ -279,8 +279,8 @@ class DomManipulator
         $stylingAttributes = [];
 
         if ($settings->focuspointAllowInlineSizing) {
-            $stylingAttributes[] = sprintf('width: %spx', $attributes['width']);
-            $stylingAttributes[] = sprintf('height: %spx', $attributes['height']);
+            $stylingAttributes[] = 'width: 100%';
+            $stylingAttributes[] = 'height: 100%';
         }
 
         if ($settings->focuspointAllowInlineObject) {
