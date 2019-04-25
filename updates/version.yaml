@@ -25,3 +25,4 @@
 2.0.7: Allow `| media` and `| theme` filters in the `svg` helper function
 2.0.8: Fixed php-gd compatibility problem (thanks to @mauserrifle)
 2.0.9: Reverted previous change since it introduced performance issues
+2.0.10: Re-implemented compatibility fix (thanks to @mauserrifle)
