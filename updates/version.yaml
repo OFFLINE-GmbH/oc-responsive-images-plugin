@@ -23,3 +23,4 @@
 2.0.5: Added missing relations for Theme and SVGInliner classes
 2.0.6: Optimized image matching to also include images with custom attributes before the src attribute
 2.0.7: Allow `| media` and `| theme` filters in the `svg` helper function
+2.0.8: Fixed php-gd compatibility problem (thanks to @mauserrifle)
