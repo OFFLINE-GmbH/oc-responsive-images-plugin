@@ -89,6 +89,7 @@ class DomManipulator
             $this->setSrcSetAttribute($node, $sourceSet);
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
+            $this->setSrcAttribute($node, $sourceSet);
 
             return $node->ownerDocument->saveHTML($node);
         };
