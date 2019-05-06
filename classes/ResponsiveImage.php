@@ -105,7 +105,9 @@ class ResponsiveImage
 
         $this->sourceSet = new SourceSet($this->path, $this->getWidth());
 
-        $this->dimensions[] = $this->getWidth();
+        // Disable until https://github.com/octobercms/library/pull/396 is fixed
+        // @see DomManipulator:92
+        // $this->dimensions[] = $this->getWidth();
         $this->createCopies();
     }
 

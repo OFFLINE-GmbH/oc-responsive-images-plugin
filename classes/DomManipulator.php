@@ -89,7 +89,10 @@ class DomManipulator
             $this->setSrcSetAttribute($node, $sourceSet);
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
-            $this->setSrcAttribute($node, $sourceSet);
+
+            // Disable until https://github.com/octobercms/library/pull/396 is fixed
+            // @see ResponsiveImage:110
+            // $this->setSrcAttribute($node, $sourceSet);
 
             return $node->ownerDocument->saveHTML($node);
         };
