@@ -27,3 +27,4 @@
 2.0.9: Reverted previous change since it introduced performance issues
 2.0.10: Re-implemented compatibility fix (thanks to @mauserrifle)
 2.0.11: Store copy of original image in the temp folder as well (makes image optimizations possible without the need to modify the original image, thanks to @mauserrifle)
+2.0.12: Reverted previous change until October's PNG resize bug is fixed (https://github.com/octobercms/library/pull/396)
