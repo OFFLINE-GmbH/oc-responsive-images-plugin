@@ -21,5 +21,8 @@
     "composer/installers": "~1.0",
     "psr/log": "^1.1.0",
     "ext-dom": "*"
-  }
+  },
+  "extra": {
+      "installer-name": "responsiveimages"
+  }  
 }

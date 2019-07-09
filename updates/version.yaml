@@ -21,6 +21,13 @@
 2.0.3: Fixed handling of relative protocol urls
 2.0.4: Added `svg` helper function to inline SVGs (see README for usage)
 2.0.5: Added missing relations for Theme and SVGInliner classes
+2.0.6: Optimized image matching to also include images with custom attributes before the src attribute
+2.0.7: Allow `| media` and `| theme` filters in the `svg` helper function
+2.0.8: Fixed php-gd compatibility problem (thanks to @mauserrifle)
+2.0.9: Reverted previous change since it introduced performance issues
+2.0.10: Re-implemented compatibility fix (thanks to @mauserrifle)
+2.0.11: Store copy of original image in the temp folder as well (makes image optimizations possible without the need to modify the original image, thanks to @mauserrifle)
+2.0.12: Reverted previous change until October's PNG resize bug is fixed (https://github.com/octobercms/library/pull/396)
 2.1.0:
     - 'Created table offline_responsiveimages_focuspoint'
     - add_focus_columns_to_system_files.php
