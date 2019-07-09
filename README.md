@@ -11,16 +11,14 @@ Automatically generate and serve images for your visitor's viewport size without
 
 ## Focuspoint
 
-This feature has two components to it:
+This feature has two components to handle:
 
 #### Backend 
 
 In the backend, the file upload widget is extended with a simple focus point selector.
 
 To enable this extension simply set `focuspoint: true` to any fileupload widget in your 
-plugin's `fields.yaml`. This feature is off by default. 
-
-Once it is enabled you can click on an uploaded image to select the focus point.
+plugin's `fields.yaml`. This feature is off by default.
 
 ```yaml
 fields:
@@ -35,7 +33,9 @@ fields:
         type: fileupload
         # Enable the focus point selector
         focuspoint: true
-```
+``` 
+
+Once it is enabled you can click on an uploaded image to select the focus point.
 
 ![focuspoint-configform](https://user-images.githubusercontent.com/10140882/51920398-97a27480-23e5-11e9-91ee-612da085fdb3.JPG)
 
@@ -49,7 +49,7 @@ The `focus` method has the exact same API as the `thumb` method, you can specify
 <img src="{{ image.focus(200, 300, 'auto') }}" alt="">
 ```
 
-This call will result in the following HTML:
+This results the following HTML-structure by example:
 
 
 ```html
@@ -61,8 +61,8 @@ This call will result in the following HTML:
 
 You can disable the injection of the inline styles via the plugin's backend settings.
 
-If you want to use any of the existing focus point JS libraries you can also define a custom container
-that will be place around the image. The focus coordinates can be injected as custom `data-*` attributes.
+You can use any of the existing focus point JS libraries if you want. Therefore you can also define a custom container
+that will be placed around the image. The focus coordinates can be injected as custom `data-*` attributes.
 
 All of these settings are available on the plugin's backend settings page. 
 
