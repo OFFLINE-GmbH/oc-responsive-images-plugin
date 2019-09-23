@@ -114,6 +114,7 @@ class ResponsiveImage
 
         $this->sourceSet = new SourceSet($this->path, $this->getWidth());
 
+        $this->dimensions[] = $this->getWidth();
         $this->createCopies();
     }
 

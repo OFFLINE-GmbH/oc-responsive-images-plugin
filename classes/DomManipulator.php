@@ -105,6 +105,7 @@ class DomManipulator
 
                 $node = $this->focuspointImage($node, $focusImageValues, $this->settings);
             }
+            $this->setSrcAttribute($node, $sourceSet);
 
             return $node->ownerDocument->saveHTML($node);
         };
