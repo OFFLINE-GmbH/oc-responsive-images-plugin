@@ -13,7 +13,7 @@ class File extends FileBase
         return $this->getThumb($width, $height, $options);
     }
 
-    protected function getThumbFilename($width, $height, $options)
+    public function getThumbFilename($width, $height, $options)
     {
         list($width, $height) = $this->normalizeSizes($width, $height);
 

@@ -1,34 +1,32 @@
 window.addEventListener('load', function () {
     initFocuspointTool()
-    let observableNode = document.querySelector('.upload-files-container') ? document.querySelector('.upload-files-container') : document.querySelector('.rowlink')
-    const observerConfig = {childList: true, subtree: true}
-    let backendObserver = new MutationObserver(initFocuspointTool)
+    var observableNode = document.querySelector('.upload-files-container') ? document.querySelector('.upload-files-container') : document.querySelector('.rowlink')
+    var observerConfig = {childList: true, subtree: true}
+    var backendObserver = new MutationObserver(initFocuspointTool)
     backendObserver.observe(observableNode, observerConfig)
 })
 
 function initFocuspointTool () {
 
-    const uploadedImages = document.querySelectorAll('.upload-object')
-    const rowlinks = document.querySelectorAll('.rowlink')
+    var uploadedImages = document.querySelectorAll('.upload-object')
+    var rowlinks = document.querySelectorAll('.rowlink')
 
     var focuspointImage = {}
 
-    console.log(uploadedImages)
-
     if (uploadedImages.length > 0) {
-        Array.prototype.forEach.call(uploadedImages, el => {
+        Array.prototype.forEach.call(uploadedImages, function(el) {
                 // Click on the uploaded image will open the customized config form
-                el.addEventListener('click', () => {
+                el.addEventListener('click', function() {
                     // Observe the document for modal popup
-                    const observerConfig = {childList: true, subtree: true}
-                    let modalObserver = new MutationObserver(() => {
-                        let fileuploadConfigForm = document.querySelector('.fileupload-config-form')
+                    var observerConfig = {childList: true, subtree: true}
+                    var modalObserver = new MutationObserver(function() {
+                        var fileuploadConfigForm = document.querySelector('.fileupload-config-form')
 
                         // Check if fileupload config form was loaded and foucspoint is enabled (x-axis field)
                         if (fileuploadConfigForm && document.getElementById('x-axis')) {
 
-                            let img = fileuploadConfigForm.querySelector('.img-responsive')
-                            let point = fileuploadConfigForm.querySelector('.focuspoint')
+                            var img = fileuploadConfigForm.querySelector('.img-responsive')
+                            var point = fileuploadConfigForm.querySelector('.focuspoint')
 
                             // Load image dimensions
                             focuspointImage.dimensions = img.getBoundingClientRect()
@@ -47,7 +45,7 @@ function initFocuspointTool () {
                             point.style.left = focuspointImage.focuspoint.x + '%'
                             point.style.top = focuspointImage.focuspoint.y + '%'
 
-                            img.addEventListener('click', (e) => {
+                            img.addEventListener('click', function (e) {
 
                                 // Reload dimensions to prevent loading issues
                                 focuspointImage.dimensions = img.getBoundingClientRect()
@@ -76,11 +74,11 @@ function initFocuspointTool () {
         )
     } else {
         // If multi modal reverse initFocuspoint
-        Array.prototype.forEach.call(rowlinks, el => {
-            el.addEventListener('click', () => {
+        Array.prototype.forEach.call(rowlinks, function(el) {
+            el.addEventListener('click', function() {
                 // Observe the document for modal popup
-                const observerConfig = {childList: true, subtree: true}
-                let modalObserver = new MutationObserver(initFocuspointTool)
+                var observerConfig = {childList: true, subtree: true}
+                var modalObserver = new MutationObserver(initFocuspointTool)
                 // Trigger observer
                 modalObserver.observe(document, observerConfig)
             })

@@ -8,7 +8,6 @@ use DOMElement;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
-use OpenCloud\Common\Exceptions\DomainError;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 

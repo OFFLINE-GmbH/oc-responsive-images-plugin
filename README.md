@@ -56,7 +56,7 @@ This call will result in the following HTML:
 <img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
      alt="" 
      class="focuspoint-image" 
-     style="width: 400px; height: 500px; object-fit: cover; object-position: 30% 80%;">
+     style="width: 100%; height: 100%; object-fit: cover; object-position: 30% 80%;">
 ``` 
 
 You can disable the injection of the inline styles via the plugin's backend settings.
