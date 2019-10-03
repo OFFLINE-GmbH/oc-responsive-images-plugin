@@ -33,6 +33,13 @@ EOL;
 
     public function inline(string $relPath, array $vars)
     {
+        // If the path starts with a slash search relative to the base path. If
+        // it starts with the app's host name make it relative.
+        $appUrl = trim(config('app.url'), '/');
+        if (starts_with($relPath, $appUrl)) {
+            $relPath = str_replace($appUrl, '', $relPath);
+        }
+        
         // If the path starts with a slash search relative to the base path.
         if (starts_with($relPath, '/')) {
             $path = base_path($relPath);
