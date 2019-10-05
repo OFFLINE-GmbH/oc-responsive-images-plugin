@@ -39,7 +39,7 @@ EOL;
         if (starts_with($relPath, $appUrl)) {
             $relPath = str_replace($appUrl, '', $relPath);
         }
-        
+
         // If the path starts with a slash search relative to the base path.
         if (starts_with($relPath, '/')) {
             $path = base_path($relPath);
