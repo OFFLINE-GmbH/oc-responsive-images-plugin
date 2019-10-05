@@ -9,6 +9,11 @@
 
     'settings' => [
 
+        'tabs' => [
+            'responsive_image' => 'Responsive Image',
+            'focuspoint' => 'Focus-Point'
+        ],
+
         'sections' => [
             'processing' => 'Traitement',
             'processing_comment' => 'Configurez le traitement de vos images',

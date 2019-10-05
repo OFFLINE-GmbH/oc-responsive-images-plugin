@@ -79,6 +79,13 @@ class ResponsiveImage
     protected $allowedExtensions = 'jpg,jpeg,png,gif';
 
     /**
+     * Focus-Coordinates
+     *
+     * @var array
+     */
+    protected $focus = [];
+
+    /**
      * Create all the needed copies of the image.
      *
      * @param $imagePath
@@ -103,11 +110,11 @@ class ResponsiveImage
         $this->loadSettings();
         $this->parseImagePath();
 
+        $this->focus = [];
+
         $this->sourceSet = new SourceSet($this->path, $this->getWidth());
 
-        // Disable until https://github.com/octobercms/library/pull/396 is fixed
-        // @see DomManipulator:92
-        // $this->dimensions[] = $this->getWidth();
+        $this->dimensions[] = $this->getWidth();
         $this->createCopies();
     }
 
@@ -168,14 +175,13 @@ class ResponsiveImage
     protected function createCopy($size)
     {
         // Only scale the image down
-        if ($this->getWidth() < $size) {
+        if ($this->resizer->getWidth() < $size) {
             $this->sourceSet->remove($size);
 
             return;
         }
 
         try {
-            $this->resizer = new ImageResizer($this->path);
             $this->resizer->resize($size, null)->save($this->getStoragePath($size));
         } catch (\Exception $e) {
             // Cannot resize image to this size. Remove it from the srcset.
