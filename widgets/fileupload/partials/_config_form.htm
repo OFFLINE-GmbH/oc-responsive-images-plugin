@@ -21,15 +21,17 @@
     <?php if (starts_with($displayMode, 'image')): ?>
     <div class="file-upload-modal-image-header">
         <button type="button" class="close" data-dismiss="popup">&times;</button>
-        <div class="file-upload-modal-image-header-innerwrap">
-            <img
-                    src="<?= $file->thumbUrl ?>"
-                    class="img-responsive center-block"
-                    alt=""
-                    title="<?= e(trans('backend::lang.fileupload.attachment')) ?>: <?= e($file->file_name) ?>"
-                    style="<?= $cssDimensions ?>"
-                    data-focuspoint/>
-            <div class="focuspoint"></div>
+        <div class="file-upload-modal-image-header-innerwrap" style="display: flex;">
+            <div class="file-upload-modal-image-wrapper center-block" style="position: relative">
+                <img
+                        src="<?= $file->thumbUrl ?>"
+                        class="img-responsive center-block"
+                        alt=""
+                        title="<?= e(trans('backend::lang.fileupload.attachment')) ?>: <?= e($file->file_name) ?>"
+                        style="<?= $cssDimensions ?>"
+                        data-focuspoint/>
+                <div class="focuspoint"></div>
+            </div>
         </div>
     </div>
     <?php else: ?>
