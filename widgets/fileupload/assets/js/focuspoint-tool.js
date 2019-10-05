@@ -1,36 +1,19 @@
 window.addEventListener('load', function () {
     initFocuspointTool()
-    var observableNode = document.querySelector('.upload-files-container')
-    if (!observableNode) {
-        observableNode = document.querySelector('.rowlink')
-    }
-    if (!observableNode) {
-        return;
-    }
-
-    var observerConfig = {childList: true, subtree: true}
-    var backendObserver = new MutationObserver(initFocuspointTool)
-    backendObserver.observe(observableNode, observerConfig)
+    // Search for new file upload widgets every time an ajax request is
+    // done or a form change event is triggered.
+    $(document).on('ajaxSuccess change.oc.formwidget', initFocuspointTool)
 })
 
+/**
+ * Search for new upload widgets and add the click handler to them.
+ */
 function initFocuspointTool () {
-    var uploadedImages = document.querySelectorAll('.upload-object')
-    var rowlinks = document.querySelectorAll('.rowlink')
-
+    var uploadedImages = document.querySelectorAll('.upload-object:not(.focuspoint-widget)')
     if (uploadedImages.length > 0) {
         Array.prototype.forEach.call(uploadedImages, function (el) {
             el.addEventListener('click', onImageClick)
-        })
-    } else {
-        // If multi modal reverse initFocuspoint
-        Array.prototype.forEach.call(rowlinks, function (el) {
-            el.addEventListener('click', function () {
-                // Observe the document for modal popup
-                var observerConfig = {childList: true, subtree: true}
-                var modalObserver = new MutationObserver(initFocuspointTool)
-                // Trigger observer
-                modalObserver.observe(document, observerConfig)
-            })
+            el.classList.add('focuspoint-widget')
         })
     }
 }
@@ -38,7 +21,12 @@ function initFocuspointTool () {
 /**
  * Event handler for images in the upload widget.
  */
-function onImageClick () {
+function onImageClick (e) {
+    // Ignore clicks on the "remove" icon.
+    if (e.target.classList.contains('icon-times')) {
+        return
+    }
+
     waitForConfigForm(0, function () {
         // Abort if the OFFLINE.ResponsiveImages fields are missing.
         if (!document.getElementById('x-axis')) {
