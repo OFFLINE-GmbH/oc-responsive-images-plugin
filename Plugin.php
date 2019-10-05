@@ -1,16 +1,24 @@
 <?php namespace OFFLINE\ResponsiveImages;
 
+use Backend\FormWidgets\FileUpload;
+use Illuminate\Support\Facades\Event;
+use October\Rain\Exception\ApplicationException;
 use Cms\Classes\Theme;
 use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Classes\ImagePreloader;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
+use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
 use System\Classes\PluginBase;
+use System\Models\File;
+use System\Traits\AssetMaker;
 
 /**
  * ResponsiveImages Plugin Information File
  */
 class Plugin extends PluginBase
 {
+    use AssetMaker;
+
     /**
      * Boot method, called right before the request route.
      *
@@ -20,6 +28,48 @@ class Plugin extends PluginBase
     {
         $this->app['Illuminate\Contracts\Http\Kernel']
             ->pushMiddleware('OFFLINE\ResponsiveImages\Classes\ResponsiveImagesMiddleware');
+
+        Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
+            $controller->addJs('/plugins/offline/responsiveimages/widgets/fileupload/assets/js/focuspoint-tool.js');
+        });
+
+        File::extend(function (File $file) {
+            $file->addDynamicMethod('focus', function ($width, $height, $options = []) use ($file) {
+                return FocusFile::fromFileModel($file)->focus($width, $height, $options);
+            });
+        });
+
+        FileUpload::extend(function (FileUpload $widget) {
+            $isEnabled = (bool)($widget->config->focuspoint ?? false);
+            if ($isEnabled !== true) {
+                return;
+            }
+            $widget->addViewPath('plugins/offline/responsiveimages/widgets/fileupload/partials');
+            $widget->addDynamicMethod('onSaveAttachmentConfigFocuspoint', function () use ($widget) {
+                $original = $widget->onSaveAttachmentConfig();
+
+                if (is_array($original) === false || array_key_exists('displayName', $original) === false) {
+                    return $original;
+                }
+
+                try {
+                    list($model, $attribute) = $widget->resolveModelAttribute($widget->valueFrom);
+                    $fileModel = $model->makeRelation($attribute);
+
+                    if (($fileId = post('file_id')) && ($file = $fileModel::find($fileId))) {
+                        $file->offline_responsiveimages_focus_x_axis = post('offline_responsiveimages_focus_x_axis');
+                        $file->offline_responsiveimages_focus_y_axis = post('offline_responsiveimages_focus_y_axis');
+                        $file->save();
+
+                        return $original;
+                    }
+
+                    throw new ApplicationException('Unable to find file, it may no longer exist');
+                } catch (\Throwable $ex) {
+                    return json_encode(['error' => $ex->getMessage()]);
+                }
+            });
+        });
     }
 
     /**
@@ -34,7 +84,7 @@ class Plugin extends PluginBase
             'description' => 'offline.responsiveimages::lang.plugin.description',
             'author'      => 'offline.responsiveimages::lang.plugin.author',
             'homepage'    => 'https://github.com/OFFLINE-GmbH/oc-responsive-images-plugin',
-            'icon'        => 'icon-file-image-o'
+            'icon'        => 'icon-file-image-o',
         ];
     }
 
@@ -47,7 +97,7 @@ class Plugin extends PluginBase
     {
         return [
             'offline.responsiveimages.manage_settings' => [
-                    'tab'   => 'offline.responsiveimages::lang.plugin.name',
+                'tab'   => 'offline.responsiveimages::lang.plugin.name',
                 'label' => 'offline.responsiveimages::lang.plugin.manage_settings_permission',
             ],
         ];
@@ -69,12 +119,13 @@ class Plugin extends PluginBase
                 'class'       => 'Offline\ResponsiveImages\Models\Settings',
                 'order'       => 500,
                 'keywords'    => 'responsive images',
-                'permissions' => ['offline.responsiveimages.manage_settings']
+                'permissions' => ['offline.responsiveimages.manage_settings'],
             ],
         ];
     }
 
-    public function register(){
+    public function register()
+    {
         $this->registerConsoleCommand('responsiveimages:generate', GenerateResizedImages::class);
     }
 

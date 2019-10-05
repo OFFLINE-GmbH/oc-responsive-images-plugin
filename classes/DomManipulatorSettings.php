@@ -36,6 +36,48 @@ class DomManipulatorSettings
     public $logErrors = true;
 
     /**
+     * Specific class for focus point images
+     *
+     * @var boolean
+     */
+    public $focuspointClass;
+
+    /**
+     * Container class for focus point image.
+     *
+     * @var boolean
+     */
+    public $focuspointContainerClass;
+
+    /**
+     * Data-Attribute for x-axis
+     *
+     * @var boolean
+     */
+    public $focuspointDataX;
+
+    /**
+     * Data-Attribute for y-axis
+     *
+     * @var boolean
+     */
+    public $focuspointDataY;
+
+    /**
+     * Allow inline-styles for object-fit and object-position
+     *
+     * @var boolean
+     */
+    public $focuspointAllowInlineObject = true;
+
+    /**
+     * Allow inline-styles for width and height
+     *
+     * @var boolean
+     */
+    public $focuspointAllowInlineSizing = true;
+
+    /**
      * Create an instance from a SettingsModel class.
      *
      * @param Settings $model
@@ -44,11 +86,17 @@ class DomManipulatorSettings
      */
     public static function fromSettingsModel(Settings $model): DomManipulatorSettings
     {
-        $settings                  = new self();
-        $settings->logErrors       = (bool)$model->get('log_unprocessable', false);
-        $settings->sourceAttribute = $model->get('alternative_src') ?: false;
-        $settings->targetAttribute = $model->get('alternative_src_set') ?: 'srcset';
-        $settings->class           = $model->get('add_class') ?: '';
+        $settings                              = new self();
+        $settings->logErrors                   = (bool)$model->get('log_unprocessable', false);
+        $settings->sourceAttribute             = $model->get('alternative_src') ?: false;
+        $settings->targetAttribute             = $model->get('alternative_src_set') ?: 'srcset';
+        $settings->class                       = $model->get('add_class') ?: '';
+        $settings->focuspointClass             = $model->get('focuspoint_class') ?: 'focuspoint-image';
+        $settings->focuspointContainerClass    = $model->get('focuspoint_container_class') ?: '';
+        $settings->focuspointDataX             = $model->get('focuspoint_data_x') ?: '';
+        $settings->focuspointDataY             = $model->get('focuspoint_data_y') ?: '';
+        $settings->focuspointAllowInlineObject = (bool)$model->get('allow_inline_object', true);
+        $settings->focuspointAllowInlineSizing = (bool)$model->get('allow_inline_sizing', true);
 
         return $settings;
     }

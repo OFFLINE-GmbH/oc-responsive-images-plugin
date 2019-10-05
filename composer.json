@@ -23,6 +23,6 @@
     "ext-dom": "*"
   },
   "extra": {
-      "installer-name": "responsiveimages"
-  }  
+    "installer-name": "responsiveimages"
+  }
 }

@@ -4,6 +4,7 @@ namespace OFFLINE\ResponsiveImages\Classes;
 
 use Config;
 use DOMDocument;
+use DOMElement;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
@@ -29,7 +30,7 @@ class DomManipulator
      * RegEx to find all images in the document.
      * @var string
      */
-    protected $pattern = '/<img[\s\S][^>]*(?:src)=[\s\S]*?>/mis';
+    protected $pattern = '/<img[\s\S][^>]?(?:src)=[\s\S]*?>/mis';
     /**
      * DOMDocument instance to process each img tag.
      * @var DOMDocument
@@ -90,9 +91,20 @@ class DomManipulator
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
 
-            // Disable until https://github.com/octobercms/library/pull/396 is fixed
-            // @see ResponsiveImage:110
-            // $this->setSrcAttribute($node, $sourceSet);
+            // If it's an Image with a focuspoint add additional properties.
+            if (strpos($source, 'offline-focus')) {
+                $sourceAttributes = explode('_', $this->getSrcAttribute($node));
+
+                $focusImageValues = [
+                    'width'  => $sourceAttributes[2],
+                    'height' => $sourceAttributes[3],
+                    'x'      => $sourceAttributes[4],
+                    'y'      => $sourceAttributes[5],
+                ];
+
+                $node = $this->focuspointImage($node, $focusImageValues, $this->settings);
+            }
+            $this->setSrcAttribute($node, $sourceSet);
 
             return $node->ownerDocument->saveHTML($node);
         };
@@ -103,9 +115,9 @@ class DomManipulator
      *
      * @param string $tag
      *
-     * @return \DOMElement
+     * @return DOMElement
      */
-    protected function loadImageTag(string $tag): \DOMElement
+    protected function loadImageTag(string $tag): DOMElement
     {
         $this->dom->loadHTML(mb_convert_encoding($tag, 'HTML-ENTITIES', 'UTF-8'));
 
@@ -142,7 +154,7 @@ class DomManipulator
      * @param           $node
      * @param SourceSet $sourceSet
      */
-    protected function setSizesAttribute(\DOMElement $node, SourceSet $sourceSet)
+    protected function setSizesAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         // Don't overwrite existing attributes
         if ($node->getAttribute('sizes') !== '') {
@@ -158,7 +170,7 @@ class DomManipulator
      * @param $node
      * @param $sourceSet
      */
-    protected function setSrcSetAttribute(\DOMElement $node, SourceSet $sourceSet)
+    protected function setSrcSetAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         $targetAttribute = $this->settings->targetAttribute;
 
@@ -175,7 +187,7 @@ class DomManipulator
      *
      * @param $node
      */
-    protected function setClassAttribute(\DOMElement $node)
+    protected function setClassAttribute(DOMElement $node)
     {
         if ( ! $class = $this->settings->class) {
             return;
@@ -192,7 +204,7 @@ class DomManipulator
      * @param $node
      * @param $sourceSet
      */
-    protected function setSrcAttribute(\DOMElement $node, SourceSet $sourceSet)
+    protected function setSrcAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         $node->setAttribute('src', $sourceSet->getSrcAttribute());
     }
@@ -241,5 +253,81 @@ class DomManipulator
                 compact('exception')
             );
         }
+    }
+
+    /**
+     * Set Focuspoint Attributes based on the settings.
+     *
+     * @param $node
+     * @param $attributes
+     * @param $settings
+     *
+     * @return DOMElement
+     */
+    protected function focuspointImage(
+        DOMElement $node,
+        array $attributes,
+        DomManipulatorSettings $settings
+    ): DOMElement {
+        $classes = $node->getAttribute('class');
+
+        $x = $attributes['x'] === '' ? 50 : $attributes['x'];
+        $y = $attributes['y'] === '' ? 50 : $attributes['y'];
+
+        $node->setAttribute('class', trim("$classes $settings->focuspointClass"));
+
+        $stylingAttributes = [];
+
+        if ($settings->focuspointAllowInlineSizing) {
+            $stylingAttributes[] = 'width: 100%';
+            $stylingAttributes[] = 'height: 100%';
+        }
+
+        if ($settings->focuspointAllowInlineObject) {
+            $stylingAttributes[] = sprintf('object-position: %s%% %s%%', $x, $y);
+            $stylingAttributes[] = 'object-fit: cover';
+        }
+
+        if ($stylingAttributes) {
+            $node->setAttribute('style', implode($stylingAttributes, '; '));
+        }
+
+        // Set data-* attributes on the image to enable use of JS plugins.
+        $node = $this->setFocusDataAttributes($node, $settings, $x, $y);
+
+        if ($settings->focuspointContainerClass) {
+            $container = $this->dom->createElement('div');
+            $container->setAttribute('class', $settings->focuspointContainerClass);
+            $container->appendChild($node);
+
+            // Set the data-* attributes on the container as well. There are JS plugins that require it.
+            $node = $this->setFocusDataAttributes($container, $settings, $x, $y);
+        }
+
+        return $node;
+    }
+
+    /**
+     * Add data-* Attributes with focus point coordinates.
+     *
+     * @param DOMElement             $node
+     * @param DomManipulatorSettings $settings
+     *
+     * @param                        $x
+     * @param                        $y
+     *
+     * @return DOMElement
+     */
+    private function setFocusDataAttributes(DOMElement $node, DomManipulatorSettings $settings, $x, $y): DOMElement
+    {
+        if ($settings->focuspointDataX) {
+            $node->setAttribute('data-' . $settings->focuspointDataX, $x);
+        }
+
+        if ($settings->focuspointDataY) {
+            $node->setAttribute('data-' . $settings->focuspointDataY, $y);
+        }
+
+        return $node;
     }
 }
