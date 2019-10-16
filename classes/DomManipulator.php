@@ -30,7 +30,7 @@ class DomManipulator
      * RegEx to find all images in the document.
      * @var string
      */
-    protected $pattern = '/<img[\s\S][^>]?(?:src)=[\s\S]*?>/mis';
+    protected $pattern = '/<img[\s\S][^>]*(?:src)=[\s\S]*?>/mis';
     /**
      * DOMDocument instance to process each img tag.
      * @var DOMDocument
