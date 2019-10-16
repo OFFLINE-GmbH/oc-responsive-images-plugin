@@ -55,7 +55,7 @@ tabs:
             label: 'offline.responsiveimages::lang.settings.sections.focuspoint'
             type: section
             comment: 'offline.responsiveimages::lang.settings.sections.focuspoint_comment'
-            tab: 'Responsive Image'
+            tab: 'offline.responsiveimages::lang.settings.tabs.focuspoint'
         focuspoint_class:
             type: text
             span: left

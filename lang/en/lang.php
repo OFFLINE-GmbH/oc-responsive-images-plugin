@@ -20,6 +20,9 @@
 
             'html' => 'HTML',
             'html_comment' => 'HTML code settings',
+
+            'focuspoint' => 'Focuspoint',
+            'focuspoint_comment' => 'Focuspoint related settings',
         ],
 
         'dimensions' => 'Generated image sizes',
