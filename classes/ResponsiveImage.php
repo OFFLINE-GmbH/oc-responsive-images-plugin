@@ -3,7 +3,6 @@
 namespace OFFLINE\ResponsiveImages\Classes;
 
 use Cache;
-use System\Classes\MediaLibrary;
 use Config;
 use File as FileHelper;
 use Log;
@@ -11,6 +10,7 @@ use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
 use OFFLINE\ResponsiveImages\Models\Settings;
+use System\Classes\MediaLibrary;
 use URL;
 
 /**
@@ -126,9 +126,8 @@ class ResponsiveImage
     protected function getWidth()
     {
         $cacheKey = 'responsiveimages.widths.' . $this->getPathHash();
-        $path     = $this->path;
 
-        $width = Cache::rememberForever($cacheKey, function () use ($path) {
+        $width = Cache::rememberForever($cacheKey, function () {
             return (new ImageResizer($this->path))->getWidth();
         });
 
@@ -162,7 +161,7 @@ class ResponsiveImage
 
         $this->resizer = new ImageResizer($this->path);
 
-        foreach ($this->getUnavailableSizes() as $size) {
+        foreach ($unavailableSizes as $size) {
             $this->createCopy($size);
         }
     }
@@ -186,7 +185,8 @@ class ResponsiveImage
             }
 
             $this->resizer->resize($size, null)->save($this->getStoragePath($size));
-        } catch (\Exception $e) {
+
+        } catch (\Throwable $e) {
             // Cannot resize image to this size. Remove it from the srcset.
             $this->sourceSet->remove($size);
 
