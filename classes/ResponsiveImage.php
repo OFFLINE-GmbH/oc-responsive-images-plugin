@@ -12,6 +12,7 @@ use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
 use OFFLINE\ResponsiveImages\Models\Settings;
 use System\Classes\MediaLibrary;
 use URL;
+use WebPConvert\WebPConvert;
 
 /**
  * Creates the various copies of an image.
@@ -86,15 +87,21 @@ class ResponsiveImage
     protected $focus = [];
 
     /**
+     * Create WebP images.
+     *
+     * @var boolean
+     */
+    protected $webPEnabled = false;
+    protected $DEFAULTWEBPCONVERTOPTIONS;
+
+    /**
      * Create all the needed copies of the image.
      *
-     * @param $imagePath
+     * @param      $imagePath
      *
-     * @throws RemotePathException
-     * @throws FileNotFoundException
-     * @throws UnallowedFileTypeException
+     * @param WebP $webP
      */
-    public function __construct($imagePath)
+    public function __construct($imagePath, WebP $webP)
     {
         $imagePath  = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
@@ -112,7 +119,7 @@ class ResponsiveImage
 
         $this->focus = [];
 
-        $this->sourceSet = new SourceSet($this->path, $this->getWidth());
+        $this->sourceSet = new SourceSet($this->path, $this->getWidth(), $webP);
 
         $this->dimensions[] = $this->getWidth();
         $this->createCopies();
@@ -173,6 +180,7 @@ class ResponsiveImage
      */
     protected function createCopy($size)
     {
+        $this->DEFAULTWEBPCONVERTOPTIONS = Settings::DEFAULT_WEBP_CONVERT_OPTIONS;
         try {
             // Load the image into a new resizer since the previous one was destroyed during save.
             $this->resizer = new ImageResizer($this->path);
@@ -184,8 +192,13 @@ class ResponsiveImage
                 return;
             }
 
-            $this->resizer->resize($size, null)->save($this->getStoragePath($size));
+            $saveTo = $this->getStoragePath($size);
+            $this->resizer->resize($size, null)->save($saveTo);
 
+            // Create webp images if the feature is enabled.
+            if ($this->webPEnabled) {
+                WebPConvert::convert($saveTo, $saveTo . '.webp', $this->DEFAULTWEBPCONVERTOPTIONS);
+            }
         } catch (\Throwable $e) {
             // Cannot resize image to this size. Remove it from the srcset.
             $this->sourceSet->remove($size);
@@ -293,6 +306,7 @@ class ResponsiveImage
     {
         $this->dimensions        = Settings::getCommaSeparated('dimensions', $this->dimensions);
         $this->allowedExtensions = Settings::getCommaSeparated('allowed_extensions', $this->allowedExtensions);
+        $this->webPEnabled       = (bool)Settings::get('webp_enabled', false);
     }
 
     /**

@@ -30,6 +30,12 @@
         'allowed_extensions' => 'Beachtete Dateiendungen',
         'allowed_extensions_comment' => 'Komma-getrennte Liste mit Dateiendungen, die verarbeitet werden sollen',
 
+        'webp_enabled' => 'Aktiviere WebP-Konvertierung',
+        'webp_enabled_comment' => 'Bilder werden automatisch als WebP-Dateien an unterstütze Browser gesendet. Lies das README des Plugins bevor du diese Option aktivierst!',
+
+        'webp_prefix' => 'WebP-Pfad Prefix',
+        'webp_prefix_comment' => 'Optional: Spezifischer Prefix für WebP URLs. Bedingt eine manuelle serverseitige Umleitung! Siehe Dokumenation.',
+
         'log_unprocessable' => 'Unverarbeitbare Bilder loggen',
         'log_unprocessable_comment' => 'Erstellt einen Logeintrag für jedes Bild, das nicht verarbeitet werden kann',
 

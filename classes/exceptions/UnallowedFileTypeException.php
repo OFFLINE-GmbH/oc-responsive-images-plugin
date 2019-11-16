@@ -1,5 +1,7 @@
 <?php
+
 namespace OFFLINE\ResponsiveImages\Classes\Exceptions;
 
-class UnallowedFileTypeException extends \RuntimeException  {
+class UnallowedFileTypeException extends \RuntimeException
+{
 }
