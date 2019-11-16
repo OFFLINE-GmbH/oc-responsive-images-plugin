@@ -40,6 +40,10 @@ class DomManipulator
      * @var DomManipulatorSettings
      */
     protected $settings;
+    /**
+     * @var WebP
+     */
+    protected $webP;
 
     /**
      * Loads the html.
@@ -53,6 +57,7 @@ class DomManipulator
         $this->logger   = $logger ?? new NullLogger();
         $this->settings = $settings;
         $this->dom      = new DOMDocument();
+        $this->webP     = new WebP();
     }
 
     /**
@@ -134,7 +139,7 @@ class DomManipulator
     protected function getResponsiveImage($source)
     {
         try {
-            return new ResponsiveImage($source);
+            return new ResponsiveImage($source, $this->webP);
         } catch (RemotePathException $e) {
             // Ignore remote images completely
         } catch (UnallowedFileTypeException $e) {
@@ -173,13 +178,9 @@ class DomManipulator
     protected function setSrcSetAttribute(DOMElement $node, SourceSet $sourceSet)
     {
         $targetAttribute = $this->settings->targetAttribute;
+        $existing        = $node->getAttribute($targetAttribute);
 
-        // Don't overwrite existing attributes
-        if ($node->getAttribute($targetAttribute) !== '') {
-            return;
-        }
-
-        $node->setAttribute($targetAttribute, $sourceSet->getSrcSetAttribute());
+        $node->setAttribute($targetAttribute, $sourceSet->getSrcSetAttribute($existing));
     }
 
     /**

@@ -18,5 +18,5 @@ return [
     ],
     // Use alternative attribute for image source, fallback remains "src"
     // set to false to disable
-    'alternative-src' => 'data-original'
+    'alternative-src'   => 'data-original',
 ];

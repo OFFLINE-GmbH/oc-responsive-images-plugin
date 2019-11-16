@@ -163,6 +163,7 @@ class ImagePreloader
                 if ( ! isset($definition['cmsPages'])) {
                     $item = (object)[
                         'type'      => $type,
+                        'replace'   => false,
                         'reference' => $reference,
                         'nesting'   => data_get($definition, 'nesting', false),
                     ];
@@ -171,14 +172,14 @@ class ImagePreloader
                     continue;
                 }
 
-                foreach ($definition['cmsPages'] as $cmsPage => $name) {
+                foreach ($definition['cmsPages'] as $cmsPage => $itemName) {
                     $item = (object)[
                         'type'      => $type,
                         'reference' => $reference,
                         'cmsPage'   => $cmsPage,
                         'nesting'   => data_get($definition, 'nesting', false),
                     ];
-                    $urls = $urls->concat($this->getUrlsForItem($type, $item));
+                    $urls = $urls->concat($this->getUrlsForItem($type, $itemName));
                 }
             }
 

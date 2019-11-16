@@ -78,6 +78,13 @@ class DomManipulatorSettings
     public $focuspointAllowInlineSizing = true;
 
     /**
+     * Serve images in WebP format.
+     *
+     * @var boolean
+     */
+    public $webPEnabled = false;
+
+    /**
      * Create an instance from a SettingsModel class.
      *
      * @param Settings $model
@@ -91,6 +98,7 @@ class DomManipulatorSettings
         $settings->sourceAttribute             = $model->get('alternative_src') ?: false;
         $settings->targetAttribute             = $model->get('alternative_src_set') ?: 'srcset';
         $settings->class                       = $model->get('add_class') ?: '';
+        $settings->webPEnabled                 = (bool)$model->get('webp_enabled') ?: false;
         $settings->focuspointClass             = $model->get('focuspoint_class') ?: 'focuspoint-image';
         $settings->focuspointContainerClass    = $model->get('focuspoint_container_class') ?: '';
         $settings->focuspointDataX             = $model->get('focuspoint_data_x') ?: '';

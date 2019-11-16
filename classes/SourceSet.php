@@ -2,8 +2,6 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
-use Illuminate\Support\Facades\URL;
-
 class SourceSet
 {
     /**
@@ -18,16 +16,24 @@ class SourceSet
      * @var array
      */
     public $rules = [];
+    /**
+     * WebP helper class.
+     *
+     * @var WebP
+     */
+    public $webP = '';
 
     /**
      * SourceSet constructor.
      *
-     * @param $originalPath
-     * @param $originalWidth
+     * @param      $originalPath
+     * @param      $originalWidth
+     * @param WebP $webP
      */
-    public function __construct($originalPath, $originalWidth)
+    public function __construct($originalPath, $originalWidth, WebP $webP)
     {
         $this->originalWidth = $originalWidth;
+        $this->webP          = $webP;
 
         $this->push($originalWidth, $originalPath);
     }
@@ -69,10 +75,7 @@ class SourceSet
         $filename           = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
-        $url = rawurlencode(URL::to('/') . $relativeFolderPath . $filename);
-
-        // Bring encoded colon and slashes back
-        return str_replace(['%2F', '%3A'], ['/', ':'], $url);
+        return $this->webP->prefix($relativeFolderPath . $filename);
     }
 
     /**
@@ -90,12 +93,21 @@ class SourceSet
      *
      * @return string
      */
-    public function getSrcSetAttribute()
+    public function getSrcSetAttribute(string $existing)
     {
         $attribute = [];
 
+        if ($existing !== '') {
+            $this->mergeSrcSet($existing);
+        }
+
         foreach ($this->rules as $size => $paths) {
-            $attribute[] = sprintf('%s %sw', $paths['public_url'], $size);
+            if (is_numeric($size)) {
+                $sizePlaceholder = '%dw'; // Add a "w" suffix to numberic sizes.
+            } else {
+                $sizePlaceholder = '%s'; // Use a simple string placeholder for everything else.
+            }
+            $attribute[] = sprintf('%s ' . $sizePlaceholder, $paths['public_url'], $size);
         }
 
         return implode($attribute, ', ');
@@ -115,5 +127,23 @@ class SourceSet
         }
 
         return $width === '' ? '100vw' : sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width);
+    }
+
+    /**
+     * Merge the new srcset with the existing srcset attributes.
+     *
+     * @param string $existing
+     *
+     * @return mixed
+     */
+    protected function mergeSrcSet(string $existing)
+    {
+        $parts = explode(', ', $existing);
+        foreach ($parts as $part) {
+            list($url, $size) = explode(' ', $part);
+            if ( ! array_key_exists($size, $this->rules)) {
+                $this->rules[$size] = ['public_url' => $this->webP->prefix($url)];
+            }
+        }
     }
 }
