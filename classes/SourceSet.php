@@ -98,7 +98,7 @@ class SourceSet
         $attribute = [];
 
         if ($existing !== '') {
-            $this->mergeSrcSet($existing);
+            return $this->wrapExisting($existing);
         }
 
         foreach ($this->rules as $size => $paths) {
@@ -130,20 +130,20 @@ class SourceSet
     }
 
     /**
-     * Merge the new srcset with the existing srcset attributes.
+     * Wrap the existing srcset with the WebP prefix.
      *
      * @param string $existing
      *
      * @return mixed
      */
-    protected function mergeSrcSet(string $existing)
+    protected function wrapExisting(string $existing)
     {
         $parts = explode(', ', $existing);
-        foreach ($parts as $part) {
-            list($url, $size) = explode(' ', $part);
-            if ( ! array_key_exists($size, $this->rules)) {
-                $this->rules[$size] = ['public_url' => $this->webP->prefix($url)];
-            }
+        foreach ($parts as $key => $part) {
+           $values = explode(' ', $part);
+           $values[0] = $this->webP->prefix($values[0]);
+           $parts[$key] = implode(' ', $values);
         }
+        return implode(', ', $parts);
     }
 }

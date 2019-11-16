@@ -35,8 +35,13 @@ class WebP
             return $url;
         }
 
-        // Make sure no WebP URL includes the app's bae URL.
+        // Make sure no WebP URL includes the app's base URL.
         $stripped = str_replace($this->base, '', $url);
+
+        // This seems to be an external image, don't touch it!
+        if (starts_with($stripped, 'http')) {
+            return $url;
+        }
 
         $url = URL::to($this->prefix) . rawurlencode($stripped);
 
