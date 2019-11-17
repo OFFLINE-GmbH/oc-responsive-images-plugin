@@ -19,13 +19,13 @@ This plugin provides a middleware that adds `srcset` and `sizes` attributes to a
 
 It turns this
 
-```
+```html
 <img width="500" src="/storage/app/media/image.jpg">
 ```
 
 into this
 
-```
+```html
 <img width="500" src="/storage/app/media/image.jpg" srcset="/storage/temp/public/be7/4d6/0cc/image__400.jpg 400w, /storage/temp/public/be7/4d6/0cc/image__768.jpg 768w, /storage/temp/public/be7/4d6/0cc/image__1024.jpg 1024w" sizes="(max-width: 500px) 100vw, 500px">
 ```
  
@@ -100,7 +100,10 @@ automatically.
 The `webp.php` helper script will generate any missing WebP images so they can be served directly
 on the next visit. 
 
-This is the default `.htaccess` configuration that gets applied by default:
+
+### Apache + .htaccess
+
+This is the default `.htaccess` configuration that gets applied **automatically**:
 
 ```htaccess
 # Added by default! No need to add this manually
@@ -120,6 +123,15 @@ This is the default `.htaccess` configuration that gets applied by default:
     RewriteRule (.+)$ %{DOCUMENT_ROOT}/plugins/offline/responsiveimages/webp.php?path=$1 [L]
 </ifModule>
 ```
+
+### Other servers
+
+We did not invest in the proper WebP detection configuration for other server software.
+Based on the `.htaccess` example above and the [webp-detect](https://github.com/igrigorik/webp-detect)
+repo you should be able to figure out what config is needed.
+
+If you have a working example please add it via a PR to this README!
+
 
 ## Focuspoint
 
