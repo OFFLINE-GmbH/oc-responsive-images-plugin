@@ -92,16 +92,13 @@ class ResponsiveImage
      * @var boolean
      */
     protected $webPEnabled = false;
-    protected $DEFAULTWEBPCONVERTOPTIONS;
 
     /**
      * Create all the needed copies of the image.
      *
      * @param      $imagePath
-     *
-     * @param WebP $webP
      */
-    public function __construct($imagePath, WebP $webP)
+    public function __construct($imagePath)
     {
         $imagePath  = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
@@ -119,7 +116,7 @@ class ResponsiveImage
 
         $this->focus = [];
 
-        $this->sourceSet = new SourceSet($this->path, $this->getWidth(), $webP);
+        $this->sourceSet = new SourceSet($this->path, $this->getWidth());
 
         $this->dimensions[] = $this->getWidth();
         $this->createCopies();
@@ -180,7 +177,6 @@ class ResponsiveImage
      */
     protected function createCopy($size)
     {
-        $this->DEFAULTWEBPCONVERTOPTIONS = Settings::DEFAULT_WEBP_CONVERT_OPTIONS;
         try {
             // Load the image into a new resizer since the previous one was destroyed during save.
             $this->resizer = new ImageResizer($this->path);
@@ -197,7 +193,7 @@ class ResponsiveImage
 
             // Create webp images if the feature is enabled.
             if ($this->webPEnabled) {
-                WebPConvert::convert($saveTo, $saveTo . '.webp', $this->DEFAULTWEBPCONVERTOPTIONS);
+                WebPConvert::convert($saveTo, $saveTo . '.webp', Settings::DEFAULT_WEBP_CONVERT_OPTIONS);
             }
         } catch (\Throwable $e) {
             // Cannot resize image to this size. Remove it from the srcset.

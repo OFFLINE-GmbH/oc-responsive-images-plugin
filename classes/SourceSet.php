@@ -2,6 +2,8 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
+use Illuminate\Support\Facades\URL;
+
 class SourceSet
 {
     /**
@@ -16,24 +18,16 @@ class SourceSet
      * @var array
      */
     public $rules = [];
-    /**
-     * WebP helper class.
-     *
-     * @var WebP
-     */
-    public $webP = '';
 
     /**
      * SourceSet constructor.
      *
      * @param      $originalPath
      * @param      $originalWidth
-     * @param WebP $webP
      */
-    public function __construct($originalPath, $originalWidth, WebP $webP)
+    public function __construct($originalPath, $originalWidth)
     {
         $this->originalWidth = $originalWidth;
-        $this->webP          = $webP;
 
         $this->push($originalWidth, $originalPath);
     }
@@ -75,7 +69,10 @@ class SourceSet
         $filename           = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
-        return $this->webP->prefix($relativeFolderPath . $filename);
+        $url = rawurlencode(URL::to('/') . $relativeFolderPath . $filename);
+
+        // Bring encoded colon and slashes back
+        return str_replace(['%2F', '%3A'], ['/', ':'], $url);
     }
 
     /**
@@ -93,13 +90,9 @@ class SourceSet
      *
      * @return string
      */
-    public function getSrcSetAttribute(string $existing)
+    public function getSrcSetAttribute()
     {
         $attribute = [];
-
-        if ($existing !== '') {
-            $this->mergeSrcSet($existing);
-        }
 
         foreach ($this->rules as $size => $paths) {
             if (is_numeric($size)) {
@@ -127,23 +120,5 @@ class SourceSet
         }
 
         return $width === '' ? '100vw' : sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width);
-    }
-
-    /**
-     * Merge the new srcset with the existing srcset attributes.
-     *
-     * @param string $existing
-     *
-     * @return mixed
-     */
-    protected function mergeSrcSet(string $existing)
-    {
-        $parts = explode(', ', $existing);
-        foreach ($parts as $part) {
-            list($url, $size) = explode(' ', $part);
-            if ( ! array_key_exists($size, $this->rules)) {
-                $this->rules[$size] = ['public_url' => $this->webP->prefix($url)];
-            }
-        }
     }
 }

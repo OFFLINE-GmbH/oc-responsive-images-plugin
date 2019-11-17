@@ -33,8 +33,10 @@
         'webp_enabled' => 'Aktiviere WebP-Konvertierung',
         'webp_enabled_comment' => 'Bilder werden automatisch als WebP-Dateien an unterstütze Browser gesendet. Lies das README des Plugins bevor du diese Option aktivierst!',
 
-        'webp_prefix' => 'WebP-Pfad Prefix',
-        'webp_prefix_comment' => 'Optional: Spezifischer Prefix für WebP URLs. Bedingt eine manuelle serverseitige Umleitung! Siehe Dokumenation.',
+        'webp_partial' => [
+            'title' => 'WebP Support',
+            'text' => 'Diese Funktion unterstützt nur Apache + .htaccess. Alle anderen Server benötigen eine manuelle Konfiguration! Siehe',
+        ],
 
         'log_unprocessable' => 'Unverarbeitbare Bilder loggen',
         'log_unprocessable_comment' => 'Erstellt einen Logeintrag für jedes Bild, das nicht verarbeitet werden kann',

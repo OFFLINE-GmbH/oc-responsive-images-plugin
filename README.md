@@ -82,66 +82,44 @@ if the visiting Browser signals support for it.
 
 Be aware that each WebP image is created on-demand with the first page view that requests it.
 This might lead to slow page load times for your first visitors. To prevent this, warm up
-the image cache by visiting every page at least once or
- use the `php artisan responsive-images:generate -v` console command.
+the image cache by visiting every page at least once (by using a [linkchecker](https://github.com/linkchecker/linkchecker/)) or
+ use the `php artisan responsive-images:generate -v` console command. 
 
 To make use of this feature, enable it via October's backend settings. If you are using
-Apache with `.htaccess` support, the plugin will whitelist the required `webp.php` helper
-script for you automatically.
+Apache with `.htaccess` support, the plugin will serve WebP images to supported browsers
+automatically. 
 
-**If you do not use Apache**, please make sure that you whitelist requests to `plugins/offline/responsiveimages/webp.php`.
+**If you do not use Apache**, you have to configure your server to do the following:
 
-As soon as the WebP feature is enabled, all your images will be served by the [webp.php](./webp.php)
-helper script. It converts requested images to the WebP format and serves it to the browser.
+1. Check if `image/webp` is present in the `Accepts` http header
+1. Check if the requested image ends in `jp(e)g` or `png`
+1. Check if the requested image + a `.webp` exists
+1. *If it does*, serve it
+1. *If it does not*, redirect the request to `plugins/offline/responsiveimages/webp.php?path=${REQUEST_URI}`
 
-To serve the images with the least latency possible, the helper script is completely decoupled from
- October. It does not boot the whole Laravel framework for every request.
- 
-### Custom prefix 
+The `webp.php` helper script will generate any missing WebP images so they can be served directly
+on the next visit. 
 
-With the WebP feature enabled, you might no longer like the way your image URLs look:
+This is the default `.htaccess` configuration that gets applied by default:
 
+```htaccess
+# Added by default! No need to add this manually
+<ifModule mod_rewrite.c>
+    RewriteEngine On
+
+    # If the Browser supports WebP images, and the .webp file exists, use it.
+    RewriteCond %{HTTP_ACCEPT} image/webp
+    RewriteCond %{REQUEST_URI} \.(jpe?g|png)$
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.webp -f
+    RewriteRule (.+)$ $1.webp [T=image/webp,E=accept:1]
+
+    # If the Browser supports WebP images, and the .webp file does not exist, generate it.
+    RewriteCond %{HTTP_ACCEPT} image/webp
+    RewriteCond %{REQUEST_URI} \.(jpe?g|png)$
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.webp !-f
+    RewriteRule (.+)$ %{DOCUMENT_ROOT}/plugins/offline/responsiveimages/webp.php?path=$1 [L]
+</ifModule>
 ```
-http://web.site/plugins/offline/responsiveimages/webp.php?path=/storage/temp/public/343/724/7f6/thumb_73_500_0_0_0_auto__500.png
-```
-
-If this bothers you, it is possible to specify a custom prefix for the WebP image paths via
-October's backend settings. This will turn the URL above into something like this:
-
-```
-http://web.site/<custom-prefix>/storage/temp/public/343/724/7f6/thumb_73_500_0_0_0_auto__500.png
-```
-
-To make this new URL structure work, you have to create a server-side rewrite rule that
-passes everything that comes after the custom prefix to the `webp.php` helper script as a `?path` GET
-parameter:
-
-```
-FROM    /custom-prefix/storage/image/path
-TO      /plugins/offline/responsiveimages/webp.php?path=/storage/image/path
-```
- 
-Take a look at your web server's documentation on how to create such rewrites.
-
-This is an example `RewriteRule` using Apache's `.htaccess` files:
-
-```
-# The "custom prefix" in this case is "webp"
-RewriteRule ^webp/(.*)$ plugins/offline/responsiveimages/webp.php?path=$1 [L]
-```
-
-### `getWebP` method 
-
-If you want to programmatically generate a WebP thumbnail of a `File` attachment,
-you can do so by using the `getWebP` method. It has the same signature as the
-default `getThumb` method October provides.
-
-```php
-$file = System\Models\File::first();
-
-echo $file->getWebP(200, 'auto');
-// http://web.site/plugins/offline/responsiveimages/webp.php?path=path/to/original.jpg
-``` 
 
 ## Focuspoint
 

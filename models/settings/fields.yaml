@@ -25,22 +25,21 @@ tabs:
             label: 'offline.responsiveimages::lang.settings.webp_enabled'
             comment: 'offline.responsiveimages::lang.settings.webp_enabled_comment'
             tab: 'Responsive Image'
-        webp_prefix:
-            type: text
-            span: left
-            label: 'offline.responsiveimages::lang.settings.webp_prefix'
-            comment: 'offline.responsiveimages::lang.settings.webp_prefix_comment'
-            tab: 'Responsive Image'
-            trigger:
-                action: show
-                condition: checked
-                field: webp_enabled
         log_unprocessable:
             type: switch
             span: right
             label: 'offline.responsiveimages::lang.settings.log_unprocessable'
             comment: 'offline.responsiveimages::lang.settings.log_unprocessable_comment'
             tab: 'Responsive Image'
+        _webp_partial:
+            type: partial
+            span: left
+            path: $/offline/responsiveimages/models/settings/_webp_hint.htm
+            tab: 'Responsive Image'
+            trigger:
+                action: show
+                condition: checked
+                field: webp_enabled
         html_section:
             label: 'offline.responsiveimages::lang.settings.sections.html'
             type: section
