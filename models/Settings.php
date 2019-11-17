@@ -1,7 +1,8 @@
 <?php namespace OFFLINE\ResponsiveImages\Models;
 
 use Model;
-use OFFLINE\ResponsiveImages\Classes\Htaccess\Writer;
+use October\Rain\Support\Facades\Flash;
+use OFFLINE\ResponsiveImages\Classes\Htaccess\HtaccessManager;
 
 class Settings extends Model
 {
@@ -46,19 +47,15 @@ class Settings extends Model
     public function afterSave()
     {
         try {
-            $htaccess = new Writer();
-            if ((bool)$this->get('webp_enabled') === true) {
-                $htaccess->addWhitelist();
-            }
-            if ((bool)$this->get('webp_enabled') === false) {
-                $htaccess->removeWhitelist();
-            }
-            $htaccess->write();
+            $htaccess = new HtaccessManager();
+            $htaccess->toggleSection('webp-rewrite', (bool)$this->get('webp_enabled'));
+            $htaccess->save();
         } catch (\Throwable $e) {
             logger()->error(
-                '[OFFLINE.ResponsiveImages] Failed to automatically add webp.php whitelist entry to .htaccess',
+                '[OFFLINE.ResponsiveImages] Failed to automatically enable WebP support using .htaccess',
                 ['exeption' => $e]
             );
+            Flash::warning('Failed to enable WebP support using .htaccess. You have to manually configure your server!');
         }
     }
 }

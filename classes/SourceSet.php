@@ -2,6 +2,8 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
+use Illuminate\Support\Facades\URL;
+
 class SourceSet
 {
     /**
@@ -16,24 +18,16 @@ class SourceSet
      * @var array
      */
     public $rules = [];
-    /**
-     * WebP helper class.
-     *
-     * @var WebP
-     */
-    public $webP = '';
 
     /**
      * SourceSet constructor.
      *
      * @param      $originalPath
      * @param      $originalWidth
-     * @param WebP $webP
      */
-    public function __construct($originalPath, $originalWidth, WebP $webP)
+    public function __construct($originalPath, $originalWidth)
     {
         $this->originalWidth = $originalWidth;
-        $this->webP          = $webP;
 
         $this->push($originalWidth, $originalPath);
     }
@@ -75,7 +69,10 @@ class SourceSet
         $filename           = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
-        return $this->webP->prefix($relativeFolderPath . $filename);
+        $url = rawurlencode(URL::to('/') . $relativeFolderPath . $filename);
+
+        // Bring encoded colon and slashes back
+        return str_replace(['%2F', '%3A'], ['/', ':'], $url);
     }
 
     /**
@@ -93,13 +90,9 @@ class SourceSet
      *
      * @return string
      */
-    public function getSrcSetAttribute(string $existing)
+    public function getSrcSetAttribute()
     {
         $attribute = [];
-
-        if ($existing !== '') {
-            return $this->wrapExisting($existing);
-        }
 
         foreach ($this->rules as $size => $paths) {
             if (is_numeric($size)) {
@@ -127,23 +120,5 @@ class SourceSet
         }
 
         return $width === '' ? '100vw' : sprintf('(max-width: %1$dpx) 100vw, %1$dpx', $width);
-    }
-
-    /**
-     * Wrap the existing srcset with the WebP prefix.
-     *
-     * @param string $existing
-     *
-     * @return mixed
-     */
-    protected function wrapExisting(string $existing)
-    {
-        $parts = explode(', ', $existing);
-        foreach ($parts as $key => $part) {
-           $values = explode(' ', $part);
-           $values[0] = $this->webP->prefix($values[0]);
-           $parts[$key] = implode(' ', $values);
-        }
-        return implode(', ', $parts);
     }
 }

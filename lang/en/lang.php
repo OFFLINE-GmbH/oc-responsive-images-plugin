@@ -34,8 +34,10 @@
         'webp_enabled' => 'Enable WebP support',
         'webp_enabled_comment' => 'Images are automatically served in the WebP format to supported browsers. Please read the README on GitHub before enabling this option!',
 
-        'webp_prefix' => 'Custom WebP path prefix',
-        'webp_prefix_comment' => 'Optional: Custom prefix for WebP URLs. This requires a server-side rewrite rule! Read the docs for more information!',
+        'webp_partial' => [
+            'title' => 'WebP support',
+            'text' => 'This feature only supports Apache + .htaccess out-of-the-box. All other servers require additional configuration, see',
+        ],
 
         'log_unprocessable' => 'Log unprocessable images',
         'log_unprocessable_comment' => 'Creates a log entry for every image that could not be processed',

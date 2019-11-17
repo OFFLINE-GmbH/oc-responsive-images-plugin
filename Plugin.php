@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Event;
 use October\Rain\Exception\ApplicationException;
 use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
 use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
-use OFFLINE\ResponsiveImages\Classes\WebP;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use System\Classes\PluginBase;
 use System\Models\File;
@@ -38,15 +37,6 @@ class Plugin extends PluginBase
             $file->addDynamicMethod('focus', function ($width, $height, $options = []) use ($file) {
                 return FocusFile::fromFileModel($file)->focus($width, $height, $options);
             });
-
-            // Proxy the call to getThumb but add the WebP prefix to the returned URL.
-            $webP = new WebP();
-            $file->addDynamicMethod('getWebP',
-                function ($width, $height, $options = []) use ($file, $webP) {
-                    $url = $file->getThumb($width, $height, $options);
-
-                    return $webP->prefix($url);
-                });
         });
 
         FileUpload::extend(function (FileUpload $widget) {
