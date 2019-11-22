@@ -132,6 +132,18 @@ class ResponsiveImage
         $cacheKey = 'responsiveimages.widths.' . $this->getPathHash();
 
         $width = Cache::rememberForever($cacheKey, function () {
+            // Use fastest method
+            try {
+                $size = getimagesize($this->path);
+                if (isset($size[0]) && $size[0]) {
+                    return $size[0];
+                }
+            } catch (\Exception $e) {
+                if (Settings::get('log_unprocessable', false)) {
+                    Log::warning(sprintf('Failed to run getimagesize for image "%s"', $this->path));
+                }
+            }
+            // Fallback to heavy object
             return (new ImageResizer($this->path))->getWidth();
         });
 
@@ -163,8 +175,6 @@ class ResponsiveImage
             return false;
         }
 
-        $this->resizer = new ImageResizer($this->path);
-
         foreach ($unavailableSizes as $size) {
             $this->createCopy($size);
         }
@@ -178,15 +188,15 @@ class ResponsiveImage
     protected function createCopy($size)
     {
         try {
-            // Load the image into a new resizer since the previous one was destroyed during save.
-            $this->resizer = new ImageResizer($this->path);
-
             // Only scale the image down
-            if ($this->resizer->getWidth() < $size) {
+            if ($this->getWidth() < $size) {
                 $this->sourceSet->remove($size);
 
                 return;
             }
+
+            // Load the image into a new resizer since the previous one was destroyed during save.
+            $this->resizer = new ImageResizer($this->path);
 
             $saveTo = $this->getStoragePath($size);
             $this->resizer->resize($size, null)->save($saveTo);
