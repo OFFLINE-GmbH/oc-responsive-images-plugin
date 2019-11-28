@@ -35,3 +35,4 @@
 2.2.0: Added support for automatic WebP conversion
 2.2.1: Optimized WebP implementation
 2.2.2: Performance improvements (thanks to @mauserrifle)
+2.2.3: Optimized handling of custom src attributes 
