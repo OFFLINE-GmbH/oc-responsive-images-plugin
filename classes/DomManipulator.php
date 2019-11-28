@@ -30,7 +30,7 @@ class DomManipulator
      * RegEx to find all images in the document.
      * @var string
      */
-    protected $pattern = '/<img[\s\S][^>]*(?:src)=[\s\S]*?>/mis';
+    protected $pattern = '/<img[\s\S][^>]*(?:%s)=[\s\S]*?>/mis';
     /**
      * DOMDocument instance to process each img tag.
      * @var DOMDocument
@@ -63,7 +63,7 @@ class DomManipulator
     public function process(): string
     {
         return preg_replace_callback(
-            $this->pattern,
+            sprintf($this->pattern, $this->getSrcAttributeName()),
             $this->replaceCallback(),
             $this->html
         );
@@ -206,7 +206,7 @@ class DomManipulator
      */
     protected function setSrcAttribute(DOMElement $node, SourceSet $sourceSet)
     {
-        $node->setAttribute('src', $sourceSet->getSrcAttribute());
+        $node->setAttribute($this->getSrcAttributeName(), $sourceSet->getSrcAttribute());
     }
 
 
@@ -329,5 +329,10 @@ class DomManipulator
         }
 
         return $node;
+    }
+
+    protected function getSrcAttributeName(): string
+    {
+        return $this->settings->sourceAttribute ?: 'src';
     }
 }

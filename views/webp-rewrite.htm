@@ -7,15 +7,15 @@
 
     # If the Browser supports WebP images, and the .webp file exists, use it.
     RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_URI} \.(jpe?g|png)$
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.webp -f
-    RewriteRule (.+)$ $1.webp [T=image/webp,E=accept:1]
+    RewriteCond %{REQUEST_URI} ^/?storage/.*\.(jpe?g|png)
+    RewriteCond %{REQUEST_FILENAME}.webp -f
+    RewriteRule ^/?(.*)$ $1.webp [NC,T=image/webp,END]
 
     # If the Browser supports WebP images, and the .webp file does not exist, generate it.
     RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_URI} \.(jpe?g|png)$
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.webp !-f
-    RewriteRule (.+)$ %{DOCUMENT_ROOT}/plugins/offline/responsiveimages/webp.php?path=$1 [L]
+    RewriteCond %{REQUEST_URI} ^/?storage/.*\.(jpe?g|png)
+    RewriteCond %{REQUEST_FILENAME}\.webp !-f
+    RewriteRule ^/?(.*)$ %{DOCUMENT_ROOT}/plugins/offline/responsiveimages/webp.php?path=$1 [NC,END]
 </ifModule>
 <IfModule mod_headers.c>
     Header append Vary Accept env=REQUEST_image
