@@ -26,7 +26,8 @@ function main()
         $source = '/' . $source;
     }
 
-    $source      = __DIR__ . '/../../..' . $source;
+    //Enable to set a APP_DIR via SetEnv in .htaccess and check tha path with realpath
+    $source      = realpath(env('APP_DIR', __DIR__ . '/../../..')) . $source;
     $destination = $source . '.webp';
 
     $path = validatePath($source);
@@ -80,7 +81,8 @@ function validatePath(string $path)
         return '';
     }
 
-    $path = realpath($path);
+    //$path = realpath($path); causing path mismatch in some environment
+    //Just check that path, not override it.
     if ( ! realpath($path)) {
         return '';
     }
