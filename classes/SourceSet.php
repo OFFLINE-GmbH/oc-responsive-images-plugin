@@ -103,7 +103,7 @@ class SourceSet
             $attribute[] = sprintf('%s ' . $sizePlaceholder, $paths['public_url'], $size);
         }
 
-        return implode($attribute, ', ');
+        return implode(', ', $attribute);
     }
 
     /**
