@@ -37,3 +37,4 @@
 2.2.2: Performance improvements (thanks to @mauserrifle)
 2.2.3: Optimized handling of custom src attributes 
 2.2.4: Optimized PHP 7.4 support
+2.2.5: Further optimized PHP 7.4 support
