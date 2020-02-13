@@ -53,6 +53,7 @@ function main()
             'cache-control-header' => 'public, max-age=31536000',
         ],
         'convert'              => [
+	    'quality' => 95,
             'converters' => [
                 // Use only the native PHP image libraries since all other calls by the webp converter library
                 // rely on the exec() function which might lead to dangerous situations.
