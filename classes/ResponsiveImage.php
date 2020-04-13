@@ -100,15 +100,15 @@ class ResponsiveImage
      */
     public function __construct($imagePath)
     {
-        $imagePath  = urldecode($imagePath);
+        $imagePath = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
 
         if ( ! FileHelper::isLocalPath($this->path)) {
-            throw new RemotePathException('The specified path is not local.');
+            throw new RemotePathException(sprintf('The specified path is not local: %s', $imagePath));
         }
 
         if ( ! file_exists($this->path)) {
-            throw new FileNotFoundException('The specified file does not exist.');
+            throw new FileNotFoundException(sprintf('The specified file does not exist: %s', $imagePath));
         }
 
         $this->loadSettings();
@@ -116,9 +116,11 @@ class ResponsiveImage
 
         $this->focus = [];
 
-        $this->sourceSet = new SourceSet($this->path, $this->getWidth());
+        $width = $this->getWidth();
 
-        $this->dimensions[] = $this->getWidth();
+        $this->sourceSet = new SourceSet($this->path, $width);
+
+        $this->dimensions[] = $width;
         $this->createCopies();
     }
 
@@ -131,7 +133,7 @@ class ResponsiveImage
     {
         $cacheKey = 'responsiveimages.widths.' . $this->getPathHash();
 
-        $width = Cache::rememberForever($cacheKey, function () {
+        return Cache::rememberForever($cacheKey, function () {
             // Use fastest method
             try {
                 $size = getimagesize($this->path);
@@ -143,11 +145,10 @@ class ResponsiveImage
                     Log::warning(sprintf('Failed to run getimagesize for image "%s"', $this->path));
                 }
             }
+
             // Fallback to heavy object
             return (new ImageResizer($this->path))->getWidth();
         });
-
-        return $width;
     }
 
     /**
@@ -310,9 +311,9 @@ class ResponsiveImage
      */
     private function loadSettings()
     {
-        $this->dimensions        = Settings::getCommaSeparated('dimensions', $this->dimensions);
+        $this->dimensions = Settings::getCommaSeparated('dimensions', $this->dimensions);
         $this->allowedExtensions = Settings::getCommaSeparated('allowed_extensions', $this->allowedExtensions);
-        $this->webPEnabled       = (bool)Settings::get('webp_enabled', false);
+        $this->webPEnabled = (bool)Settings::get('webp_enabled', false);
     }
 
     /**
@@ -325,7 +326,7 @@ class ResponsiveImage
     {
         $basename = basename($this->path);
 
-        $this->filename  = pathinfo($basename, PATHINFO_FILENAME);
+        $this->filename = pathinfo($basename, PATHINFO_FILENAME);
         $this->extension = pathinfo($basename, PATHINFO_EXTENSION);
 
         if ( ! in_array($this->extension, $this->allowedExtensions)) {

@@ -41,11 +41,11 @@
         'log_unprocessable' => 'Unverarbeitbare Bilder loggen',
         'log_unprocessable_comment' => 'Erstellt einen Logeintrag für jedes Bild, das nicht verarbeitet werden kann',
 
-        'alternative_src' => 'src-Attribut',
-        'alternative_src_comment' => 'Verwende als Bildquelle dieses Attribut, nicht "src". Nützlich für Lazy-Loading-Plugins.',
+        'alternative_src' => 'src-Attribute (Komma-getrennt)',
+        'alternative_src_comment' => 'Verwende als Bildquelle diese Attribute. Nützlich für Lazy-Loading-Plugins.',
 
-        'alternative_src_set' => 'srcset-Attribut',
-        'alternative_src_set_comment' => 'Füge die responsiven Bilder in dieses Attribut ein, nicht in "srcset". Nützlich für Lazy-Loading-Plugins.',
+        'alternative_src_set' => 'srcset-Attribut (Komma-getrennt)',
+        'alternative_src_set_comment' => 'Füge die responsiven Bilder in diese Attribute ein. Nützlich für Lazy-Loading-Plugins. Jedes src-Attribut muss hier einen Partner haben (gleiche Anzahl)',
 
         'add_class' => 'class-Attribut',
         'add_class_comment' => 'Füge folgende Klasse zu jedem verarbeiteten Bild hinzu. Nützlich für die Verwendung mit CSS-Frameworks wie Bootstrap.',

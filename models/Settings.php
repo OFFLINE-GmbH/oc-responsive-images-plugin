@@ -30,6 +30,15 @@ class Settings extends Model
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
 
+    public function initSettingsData()
+    {
+        $this->dimensions = '400,768,1024';
+        $this->allowed_extensions = 'jpg,jpeg,png,gif';
+        $this->alternative_src = 'src, data-src';
+        $this->alternative_src_set = 'srcset, data-srcset';
+        $this->log_unprocessable = true;
+    }
+
     public static function getCommaSeparated($key, $default = null)
     {
         $value = static::getIgnoreEmpty($key, $default);

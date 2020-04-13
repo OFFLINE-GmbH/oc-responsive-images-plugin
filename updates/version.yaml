@@ -39,3 +39,4 @@
 2.2.4: Optimized PHP 7.4 support
 2.2.5: Further optimized PHP 7.4 support
 2.2.6: Optimized WebP image quality
+2.3.0: Added support to configure multiple `src` and `srcset` attributes at once (useful for lazy loading plugins)

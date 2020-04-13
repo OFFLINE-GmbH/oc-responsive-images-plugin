@@ -42,11 +42,11 @@
         'log_unprocessable' => 'Log unprocessable images',
         'log_unprocessable_comment' => 'Creates a log entry for every image that could not be processed',
 
-        'alternative_src' => 'src-attribute',
-        'alternative_src_comment' => 'Use this attribute as image source instead of "src". Useful for lazy-loading  plugins.',
+        'alternative_src' => 'src attributes (comma-separated)',
+        'alternative_src_comment' => 'Use this attribute as image source. Useful for lazy-loading plugins.',
 
-        'alternative_src_set' => 'srcset-attribute',
-        'alternative_src_set_comment' => 'Add the generated image sets to this attribute instead of "srcset". Useful for lazy-loading  plugins.',
+        'alternative_src_set' => 'srcset attributes (comma-separated)',
+        'alternative_src_set_comment' => 'Add the generated image sets to this attribute. Each "src" needs a "srcset" partner here (same number of attributes)',
 
         'add_class' => 'class attribute',
         'add_class_comment' => 'Add this class to every processed image. Useful if you use a css framework like Bootstrap.',
