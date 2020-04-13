@@ -30,7 +30,7 @@ class DomManipulator
      * RegEx to find all images in the document.
      * @var string
      */
-    protected $pattern = '/<img[\s\S][^>]*(?:%s)=[\s\S]*?>/mis';
+    protected $pattern = '/<img[^>]*(?:\s(?:%s))=[\s\S]*?>/mis';
     /**
      * DOMDocument instance to process each img tag.
      * @var DOMDocument
@@ -63,7 +63,7 @@ class DomManipulator
     public function process(): string
     {
         return preg_replace_callback(
-            sprintf($this->pattern, $this->getSrcAttributeName()),
+            sprintf($this->pattern, $this->getSrcAttributeNameForRegex()),
             $this->replaceCallback(),
             $this->html
         );
@@ -80,19 +80,19 @@ class DomManipulator
             $node   = $this->loadImageTag($matches[0]);
             $source = $this->getSrcAttribute($node);
 
-            $responsiveImage = $this->getResponsiveImage($source);
+            $responsiveImage = $this->getResponsiveImage($source->url);
             if ($responsiveImage === null) {
                 // The processing of the image failed return original tag.
                 return $matches[0];
             }
 
             $sourceSet = $responsiveImage->getSourceSet();
-            $this->setSrcSetAttribute($node, $sourceSet);
+            $this->setSrcSetAttribute($node, $sourceSet, $source->target);
             $this->setSizesAttribute($node, $sourceSet);
             $this->setClassAttribute($node);
 
             // If it's an Image with a focuspoint add additional properties.
-            if (strpos($source, 'offline-focus')) {
+            if (strpos($source->url, 'offline-focus')) {
                 $sourceAttributes = explode('_', $this->getSrcAttribute($node));
 
                 $focusImageValues = [
@@ -104,7 +104,8 @@ class DomManipulator
 
                 $node = $this->focuspointImage($node, $focusImageValues, $this->settings);
             }
-            $this->setSrcAttribute($node, $sourceSet);
+
+            $this->setSrcAttribute($node, $sourceSet, $source->src);
 
             return $node->ownerDocument->saveHTML($node);
         };
@@ -131,7 +132,7 @@ class DomManipulator
      *
      * @return ResponsiveImage|null
      */
-    protected function getResponsiveImage($source)
+    protected function getResponsiveImage(string $source)
     {
         try {
             return new ResponsiveImage($source);
@@ -167,13 +168,12 @@ class DomManipulator
     /**
      * Set the srcset attribute.
      *
-     * @param $node
-     * @param $sourceSet
+     * @param DOMElement $node
+     * @param SourceSet  $sourceSet
+     * @param string     $targetAttribute
      */
-    protected function setSrcSetAttribute(DOMElement $node, SourceSet $sourceSet)
+    protected function setSrcSetAttribute(DOMElement $node, SourceSet $sourceSet, string $targetAttribute)
     {
-        $targetAttribute = $this->settings->targetAttribute;
-
         // Don't overwrite existing attributes
         if ($node->getAttribute($targetAttribute) !== '') {
             return;
@@ -201,30 +201,54 @@ class DomManipulator
     /**
      * Set the images's src attribute.
      *
-     * @param $node
-     * @param $sourceSet
+     * @param DOMElement $node
+     * @param SourceSet  $sourceSet
+     * @param string     $srcAttr
      */
-    protected function setSrcAttribute(DOMElement $node, SourceSet $sourceSet)
+    protected function setSrcAttribute(DOMElement $node, SourceSet $sourceSet, string $srcAttr)
     {
-        $node->setAttribute($this->getSrcAttributeName(), $sourceSet->getSrcAttribute());
+        $node->setAttribute($srcAttr, $sourceSet->getSrcAttribute());
     }
 
+    /**
+     * Returns all configured src attributes to use in a regex.
+     * @return string
+     */
+    protected function getSrcAttributeNameForRegex(): string
+    {
+        if (count($this->settings->sourceAttribute) < 1) {
+            return 'src';
+        }
+
+        return implode('|', $this->settings->sourceAttribute);
+    }
 
     /**
      * Normalize the image's src attribute and return it.
      *
      * @param $node
      *
-     * @return mixed
+     * @return ImageSource
      */
-    protected function getSrcAttribute($node)
+    protected function getSrcAttribute($node): ImageSource
     {
-        $src = $node->getAttribute('src');
+        $sourceAttr = 'src';
+        $targetAttr = 'srcset';
 
-        $altSrc = $this->settings->sourceAttribute;
+        // Use the src attribute by default.
+        $src = $node->getAttribute($sourceAttr);
 
-        if ($altSrc && $node->getAttribute($altSrc) !== '') {
-            $src = $node->getAttribute($altSrc);
+        // If alternative sources are available, check if the
+        // $node has them defined and use the first one
+        // that is available.
+        $altSources = $this->settings->sourceAttribute;
+        foreach ($altSources as $index => $altSrc) {
+            if ($altSrc && $node->getAttribute($altSrc) !== '') {
+                $src = $node->getAttribute($altSrc);
+                $sourceAttr = $altSrc;
+                $targetAttr = $this->getTargetAttrAtIndex($index);
+                break;
+            }
         }
 
         // If the protocol is missing from the URL prepend it.
@@ -235,7 +259,21 @@ class DomManipulator
             $src = 'http:' . $src;
         }
 
-        return trim($src, '/');
+        $src = trim($src, '/');
+
+        return ImageSource::make($node, $src, $sourceAttr, $targetAttr);
+    }
+
+    /**
+     * Get the configured target attribute for a certain src attribute.
+     *
+     * @param $index
+     *
+     * @return string
+     */
+    protected function getTargetAttrAtIndex($index): string
+    {
+        return $this->settings->targetAttribute[$index] ?? 'data-no-matching-target-configured';
     }
 
     /**
@@ -329,10 +367,5 @@ class DomManipulator
         }
 
         return $node;
-    }
-
-    protected function getSrcAttributeName(): string
-    {
-        return $this->settings->sourceAttribute ?: 'src';
     }
 }

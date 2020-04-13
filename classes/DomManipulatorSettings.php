@@ -10,16 +10,16 @@ class DomManipulatorSettings
     /**
      * Attribute to take the image path from.
      *
-     * @var string
+     * @var array
      */
-    public $sourceAttribute = 'src';
+    public $sourceAttribute = ['src'];
 
     /**
      * Attribute to replace.
      *
-     * @var string
+     * @var array
      */
-    public $targetAttribute = 'srcset';
+    public $targetAttribute = ['srcset'];
 
     /**
      * Class to add.
@@ -93,10 +93,16 @@ class DomManipulatorSettings
      */
     public static function fromSettingsModel(Settings $model): DomManipulatorSettings
     {
+        $split = function($input): array {
+            $parts = explode(',', $input);
+
+            return array_filter(array_map('trim', $parts));
+        };
+
         $settings                              = new self();
         $settings->logErrors                   = (bool)$model->get('log_unprocessable', false);
-        $settings->sourceAttribute             = $model->get('alternative_src') ?: false;
-        $settings->targetAttribute             = $model->get('alternative_src_set') ?: 'srcset';
+        $settings->sourceAttribute             = $split($model->get('alternative_src') ?: false);
+        $settings->targetAttribute             = $split($model->get('alternative_src_set') ?: 'srcset');
         $settings->class                       = $model->get('add_class') ?: '';
         $settings->webPEnabled                 = (bool)$model->get('webp_enabled') ?: false;
         $settings->focuspointClass             = $model->get('focuspoint_class') ?: 'focuspoint-image';
