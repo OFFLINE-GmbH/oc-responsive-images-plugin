@@ -124,6 +124,58 @@ This is the default `.htaccess` configuration that gets applied **automatically*
 </ifModule>
 ```
 
+### Nginx
+
+This is the template nginx configuration.
+  
+```nginx  
+user www-data;
+ 
+http { 
+  sendfile on;
+  tcp_nopush on;
+  tcp_nodelay on;
+
+  include /etc/nginx/mime.types;
+  default_type application/octet-stream;
+ 
+  gzip on;
+  gzip_disable "msie6";
+  
+  map $http_accept $webp_suffix {
+    default   "";
+    "~*webp"  ".webp";
+  }
+  
+  #...
+
+  server {
+    charset utf-8;
+    listen 80;
+ 
+    server_name localhost;	 
+    root /var/www/html;
+    index index.php;
+ 
+    location ~ \.(jpe?g|png)$ {
+	    add_header Vary Accept;
+        try_files $uri$webp_suffix $uri/ @router;
+	}
+
+	location @router {
+        rewrite ^(.*)$ /plugins/offline/responsiveimages/webp.php?path=$uri;
+    }
+    
+    #...
+  }
+}
+```
+mime.types file should list webp:
+
+```types
+image/webp  webp;
+```
+
 ### Other servers
 
 We did not invest in the proper WebP detection configuration for other server software.
