@@ -126,7 +126,9 @@ This is the default `.htaccess` configuration that gets applied **automatically*
 
 ### Nginx
 
-This is the template nginx configuration.
+If you are using Nginx to serve your October website, you have to modify your server configuration **manually**.
+
+The following example should give you a good starting point.
   
 ```nginx  
 user www-data;
@@ -147,7 +149,7 @@ http {
     "~*webp"  ".webp";
   }
   
-  #...
+  # ...
 
   server {
     charset utf-8;
@@ -158,19 +160,20 @@ http {
     index index.php;
  
     location ~ \.(jpe?g|png)$ {
-	    add_header Vary Accept;
+	add_header Vary Accept;
         try_files $uri$webp_suffix $uri/ @router;
-	}
+    }
 
-	location @router {
+    location @router {
         rewrite ^(.*)$ /plugins/offline/responsiveimages/webp.php?path=$uri;
     }
     
-    #...
+    # ...
   }
 }
 ```
-mime.types file should list webp:
+
+Your `mime.types` file should additionally list the webp mime type:
 
 ```types
 image/webp  webp;
