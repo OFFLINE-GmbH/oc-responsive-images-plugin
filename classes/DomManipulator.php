@@ -93,7 +93,9 @@ class DomManipulator
 
             // If it's an Image with a focuspoint add additional properties.
             if (strpos($source->url, 'offline-focus')) {
-                $sourceAttributes = explode('_', $this->getSrcAttribute($node));
+                $filename = substr($source->url, strpos( $source->url, 'offline-focus'));
+
+                $sourceAttributes = explode('_', $filename);
 
                 $focusImageValues = [
                     'width'  => $sourceAttributes[2],
@@ -327,7 +329,7 @@ class DomManipulator
         }
 
         if ($stylingAttributes) {
-            $node->setAttribute('style', implode($stylingAttributes, '; '));
+            $node->setAttribute('style', implode(';', $stylingAttributes));
         }
 
         // Set data-* attributes on the image to enable use of JS plugins.
