@@ -19,7 +19,7 @@ use WebPConvert\WebPConvert;
  */
 function main()
 {
-    $source = $_GET['path'];
+    $source = parse_url($_GET['path'])['path'];
 
     // Prefix the input path with a slash if it is not there already.
     if (strpos($source, '/') !== 0) {
