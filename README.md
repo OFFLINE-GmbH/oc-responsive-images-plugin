@@ -124,7 +124,7 @@ This is the default `.htaccess` configuration that gets applied **automatically*
     RewriteCond %{HTTP_ACCEPT} image/webp
     RewriteCond %{REQUEST_URI} ^/?storage/.*\.(jpe?g|png)
     RewriteCond %{REQUEST_FILENAME}\.webp !-f
-    RewriteRule ^/?(.*)$ %{DOCUMENT_ROOT}/plugins/offline/responsiveimages/webp.php?path=$1 [NC,END]
+    RewriteRule ^/?(.*)$ plugins/offline/responsiveimages/webp.php?path=$1 [NC,END]
 </ifModule>
 <IfModule mod_headers.c>
     Header append Vary Accept env=REQUEST_image
