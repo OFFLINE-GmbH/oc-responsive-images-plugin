@@ -42,3 +42,4 @@
 2.3.0: Added support to configure multiple `src` and `srcset` attributes at once (useful for lazy loading plugins)
 2.3.1: Fixed focuspoint image generation with multiple src attributes
 2.3.2: Enabled support for cwebp to convert images to the webp format. This makes everything a lot more performant!
+2.3.3: Minor bugfix for default WebP htaccess configuration
