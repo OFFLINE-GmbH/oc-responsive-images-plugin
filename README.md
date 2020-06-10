@@ -103,36 +103,9 @@ on the next visit.
 
 ### Apache + .htaccess
 
-This is the default `.htaccess` configuration that gets applied **automatically**:
+If you are using Apache with `mod_rewrite` enabled, you do not have to do anything manually.
+The plugin will patch your `.htaccess` file if WebP support gets enabled.
 
-```htaccess
-# Added by default! No need to add this manually
-<IfModule mod_setenvif.c>
-    # Vary: Accept for all the requests to jpeg and png
-    SetEnvIf Request_URI "\.(jpe?g|png)$" REQUEST_image
-</IfModule>
-<ifModule mod_rewrite.c>
-    RewriteEngine On
-
-    # If the Browser supports WebP images, and the .webp file exists, use it.
-    RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_URI} ^/?storage/.*\.(jpe?g|png)
-    RewriteCond %{REQUEST_FILENAME}.webp -f
-    RewriteRule ^/?(.*)$ $1.webp [NC,T=image/webp,END]
-
-    # If the Browser supports WebP images, and the .webp file does not exist, generate it.
-    RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_URI} ^/?storage/.*\.(jpe?g|png)
-    RewriteCond %{REQUEST_FILENAME}\.webp !-f
-    RewriteRule ^/?(.*)$ plugins/offline/responsiveimages/webp.php?path=$1 [NC,END]
-</ifModule>
-<IfModule mod_headers.c>
-    Header append Vary Accept env=REQUEST_image
-</IfModule>
-<IfModule mod_mime.c>
-    AddType image/webp .webp
-</IfModule>
-```
 
 ### Nginx
 
