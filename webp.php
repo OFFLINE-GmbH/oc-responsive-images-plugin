@@ -26,7 +26,8 @@ function main()
         $source = '/' . $source;
     }
 
-    $source      = __DIR__ . '/../../..' . $source;
+    $baseDir     = env('RESPONSIVE_IMAGES_BASE_DIR', __DIR__ . '/../../..');
+    $source      = realpath($baseDir . $source);
     $destination = $source . '.webp';
 
     $path = validatePath($source);
