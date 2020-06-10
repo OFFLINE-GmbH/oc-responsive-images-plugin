@@ -104,7 +104,7 @@ on the next visit.
 ### Apache + .htaccess
 
 If you are using Apache with `mod_rewrite` enabled, you do not have to do anything manually.
-The plugin will patch your `.htaccess` file if WebP support gets enabled.
+The plugin [will patch your `.htaccess` file](views/webp-rewrite.htm) if WebP support gets enabled.
 
 
 ### Nginx
