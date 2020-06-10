@@ -170,7 +170,7 @@ repo you should be able to figure out what config is needed.
 
 If you have a working example please add it via a PR to this README!
 
-### Custom bae directory path
+### Custom base directory path
 
 If your application directory is located in a special location, you can set the
 `RESPONSIVE_IMAGES_BASE_DIR` environment variable to [change the source path](./webp.php#29).
