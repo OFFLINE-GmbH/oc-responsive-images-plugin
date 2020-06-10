@@ -103,26 +103,9 @@ on the next visit.
 
 ### Apache + .htaccess
 
-This is the default `.htaccess` configuration that gets applied **automatically**:
+If you are using Apache with `mod_rewrite` enabled, you do not have to do anything manually.
+The plugin [will patch your `.htaccess` file](views/webp-rewrite.htm) if WebP support gets enabled.
 
-```htaccess
-# Added by default! No need to add this manually
-<ifModule mod_rewrite.c>
-    RewriteEngine On
-
-    # If the Browser supports WebP images, and the .webp file exists, use it.
-    RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_URI} \.(jpe?g|png)$
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.webp -f
-    RewriteRule (.+)$ $1.webp [T=image/webp,E=accept:1]
-
-    # If the Browser supports WebP images, and the .webp file does not exist, generate it.
-    RewriteCond %{HTTP_ACCEPT} image/webp
-    RewriteCond %{REQUEST_URI} \.(jpe?g|png)$
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}\.webp !-f
-    RewriteRule (.+)$ %{DOCUMENT_ROOT}/plugins/offline/responsiveimages/webp.php?path=$1 [L]
-</ifModule>
-```
 
 ### Nginx
 
