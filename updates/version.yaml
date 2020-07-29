@@ -44,3 +44,6 @@
 2.3.2: Enabled support for cwebp to convert images to the webp format. This makes everything a lot more performant!
 2.3.3: Minor bugfix for default WebP htaccess configuration
 2.3.4: Added `RESPONSIVE_IMAGES_BASE_DIR` env variable to get more control over the source path configuration for WebP images
+2.3.5:
+    - Add focus columns to system_files
+    - add_focus_columns_to_system_files.php
