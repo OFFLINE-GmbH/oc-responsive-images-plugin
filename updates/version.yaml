@@ -47,3 +47,5 @@
 2.3.5:
     - Fixed a bug where focus points were not saved correctly
     - add_focus_columns_to_system_files.php
+2.3.6:
+    - Fixed a bug where focus points were not saved correctly
