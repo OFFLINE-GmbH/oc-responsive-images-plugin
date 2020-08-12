@@ -75,6 +75,16 @@ I have tested this plugin on a page with 20 hd wallpapers from pixabay.
 |         768 px |                2.0 MB |
 |         400 px |                0.8 MB |
 
+
+## Opt-out of processing
+
+If for any reason you want an `img` tag to be completely ignored by this plugin, simply
+add the `data-responsive="ignore"` attribute to your tag:
+
+```html
+<img src="dont-process-this.jpg" data-responsive="ignore" alt="">
+```
+
 ## Automatic WebP conversion
 
 This plugin provides an option to automatically convert all images to the WebP image format

@@ -77,7 +77,13 @@ class DomManipulator
     protected function replaceCallback()
     {
         return function ($matches) {
-            $node   = $this->loadImageTag($matches[0]);
+            $node = $this->loadImageTag($matches[0]);
+
+            // This image should explicitly be ignore, so return the original tag.
+            if ($node->getAttribute('data-responsive') === 'ignore') {
+                return $matches[0];
+            }
+
             $source = $this->getSrcAttribute($node);
 
             $responsiveImage = $this->getResponsiveImage($source->url);
