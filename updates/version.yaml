@@ -51,3 +51,5 @@
     - Fixed a bug where focus points were not saved correctly
 2.3.7:
     - Added `data-responsive="ignore"` attribute support to skip processing of specific img tags
+2.3.8:
+    - Fixed saving of focuspoint image title and description
