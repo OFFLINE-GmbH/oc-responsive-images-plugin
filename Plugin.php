@@ -59,6 +59,8 @@ class Plugin extends PluginBase
                     if (($fileId = post('file_id')) && ($file = $fileModel::find($fileId))) {
                         $file->offline_responsiveimages_focus_x_axis = post('offline_responsiveimages_focus_x_axis');
                         $file->offline_responsiveimages_focus_y_axis = post('offline_responsiveimages_focus_y_axis');
+                        $file->title = post('title');
+                        $file->description = post('description');
                         $file->save();
 
                         return $original;
