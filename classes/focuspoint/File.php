@@ -73,4 +73,14 @@ class File extends FileBase
         return $focusFile;
     }
 
+    public function getOfflineResponsiveimagesFocusXAxisAttribute()
+    {
+        return $this->originalFile->offline_responsiveimages_focus_x_axis;
+    }
+
+    public function getOfflineResponsiveimagesFocusYAxisAttribute()
+    {
+        return $this->originalFile->offline_responsiveimages_focus_y_axis;
+    }
+
 }
