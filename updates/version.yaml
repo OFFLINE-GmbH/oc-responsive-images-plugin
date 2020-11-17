@@ -53,3 +53,5 @@
     - Added `data-responsive="ignore"` attribute support to skip processing of specific img tags
 2.3.8:
     - Fixed saving of focuspoint image title and description
+2.3.9:
+    - Fixed focuspoint image output (coordinates were not set correctly)
