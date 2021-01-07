@@ -78,8 +78,12 @@ class DomManipulator
     {
         return function ($matches) {
             $node = $this->loadImageTag($matches[0]);
+            // The node could not be parsed. Return the original match.
+            if ($node === false) {
+                return $matches[0];
+            }
 
-            // This image should explicitly be ignore, so return the original tag.
+            // This image should explicitly be ignored, so return the original tag.
             if ($node->getAttribute('data-responsive') === 'ignore') {
                 return $matches[0];
             }
@@ -124,13 +128,19 @@ class DomManipulator
      *
      * @param string $tag
      *
-     * @return DOMElement
+     * @return DOMElement|boolean
      */
-    protected function loadImageTag(string $tag): DOMElement
+    protected function loadImageTag(string $tag)
     {
-        $this->dom->loadHTML(mb_convert_encoding($tag, 'HTML-ENTITIES', 'UTF-8'));
+        try {
+            $this->dom->loadHTML(mb_convert_encoding($tag, 'HTML-ENTITIES', 'UTF-8'));
 
-        return $this->dom->getElementsByTagName('img')->item(0);
+            return $this->dom->getElementsByTagName('img')->item(0);
+        } catch (\Throwable $e) {
+            $this->log(sprintf('Failed to parse tag. HTML might contain errors: %s', $tag), $e);
+        }
+
+        return false;
     }
 
     /**
