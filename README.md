@@ -152,9 +152,11 @@ http {
     root /var/www/html;
     index index.php;
  
-    location ~ \.(jpe?g|png)$ {
-	add_header Vary Accept;
-        try_files $uri$webp_suffix $uri/ @router;
+    location ~ ^/storage {
+        location ~ \.(jpe?g|png)$ {
+	    add_header Vary Accept;
+	    try_files $uri$webp_suffix $uri/ @router;
+        }
     }
 
     location @router {
