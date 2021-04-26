@@ -16,8 +16,10 @@ class AddFocusColumnsToSystemFiles extends Migration
     public function down()
     {
         Schema::table('system_files', function ($table) {
-            $table->dropColumn('offline_responsiveimages_focus_x_axis');
-            $table->dropColumn('offline_responsiveimages_focus_y_axis');
+            $table->dropColumn([
+                'offline_responsiveimages_focus_x_axis',
+                'offline_responsiveimages_focus_y_axis'
+            ]);
         });
     }
 }
