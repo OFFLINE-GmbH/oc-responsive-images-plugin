@@ -59,3 +59,5 @@
     - "Optimized logging of unprocessable/invalid HTML markup. These errors now also respect the 'Log unprocessable images' option correctly."
 2.3.11:
     - "Automatically encode special chars in img sources. This solves a problem where unencoded & symbols in src attributes cancelled the img processing."
+2.3.12:
+    - "Optimized SQLite Support"
