@@ -2,7 +2,7 @@
 
 namespace OFFLINE\ResponsiveImages\Classes;
 
-use October\Rain\Database\Attach\Resizer;
+use October\Rain\Resize\Resizer;
 
 /**
  * Class ImageResizer
