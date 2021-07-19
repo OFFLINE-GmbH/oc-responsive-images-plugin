@@ -62,4 +62,4 @@
 2.3.12:
     - "Optimized SQLite Support"
 2.3.13:
-    - "Switched to October\Rain\Resize\Resizer for resizing images as October\Rain\Database\Attach\Resizer is deprecated (thanks to @TimFoerster)"
+    - "Switched to October\\Rain\\Resize\\Resizer for resizing images as October\\Rain\\Database\\Attach\\Resizer is deprecated (thanks to @TimFoerster)"
