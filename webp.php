@@ -12,6 +12,7 @@ foreach ($includes as $include) {
 }
 
 use WebPConvert\WebPConvert;
+use WebPConvert\Serve\ServeConvertedWebP;
 
 /**
  * Include Composer's autoloader, then convert and serve the WebP image.
@@ -36,10 +37,14 @@ function main()
         die();
     }
 
-    WebPConvert::serveConverted($source, $destination, [
-        // Serve the original if the client does not support WebP.
-        'serve-original'       => strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') === false,
+    $maxSize = 750000; // 750 kb
 
+    if (strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') === false || filesize($source) > $maxSize) {
+        ServeConvertedWebP::serveOriginal($source);
+        die;
+    }
+
+    WebPConvert::serveConverted($source, $destination, [
         'fail'                 => 'original',
         'fail-when-fail-fails' => '404',
         'serve-image'          => [
