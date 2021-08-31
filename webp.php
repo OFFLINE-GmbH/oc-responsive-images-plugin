@@ -41,7 +41,7 @@ function main()
 
     if (strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') === false || filesize($source) > $maxSize) {
         ServeConvertedWebP::serveOriginal($source);
-        die;
+        die();
     }
 
     WebPConvert::serveConverted($source, $destination, [
