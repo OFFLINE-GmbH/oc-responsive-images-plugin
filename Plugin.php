@@ -129,6 +129,7 @@ class Plugin extends PluginBase
     public function register()
     {
         $this->registerConsoleCommand('responsiveimages:generate', GenerateResizedImages::class);
+        $this->registerConsoleCommand('responsiveimages:convert', WebpConvertCommand::class);
     }
 
     public function registerMarkupTags()
