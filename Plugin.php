@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Event;
 use October\Rain\Exception\ApplicationException;
 use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
 use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
+use OFFLINE\ResponsiveImages\Console\ConvertCommand;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use System\Classes\PluginBase;
 use System\Models\File;
@@ -129,7 +130,7 @@ class Plugin extends PluginBase
     public function register()
     {
         $this->registerConsoleCommand('responsiveimages:generate', GenerateResizedImages::class);
-        $this->registerConsoleCommand('responsiveimages:convert', WebpConvertCommand::class);
+        $this->registerConsoleCommand('responsiveimages:convert', ConvertCommand::class);
     }
 
     public function registerMarkupTags()

@@ -38,6 +38,9 @@
             'text' => 'Diese Funktion unterstützt nur Apache + .htaccess. Alle anderen Server benötigen eine manuelle Konfiguration! Siehe',
         ],
 
+        'latest_conversion' => 'Letzte Bildkonvertierung',
+        'latest_conversion_comment' => 'Zeitpunkt der letzten Bildkonvertierung durch den Konsolenbefehl',
+
         'log_unprocessable' => 'Unverarbeitbare Bilder loggen',
         'log_unprocessable_comment' => 'Erstellt einen Logeintrag für jedes Bild, das nicht verarbeitet werden kann',
 

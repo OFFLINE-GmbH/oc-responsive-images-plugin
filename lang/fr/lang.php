@@ -22,6 +22,9 @@
             'html_comment' => 'Paramètres du code HTML',
         ],
 
+        'latest_conversion' => 'Latest image conversion',
+        'latest_conversion_comment' => 'Timestamp of the latest image conversion by the console command',
+
         'dimensions' => 'Tailles d\'images générées',
         'dimensions_comment' => 'Liste séparée par des virgules des largeurs d\'image à générer (en px)',
 

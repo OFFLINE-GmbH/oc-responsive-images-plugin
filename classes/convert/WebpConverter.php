@@ -2,50 +2,37 @@
 
 namespace OFFLINE\ResponsiveImages\Classes\Convert;
 
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class WebpConverter implements Converter
 {
     private $path;
-    private $execTimeLimit;
     private $args;
+    private $result;
 
-    public function __construct($path, $execTimeLimit, $args)
+    public function __construct($path, $args, ConvertResult $result)
     {
         $this->path = $path;
-        $this->execTimeLimit = $execTimeLimit;
         $this->args = $args;
+        $this->result = $result;
     }
 
-    public function convert($files)
+    public function convert(SplFileInfo $file)
     {
-        foreach ($this->getRange(count($files)) as $range) {
-            set_time_limit((int)$this->execTimeLimit);
-            $error = exec(
-                $this->path .
-                ' ' . $this->args .
-                ' ' . $files[$range]->getRealPath() .
-                ' -o ' .
-                $files[$range]->getRealPath() .
-                '.webp'
-            );
+        $process = new Process(
+            $this->path .
+            ' ' . $this->args .
+            ' ' . $file->getRealPath() .
+            ' -o ' .
+            $file->getRealPath() .
+            '.webp'
+        );
+        $process->run();
 
-            if ($error) {
-                DB::table('offline_responsiveimages_inconvertables')->insert([
-                    'filename' => $files[$range]->getFilename(),
-                    'path' => $files[$range]->getPath()
-                ]);
-                session()->increment('success-files');
-            }
-            session()->increment('success-files');
-        }
-    }
-
-    function getRange($max): \Generator
-    {
-        for ($i = 0; $i < $max; $i++) {
-            yield $i;
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
         }
     }
 }

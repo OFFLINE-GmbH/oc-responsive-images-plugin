@@ -2,7 +2,9 @@
 
 namespace OFFLINE\ResponsiveImages\Classes\Convert;
 
+use Symfony\Component\Finder\SplFileInfo;
+
 interface Converter
 {
-    function convert(array $files);
+    function convert(SplFileInfo $file);
 }

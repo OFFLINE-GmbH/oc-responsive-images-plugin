@@ -31,6 +31,13 @@ tabs:
             label: 'offline.responsiveimages::lang.settings.log_unprocessable'
             comment: 'offline.responsiveimages::lang.settings.log_unprocessable_comment'
             tab: 'Responsive Image'
+        latest_conversion:
+            type: datepicker
+            span: left
+            label: 'offline.responsiveimages::lang.settings.latest_conversion'
+            comment: 'offline.responsiveimages::lang.settings.latest_conversion_comment'
+            disabled: true
+            tab: 'Responsive Image'
         _webp_partial:
             type: partial
             span: left
