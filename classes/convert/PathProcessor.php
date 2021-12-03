@@ -101,6 +101,8 @@ class PathProcessor
     }
 
     /**
+     * Remove files that should not be converted.
+     *
      * @param Finder $finder
      * @return Finder
      */
@@ -112,6 +114,8 @@ class PathProcessor
     }
 
     /**
+     * Remove files that are already converted.
+     *
      * @param Finder $finder
      * @return Finder
      */
@@ -127,6 +131,8 @@ class PathProcessor
     }
 
     /**
+     * Remove files that could not be converted.
+     *
      * @param Finder $finder
      * @return Finder
      */

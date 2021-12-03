@@ -56,6 +56,4 @@ class PathProcessorOptions
     {
         return Settings::getCommaSeparated('allowed_extensions');
     }
-
-
 }
