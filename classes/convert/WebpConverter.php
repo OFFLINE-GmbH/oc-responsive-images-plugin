@@ -21,14 +21,13 @@ class WebpConverter implements Converter
 
     public function convert(SplFileInfo $file)
     {
-        $process = new Process(
-            $this->path .
-            ' ' . $this->args .
-            ' ' . $file->getRealPath() .
-            ' -o ' .
-            $file->getRealPath() .
-            '.webp'
-        );
+        $process = new Process([
+            $this->path,
+            $this->args,
+            $file->getRealPath(),
+            '-o',
+            $file->getRealPath() . '.webp'
+        ]);
         $process->run();
 
         if (!$process->isSuccessful()) {
