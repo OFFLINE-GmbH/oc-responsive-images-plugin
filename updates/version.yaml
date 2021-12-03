@@ -70,3 +70,5 @@
 2.3.16:
     - 'Created table offline_responsiveimages_inconvertibles'
     - table_create_offline_responsiveimages_inconvertibles.php
+2.4.0:
+    - 'Added "responsive-images:convert" console command to create WebP images using a Cronjob (check README). It is recommended you use this method instead of the automatic WebP conversion going forward. To update, go to the backend settings and hit save with the automatic WebP conversion option turned off. This will update your .htaccess file. Then setup a Cronjob to run the conversion command to generate the WebP images.'
