@@ -10,13 +10,11 @@ class WebpConverter implements Converter
 {
     private $path;
     private $args;
-    private $result;
 
-    public function __construct($path, $args, ConvertResult $result)
+    public function __construct($path, $args)
     {
         $this->path = $path;
         $this->args = $args;
-        $this->result = $result;
     }
 
     public function convert(SplFileInfo $file)
