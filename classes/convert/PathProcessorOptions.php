@@ -19,7 +19,8 @@ class PathProcessorOptions
      */
     private $since;
 
-    public function __construct(string $format, string $size, string $since = null) {
+    public function __construct(string $format, string $size, string $since = null)
+    {
         $this->format = $format;
         $this->size = $size;
         $this->since = $since ? strtotime($since) : Settings::get('latest_conversion');

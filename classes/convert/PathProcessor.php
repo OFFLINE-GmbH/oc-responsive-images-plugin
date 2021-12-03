@@ -2,7 +2,6 @@
 
 namespace OFFLINE\ResponsiveImages\Classes\Convert;
 
-use ApplicationException;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Finder\Finder;
@@ -148,6 +147,4 @@ class PathProcessor
             return !$inconvertibles->has($file->getFilename());
         });
     }
-
-
 }
