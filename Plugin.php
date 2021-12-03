@@ -64,7 +64,7 @@ class Plugin extends PluginBase
                         $file->description = post('description');
                         $file->save();
 
-                        return $original;
+                        return ['displayName' => $file->title ?: $file->file_name];
                     }
 
                     throw new ApplicationException('Unable to find file, it may no longer exist');
