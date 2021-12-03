@@ -18,12 +18,12 @@ class ConvertCommand extends Command
                             {--format=webp : The format to convert the images}
                             {--include=* : The path(s) in which the images being contained}
                             {--include-since= : Strtotime-compatible string to render only the files created after a specific time}
-                            {--size-limit=500 : Ignore files bigger than this value (in kB)}
+                            {--size-limit=1500 : Ignore files bigger than this value (in kB)}
                             {--exec-time-limit=60 : Define the timeout of the image-rendering}
                             {--converter-path=cwebp : The path to the cwebp converter}
                             {--converter-args= : Additional arguments for the converter}';
 
-    protected $description = 'Converts internal images into the given format';
+    protected $description = 'Converts images into a given format';
 
     /**
      * @throws \ApplicationException
