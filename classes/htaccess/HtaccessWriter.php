@@ -21,10 +21,10 @@ class HtaccessWriter
         $this->path     = $htaccess;
     }
 
-    public function writeSection($section)
+    public function writeSection($section, $data = [])
     {
         if ($this->hasSection($section)) {
-            return;
+            $this->removeSection($section);
         }
 
         $view = 'offline.responsiveimages::' . $section;
@@ -33,7 +33,7 @@ class HtaccessWriter
             throw new RuntimeException('Cannot find htaccess template for section ' . $section);
         }
 
-        $template = View::make($view)->render();
+        $template = View::make($view, $data)->render();
 
         $this->prependContents($template, $section);
     }
