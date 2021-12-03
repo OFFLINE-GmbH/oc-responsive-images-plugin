@@ -61,8 +61,8 @@ class PathProcessor
         foreach ($finder->files() as $file) {
             try {
                 $this->converter->convert($file);
-                $this->output->write(sprintf("\n<info>%-s: -> processing...</info>", $file->getFilename()));
-                $this->result->incrementFile();
+                $this->output->write(sprintf("<info>-> converting %-s</info>\n", $file->getFilename()));
+                $this->result->incrementFiles();
             } catch (\Throwable $e) {
                 DB::table('offline_responsiveimages_inconvertibles')->insert([
                     'filename' => $file->getFilename(),
@@ -72,6 +72,7 @@ class PathProcessor
                 $this->result->addError($e->getMessage());
             }
         }
+        $this->output->newLine();
     }
 
     /**

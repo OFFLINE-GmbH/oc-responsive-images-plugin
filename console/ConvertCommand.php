@@ -40,6 +40,8 @@ class ConvertCommand extends Command
             $this->option('include-since')
         );
 
+        $this->output->section('Converting files to webp');
+
         foreach ($this->option('include') as $path) {
             try {
                 $processor = new PathProcessor(
@@ -52,10 +54,12 @@ class ConvertCommand extends Command
 
                 $directories = Finder::create()->directories()->in($path)->append([$path]);
                 foreach ($directories as $directory) {
-                    $result->incrementDirectory();
-                    $this->info("\nprocess directory: " . $directory->getPathname());
+                    $result->incrementDirectories();
+                    $this->line($directory->getPathname());
+
                     $processor->process($directory->getPathname());
                 }
+
             } catch (\Throwable $e) {
                 logger()->error(sprintf('[OFFLINE.ResponsiveImages]: webp-conversion failed: %s', $e));
                 $this->output->write(sprintf("\n<fg=white;bg=red>Conversion of '%s' failed!</>", $path), true);
