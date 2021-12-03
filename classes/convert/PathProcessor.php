@@ -89,6 +89,9 @@ class PathProcessor
         if ($this->options->getSince()) {
             $finder->date('>= ' . $this->options->getSince());
         }
+
+        $finder->name('*.webp');
+
         if ($this->options->getAllowedExtensions()) {
             foreach ($this->options->getAllowedExtensions() as $extension) {
                 $finder->name('*.' . $extension);
