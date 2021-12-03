@@ -8,35 +8,39 @@ class ConvertResult
     private $files;
     private $errors = [];
 
-    public function incrementDirectory()
+    public function incrementDirectories(): void
     {
         $this->directories++;
     }
 
-    public function incrementFile()
+    public function incrementFiles(): void
     {
         $this->files++;
     }
 
-    public function addError($error)
+    public function addError($error): void
     {
         $this->errors[] = $error;
     }
 
-    public function print() {
-        $directories = sprintf("\n<fg=black;bg=green>Processed directories: %d</>\n", $this->directories);
-        $files = sprintf("\n<fg=black;bg=green>Successfully processed files: %d</>\n", $this->files);
-
-        $errors = "";
-        $countedErrors = 0;
+    public function print(): array
+    {
+        $result = "\n<fg=black;bg=green>Processing successful!</>\n";
         if ($this->errors) {
-            $countedErrors = sprintf("\n\n<fg=white;bg=red>Errors occurred: %d</>", count($this->errors));
+            $result = "\n<fg=black;bg=red>Processing failed!</>\n";
+        }
+
+        $directories = sprintf("\nDirectories:      %5d</>\n", $this->directories);
+        $files = sprintf("Converted files:  %5d</>\n", $this->files);
+
+        $errors = '';
+        if ($this->errors) {
             foreach ($this->errors as $error) {
-                $errors = $errors . sprintf("\n<fg=white;bg=red>- %s</>", $error);
+                $errors .= sprintf("\n<fg=white;bg=red>- %s</>", $error);
             }
         }
 
 
-        return [$directories, $files, $countedErrors ?: '', $errors ?: ''];
+        return [$result, $directories, $files, $errors ?: ''];
     }
 }
