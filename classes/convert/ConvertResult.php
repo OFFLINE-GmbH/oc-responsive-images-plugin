@@ -40,7 +40,6 @@ class ConvertResult
             }
         }
 
-
         return [$result, $directories, $files, $errors ?: ''];
     }
 }
