@@ -30,7 +30,6 @@ class ConvertCommand extends Command
      */
     public function handle()
     {
-        Settings::set('latest_conversion', 0);
         set_time_limit((int)$this->option('exec-time-limit'));
 
         $result = new ConvertResult();
