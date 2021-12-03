@@ -57,7 +57,9 @@ class Settings extends Model
     {
         try {
             $htaccess = new HtaccessManager();
-            $htaccess->toggleSection('webp-rewrite', (bool)$this->get('webp_enabled'));
+            $htaccess->toggleSection('webp-rewrite', (bool)$this->get('webp_enabled'), [
+                'auto_convert' => (bool)$this->get('webp_auto_convert')
+            ]);
             $htaccess->save();
         } catch (\Throwable $e) {
             logger()->error(

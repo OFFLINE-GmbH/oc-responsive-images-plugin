@@ -18,6 +18,9 @@
             'processing' => 'Processing',
             'processing_comment' => 'Configure the processing of your images',
 
+            'webp' => 'WebP',
+            'webp_comment' => 'Configure the WebP image conversion process',
+
             'html' => 'HTML',
             'html_comment' => 'HTML code settings',
 
@@ -34,10 +37,16 @@
         'webp_enabled' => 'Enable WebP support',
         'webp_enabled_comment' => 'Images are automatically served in the WebP format to supported browsers. Please read the README on GitHub before enabling this option!',
 
+        'webp_auto_convert' => 'Convert images automatically (not recommended)',
+        'webp_auto_convert_comment' => 'Adds a rule to your .htaccess file that triggers the WebP conversion when an image is requested for the first time. It is recommended to use the responsive-images:convert artisan command in a cronjob (see README).',
+
         'webp_partial' => [
             'title' => 'WebP support',
             'text' => 'This feature only supports Apache + .htaccess out-of-the-box. All other servers require additional configuration, see',
         ],
+
+        'latest_conversion' => 'Latest image conversion',
+        'latest_conversion_comment' => 'Timestamp of the latest image conversion by the console command',
 
         'log_unprocessable' => 'Log unprocessable images',
         'log_unprocessable_comment' => 'Creates a log entry for every image that could not be processed',

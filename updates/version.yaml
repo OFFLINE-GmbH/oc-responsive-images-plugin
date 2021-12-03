@@ -67,3 +67,6 @@
     - "Switched to October\\Rain\\Resize\\Resizer for resizing images as October\\Rain\\Database\\Attach\\Resizer is deprecated (thanks to @TimFoerster)"
 2.3.15:
     - "Added filesize limit to WebP converter: By default, only images that are 750 KB or less are converted to WebP to prevent memory issues. Patch webp.php to customize this limit."
+2.3.16:
+    - 'Created table offline_responsiveimages_inconvertibles'
+    - table_create_offline_responsiveimages_inconvertibles.php
