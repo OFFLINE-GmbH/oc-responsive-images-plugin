@@ -106,6 +106,14 @@ This command requires the `cwebp` to be available on your server. You can [downl
 and provide the path to the binary using the `--converter-path` option.
 
 
+#### Conversion errors
+
+You can find a log of failed image conversions in the `offline_responsiveimages_inconvertibles` table.
+If the conversion for a file failed, it will be logged in this table. The conversion will not be
+retried for files that failed before. To force a retry, remove the file from the table table
+and run the conversion command again.
+
+
 ### Support for other servers than Apache
 
 **If you do not use Apache**, you have to configure your server to do the following:
