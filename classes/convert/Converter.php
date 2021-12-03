@@ -6,5 +6,5 @@ use Symfony\Component\Finder\SplFileInfo;
 
 interface Converter
 {
-    function convert(SplFileInfo $file);
+    public function convert(SplFileInfo $file);
 }
