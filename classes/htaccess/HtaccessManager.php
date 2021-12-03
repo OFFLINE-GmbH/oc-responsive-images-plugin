@@ -13,12 +13,12 @@ class HtaccessManager
         $this->manager = $manager ?: new HtaccessWriter();
     }
 
-    public function toggleSection($section, $status)
+    public function toggleSection($section, $status, $data = [])
     {
         if ($status === true) {
-            $this->manager->writeSection($section);
+            $this->manager->writeSection($section, $data);
         } else {
-            $this->manager->removeSection($section);
+            $this->manager->removeSection($section, $data);
         }
     }
 

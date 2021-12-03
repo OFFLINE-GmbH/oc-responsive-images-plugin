@@ -6,7 +6,7 @@ Automatically generate and serve images for your visitor's viewport size without
 ## Features
 
 * [Responsive images](#responsive-images)
-* [Automatic WebP conversion](#automatic-webp-conversion)
+* [WebP conversion](#webp-conversion)
 * [Focuspoint](#focuspoint)
 * [Inline SVG helper function](#inline-svg-helper-function)
 
@@ -28,28 +28,28 @@ into this
 ```html
 <img width="500" src="/storage/app/media/image.jpg" srcset="/storage/temp/public/be7/4d6/0cc/image__400.jpg 400w, /storage/temp/public/be7/4d6/0cc/image__768.jpg 768w, /storage/temp/public/be7/4d6/0cc/image__1024.jpg 1024w" sizes="(max-width: 500px) 100vw, 500px">
 ```
- 
+
 It automatically creates resized copies of the image and serves the most fitting one to your visitor.
 
 All image copies are saved in your public temp path. Remote file systems are currently untested.
 
-The images are generated on the first page load. Depending on the source image size this may take a few seconds. 
+The images are generated on the first page load. Depending on the source image size this may take a few seconds.
 Subsequent page loads will be faster since the images are only resized once.
 
 ### Configuration
 
-Three image sizes are created by default: 400, 768 and 1024 pixels. 
+Three image sizes are created by default: 400, 768 and 1024 pixels.
 
 You can change these values by changing the settings in the backend.
 
 #### Alternative `src` and `srcset` attributes
 
 If you want to use an alternative `src` attribute you can change this via the backend settings page.
- 
+
 This is useful if you are using a plugin like [jQuery.lazyLoad](http://www.appelsiini.net/projects/lazyload) where the image
  is initially linked via a `data-original` attribute.
- 
- If your plugin requires an alternative srcset attribute (like [verlok/LazyLoad](https://github.com/verlok/lazyload)) this can also be specified via the backend settings. 
+
+ If your plugin requires an alternative srcset attribute (like [verlok/LazyLoad](https://github.com/verlok/lazyload)) this can also be specified via the backend settings.
 
 
 #### Global `class` attributes
@@ -60,9 +60,9 @@ This is useful if you want to add Bootstrap's `img-responsive` class to all imag
 
 #### Pre-generate images
 
-You can use the `php artisan responsive-images:generate` command to pre-generate responsive images. The command uses 
-October's `pages.menuitem.*` events to build a list of all available URLs and pre-generates all images used on these 
-pages. 
+You can use the `php artisan responsive-images:generate` command to pre-generate responsive images. The command uses
+October's `pages.menuitem.*` events to build a list of all available URLs and pre-generates all images used on these
+pages.
 
 #### Test results
 
@@ -85,19 +85,28 @@ add the `data-responsive="ignore"` attribute to your tag:
 <img src="dont-process-this.jpg" data-responsive="ignore" alt="">
 ```
 
-## Automatic WebP conversion
+## WebP conversion
 
-This plugin provides an option to automatically convert all images to the WebP image format
-if the visiting Browser signals support for it.
+This plugin provides an option to serve WebP images if the visiting Browser signals support for it.
 
-Be aware that each WebP image is created on-demand with the first page view that requests it.
-This might lead to slow page load times for your first visitors. To prevent this, warm up
-the image cache by visiting every page at least once (by using a [linkchecker](https://github.com/linkchecker/linkchecker/)) or
- use the `php artisan responsive-images:generate -v` console command. 
+Enable the WebP conversion in the backend settings. Enabling this option will add a rule
+to your `.htaccess` file, that checks for a `{filename}.{extension}.webp` image for every request
+and serves it to the client, if available.
 
-To make use of this feature, enable it via October's backend settings. If you are using
-Apache with `.htaccess` support, the plugin will serve WebP images to supported browsers
-automatically. 
+### Console command to convert images to WebP
+
+The plugin includes a handy console command that you can run in a cronjob that iterates
+through your storage directories and converts images to WebP:
+
+```
+php artisan responsive-images:convert --include=storage/app
+```
+
+This command requires the `cwebp` to be available on your server. You can [download it for your OS](https://developers.google.com/speed/webp/download)
+and provide the path to the binary using the `--converter-path` option.
+
+
+### Support for other servers than Apache
 
 **If you do not use Apache**, you have to configure your server to do the following:
 
@@ -105,62 +114,52 @@ automatically.
 1. Check if the requested image ends in `jp(e)g` or `png`
 1. Check if the requested image + a `.webp` exists
 1. *If it does*, serve it
-1. *If it does not*, redirect the request to `plugins/offline/responsiveimages/webp.php?path=${REQUEST_URI}`
-
-The `webp.php` helper script will generate any missing WebP images so they can be served directly
-on the next visit. 
-
 
 ### Apache + .htaccess
 
 If you are using Apache with `mod_rewrite` enabled, you do not have to do anything manually.
 The plugin [will patch your `.htaccess` file](views/webp-rewrite.htm) if WebP support gets enabled.
 
-
 ### Nginx
 
 If you are using Nginx to serve your October website, you have to modify your server configuration **manually**.
 
 The following example should give you a good starting point.
-  
-```nginx  
+
+```nginx
 user www-data;
- 
-http { 
+
+http {
   sendfile on;
   tcp_nopush on;
   tcp_nodelay on;
 
   include /etc/nginx/mime.types;
   default_type application/octet-stream;
- 
+
   gzip on;
   gzip_disable "msie6";
-  
+
   map $http_accept $webp_suffix {
     default   "";
     "~*webp"  ".webp";
   }
-  
+
   # ...
 
   server {
     charset utf-8;
     listen 80;
- 
-    server_name localhost;	 
+
+    server_name localhost;
     root /var/www/html;
     index index.php;
- 
+
     location ~ \.(jpe?g|png)$ {
 	add_header Vary Accept;
-        try_files $uri$webp_suffix $uri/ @router;
+        try_files $uri$webp_suffix $uri/;
     }
 
-    location @router {
-        rewrite ^(.*)$ /plugins/offline/responsiveimages/webp.php?path=$uri;
-    }
-    
     # ...
   }
 }
@@ -195,12 +194,12 @@ If your application directory is located in a special location, you can set the
 
 This feature has two components to it:
 
-#### Backend 
+#### Backend
 
 In the backend, the file upload widget is extended with a simple focus point selector.
 
-To enable this extension simply set `focuspoint: true` to any fileupload widget in your 
-plugin's `fields.yaml`. This feature is off by default. 
+To enable this extension simply set `focuspoint: true` to any fileupload widget in your
+plugin's `fields.yaml`. This feature is off by default.
 
 Once it is enabled you can click on an uploaded image to select the focus point.
 
@@ -235,29 +234,29 @@ This call will result in the following HTML:
 
 
 ```html
-<img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
-     alt="" 
-     class="focuspoint-image" 
+<img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg"
+     alt=""
+     class="focuspoint-image"
      style="width: 100%; height: 100%; object-fit: cover; object-position: 30% 80%;">
-``` 
+```
 
 You can disable the injection of the inline styles via the plugin's backend settings.
 
 If you want to use any of the existing focus point JS libraries you can also define a custom container
 that will be place around the image. The focus coordinates can be injected as custom `data-*` attributes.
 
-All of these settings are available on the plugin's backend settings page. 
+All of these settings are available on the plugin's backend settings page.
 
 ```html
 <div class="focuspoint-container" data-focus-x="50" data-focus-y="30">
-    <img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg" 
-         alt="" 
-         class="focuspoint-image" 
+    <img src="/storage/temp/public/a9f/2bd/159/offline-focus_30_400_500_50_50_0_0_auto__400.jpg"
+         alt=""
+         class="focuspoint-image"
          data-focus-x="50"
          data-focus-y="30"
      >
  </div>
-``` 
+```
 
 ### Browser-Compatibility
 

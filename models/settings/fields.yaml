@@ -19,6 +19,20 @@ tabs:
             comment: 'offline.responsiveimages::lang.settings.allowed_extensions_comment'
             placeholder: 'jpg,jpeg,png,gif'
             tab: 'Responsive Image'
+        webp_section:
+            label: 'offline.responsiveimages::lang.settings.sections.webp'
+            type: section
+            comment: 'offline.responsiveimages::lang.settings.sections.webp_comment'
+            tab: 'Responsive Image'
+        _webp_partial:
+            type: partial
+            span: full
+            path: $/offline/responsiveimages/models/settings/_webp_hint.htm
+            tab: 'Responsive Image'
+            trigger:
+                action: show
+                condition: checked
+                field: webp_enabled
         webp_enabled:
             type: switch
             span: left
@@ -26,20 +40,24 @@ tabs:
             comment: 'offline.responsiveimages::lang.settings.webp_enabled_comment'
             tab: 'Responsive Image'
         log_unprocessable:
-            type: switch
+            type: checkbox
             span: right
             label: 'offline.responsiveimages::lang.settings.log_unprocessable'
             comment: 'offline.responsiveimages::lang.settings.log_unprocessable_comment'
             tab: 'Responsive Image'
-        _webp_partial:
-            type: partial
+        webp_auto_convert:
+            type: checkbox
             span: left
-            path: $/offline/responsiveimages/models/settings/_webp_hint.htm
+            label: 'offline.responsiveimages::lang.settings.webp_auto_convert'
+            comment: 'offline.responsiveimages::lang.settings.webp_auto_convert_comment'
             tab: 'Responsive Image'
-            trigger:
-                action: show
-                condition: checked
-                field: webp_enabled
+        latest_conversion:
+            type: datepicker
+            span: auto
+            label: 'offline.responsiveimages::lang.settings.latest_conversion'
+            comment: 'offline.responsiveimages::lang.settings.latest_conversion_comment'
+            disabled: true
+            tab: 'Responsive Image'
         html_section:
             label: 'offline.responsiveimages::lang.settings.sections.html'
             type: section

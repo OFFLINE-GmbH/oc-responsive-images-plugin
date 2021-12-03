@@ -39,6 +39,9 @@
             'text'  => 'This feature only supports Apache + .htaccess out-of-the-box. All other servers require additional configuration, see',
         ],
 
+        'latest_conversion' => 'Latest image conversion',
+        'latest_conversion_comment' => 'Timestamp of the latest image conversion by the console command',
+
         'log_unprocessable'         => 'Log unprocessable images',
         'log_unprocessable_comment' => 'Creates a log entry for every image that could not be processed',
 
