@@ -355,7 +355,11 @@ class DomManipulator
         }
 
         if ($stylingAttributes) {
-            $node->setAttribute('style', implode(';', $stylingAttributes));
+            $existing = $node->getAttribute('style');
+            if ($existing) {
+                $existing .= ';';
+            }
+            $node->setAttribute('style', $existing . implode(';', $stylingAttributes));
         }
 
         // Set data-* attributes on the image to enable use of JS plugins.
@@ -397,3 +401,4 @@ class DomManipulator
         return $node;
     }
 }
+
