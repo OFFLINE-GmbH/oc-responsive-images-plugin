@@ -74,3 +74,5 @@
     - 'Added "responsive-images:convert" console command to create WebP images using a Cronjob (check README). It is recommended you use this method instead of the automatic WebP conversion going forward. To update, go to the backend settings and hit save with the automatic WebP conversion option turned off. This will update your .htaccess file. Then setup a Cronjob to run the conversion command to generate the WebP images.'
 2.4.1:
     - 'Fixed various focuspoint bugs'
+2.4.2:
+    - 'Optimized compatibility with October 2.0'
