@@ -80,3 +80,5 @@
     - 'Preserve existing inline styles when using focuspoint'
 2.4.4:
     - 'Optimized compatibility with Winter CMS'
+2.4.5:
+    - 'Moved away from deprecated MediaLibrary class'
