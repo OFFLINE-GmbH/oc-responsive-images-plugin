@@ -76,3 +76,7 @@
     - 'Fixed various focuspoint bugs'
 2.4.2:
     - 'Optimized compatibility with October 2.0'
+2.4.3:
+    - 'Preserve existing inline styles when using focuspoint'
+2.4.4:
+    - 'Optimized compatibility with Winter CMS'
