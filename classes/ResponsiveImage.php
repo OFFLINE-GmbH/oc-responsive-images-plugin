@@ -10,7 +10,7 @@ use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
 use OFFLINE\ResponsiveImages\Models\Settings;
-use Media\Classes\MediaLibrary;
+use System\Classes\MediaLibrary;
 use URL;
 use WebPConvert\WebPConvert;
 
