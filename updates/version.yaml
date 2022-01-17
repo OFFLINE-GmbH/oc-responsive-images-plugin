@@ -84,3 +84,5 @@
     - 'Moved away from deprecated MediaLibrary class'
 2.4.6:
     - 'Reverted change to optimize Winter CMS compatibility'
+2.4.7:
+    - 'Optimized compatibility with Winter CMS'
