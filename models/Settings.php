@@ -37,6 +37,7 @@ class Settings extends Model
         $this->alternative_src = 'src, data-src';
         $this->alternative_src_set = 'srcset, data-srcset';
         $this->log_unprocessable = true;
+        $this->use_real_path = true;
     }
 
     public static function getCommaSeparated($key, $default = null)

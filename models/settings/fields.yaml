@@ -19,6 +19,12 @@ tabs:
             comment: 'offline.responsiveimages::lang.settings.allowed_extensions_comment'
             placeholder: 'jpg,jpeg,png,gif'
             tab: 'Responsive Image'
+        use_real_path:
+            type: switch
+            span: left
+            label: 'offline.responsiveimages::lang.settings.use_real_path'
+            comment: 'offline.responsiveimages::lang.settings.use_real_path_comment'
+            tab: 'Responsive Image'
         webp_section:
             label: 'offline.responsiveimages::lang.settings.sections.webp'
             type: section
