@@ -35,9 +35,9 @@ class PathProcessorOptions
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSince(): string
+    public function getSince()
     {
         return $this->since;
     }

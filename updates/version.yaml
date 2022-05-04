@@ -86,3 +86,7 @@
     - 'Reverted change to optimize Winter CMS compatibility'
 2.4.7:
     - 'Optimized compatibility with Winter CMS'
+2.4.9:
+    - 'Fixed bug in WebP converter'
+2.5.0:
+    - 'Added Support for Laravel 9/October 3'
