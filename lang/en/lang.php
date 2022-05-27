@@ -78,4 +78,14 @@
         'allow_inline_sizing' => 'Inline-CSS for image width and height',
         'allow_inline_sizing_comment' => 'Inject the width and height CSS rules directly as style attribute into the HTML source',
     ],
+
+    'reportwidgets' => [
+        'clearcache' => [
+            'label' => 'Responsive Images: Clear cache',
+            'description' => 'Click the button below to clear all cached images.',
+            'button' => 'Clear image cache',
+            'confirm' => 'Are you sure you want to clear the image cache?',
+            'success' => 'Image cache successfully cleared',
+        ],
+    ]
 ];
