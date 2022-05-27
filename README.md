@@ -85,6 +85,12 @@ add the `data-responsive="ignore"` attribute to your tag:
 <img src="dont-process-this.jpg" data-responsive="ignore" alt="">
 ```
 
+## Delete resized images
+
+Use the `php artisan responsive-images:clear` command to delete all
+resized images. The next time a page/image is requested, the resized
+copies will be created again.
+
 ## WebP conversion
 
 This plugin provides an option to serve WebP images if the visiting Browser signals support for it.

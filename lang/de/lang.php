@@ -77,4 +77,14 @@
         'allow_inline_sizing' => 'Inline-CSS für Bildbreite und -höhe',
         'allow_inline_sizing_comment' => 'Schreibe die width und height Attribute direkt als style ins HTML',
     ],
+
+    'reportwidgets' => [
+        'clearcache' => [
+            'label' => 'Responsive Images: Cache leeren',
+            'description' => 'Nutze untenstehenden Button um den Bilder-Cache zu leeren.',
+            'button' => 'Bilder-Cache leeren',
+            'confirm' => 'Bilder-Cache wirklich leeren?',
+            'success' => 'Bilder-Cache geleert',
+        ],
+    ]
 ];

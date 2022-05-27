@@ -42,5 +42,14 @@
 
         'add_class' => 'attribut class',
         'add_class_comment' => 'Ajoutez cette classe à chaque image traitée. Utile si vous utilisez un framework css comme Bootstrap.',
+    ],
+
+    'reportwidgets' => [
+        'clearcache' => [
+            'description' => 'Cliquez sur le bouton ci-dessous pour vider le cache des images.',
+            'button' => 'Vider le cache des images',
+            'confirm' => 'Êtes-vous sur de vouloir vider le cache des images ?',
+            'success' => 'Cache des images vidé avec succès',
+        ],
     ]
 ];

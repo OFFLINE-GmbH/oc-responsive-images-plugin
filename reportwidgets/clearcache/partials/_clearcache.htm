@@ -1,0 +1,16 @@
+<div class="report-widget">
+    <h3><?= e($this->property('title')) ?></h3>
+
+    <?php if (!isset($error)): ?>
+        <p><?= e(trans('offline.responsiveimages::lang.reportwidgets.clearcache.description')) ?></p>
+        <a  
+            data-request="onClearCache"
+            data-request-confirm="<?= e(trans('offline.responsiveimages::lang.reportwidgets.clearcache.confirm')) ?>"
+            data-attach-loading
+            class="btn btn-warning">
+            <?= e(trans('offline.responsiveimages::lang.reportwidgets.clearcache.button')) ?>
+        </a>
+    <?php else: ?>
+        <p class="flash-message static warning"><?= e($error) ?></p>
+    <?php endif ?>
+</div>

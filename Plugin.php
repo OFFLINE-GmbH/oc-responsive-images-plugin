@@ -8,6 +8,7 @@ use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
 use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Console\ConvertCommand;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
+use OFFLINE\ResponsiveImages\Console\Clear;
 use System\Classes\PluginBase;
 use System\Models\File;
 use System\Traits\AssetMaker;
@@ -131,6 +132,7 @@ class Plugin extends PluginBase
     {
         $this->registerConsoleCommand('responsiveimages:generate', GenerateResizedImages::class);
         $this->registerConsoleCommand('responsiveimages:convert', ConvertCommand::class);
+        $this->registerConsoleCommand('responsiveimages:clear', Clear::class);
     }
 
     public function registerMarkupTags()
@@ -143,6 +145,21 @@ class Plugin extends PluginBase
                     return (new SVGInliner($themeDir))->inline($path, $vars);
                 },
             ],
+        ];
+    }
+
+    /**
+     * Returns the extra report widgets.
+     * 
+     * @return  array
+     */
+    public function registerReportWidgets()
+    {
+        return [
+            'OFFLINE\ResponsiveImages\ReportWidgets\ClearCache' => [
+                'label'   => 'offline.responsiveimages::lang.reportwidgets.clearcache.label',
+                'context' => 'dashboard'
+            ]
         ];
     }
 
