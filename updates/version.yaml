@@ -90,3 +90,5 @@
     - 'Fixed bug in WebP converter'
 2.5.0:
     - 'Added Support for Laravel 9/October 3'
+2.5.1:
+    - 'Added dashboard widget and console command to clear image cache (thanks to @PubliAlex)'
