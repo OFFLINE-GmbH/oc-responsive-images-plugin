@@ -81,9 +81,10 @@
 
     'reportwidgets' => [
         'clearcache' => [
+            'label' => 'Responsive Images: Clear cache',
             'description' => 'Click the button below to clear all cached images.',
             'button' => 'Clear image cache',
-            'confirm' => 'Are you sure you want to clear the image cache ?',
+            'confirm' => 'Are you sure you want to clear the image cache?',
             'success' => 'Image cache successfully cleared',
         ],
     ]
