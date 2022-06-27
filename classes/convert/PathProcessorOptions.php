@@ -23,7 +23,7 @@ class PathProcessorOptions
     {
         $this->format = $format;
         $this->size = $size;
-        $this->since = $since ?: Settings::get('latest_conversion', '0');
+        $this->since = $since ?: Settings::get('latest_conversion', '1970-01-01');
     }
 
     /**
