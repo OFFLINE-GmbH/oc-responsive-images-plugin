@@ -142,7 +142,7 @@ class ResponsiveImage
                 }
             } catch (\Exception $e) {
                 if (Settings::get('log_unprocessable', false)) {
-                    Log::warning(sprintf('Failed to run getimagesize for image "%s"', $this->path));
+                    Log::warning(sprintf('Failed to run getimagesize for image "%s": %s', $this->path, $e->getMessage()));
                 }
             }
 
@@ -206,12 +206,12 @@ class ResponsiveImage
             if ($this->webPEnabled) {
                 WebPConvert::convert($saveTo, $saveTo . '.webp', Settings::DEFAULT_WEBP_CONVERT_OPTIONS);
             }
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             // Cannot resize image to this size. Remove it from the srcset.
             $this->sourceSet->remove($size);
 
             if (Settings::get('log_unprocessable', false)) {
-                Log::warning(sprintf('Failed to create size "%s" for image "%s"', $size, $this->path));
+                Log::warning(sprintf('Failed to create size "%s" for image "%s": %s', $size, $this->path, $e->getMessage()));
             }
         }
     }
