@@ -92,3 +92,5 @@
     - 'Added Support for Laravel 9/October 3'
 2.5.1:
     - 'Added dashboard widget and console command to clear image cache (thanks to @PubliAlex)'
+2.5.2:
+    - 'Optimized compatibility with October 1, 2, 3 and Winter CMS'
