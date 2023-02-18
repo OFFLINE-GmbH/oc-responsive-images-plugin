@@ -27,7 +27,10 @@ class Clear extends Command
     {
         // Clear cache and thumbnails
         Artisan::call('cache:clear');
-        Artisan::call('october:util', ['name' => 'purge thumbs']);
+        Artisan::call('october:util', [
+            'name' => 'purge thumbs',
+            '--force' => true,
+        ]);
 
         // Clear resized images
         $path = storage_path('app/resources/resize');
