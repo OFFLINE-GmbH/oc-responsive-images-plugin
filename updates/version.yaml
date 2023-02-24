@@ -94,3 +94,5 @@
     - 'Added dashboard widget and console command to clear image cache (thanks to @PubliAlex)'
 2.5.4:
     - 'Optimized compatibility with October 1, 2, 3 and Winter CMS'
+2.5.5:
+    - 'Fixed bug in responsive-images:clear console command (thanks to @Zmove)'
