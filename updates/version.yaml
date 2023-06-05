@@ -98,3 +98,5 @@
     - 'Fixed bug in responsive-images:clear console command (thanks to @Zmove)'
 2.5.6:
     - 'Fixed bug where generated image URLs contained duplicated slashes (thanks to @damsfx)'
+2.5.7:
+    - 'Fixed clear image cache widget (thanks to @PubliAlex)'
