@@ -5,6 +5,8 @@ use Illuminate\Console\Command;
 use Artisan;
 use File;
 
+use OFFLINE\ResponsiveImages\Models\Settings;
+
 /**
  * Clear Command
  */
@@ -40,8 +42,9 @@ class Clear extends Command
         $path = storage_path('temp/public');
         $root = new \RecursiveDirectoryIterator($path);
         $directories = new \RecursiveIteratorIterator($root);
+        $extensions = Settings::get('allowed_extensions');
         foreach ($directories as $directory) {
-            File::delete(File::glob($directory->getPath().'/thumb_*'));
+            File::delete(File::glob($directory->getPath().'/*.{'.$extensions.'}', GLOB_BRACE));
         }
     }
 
