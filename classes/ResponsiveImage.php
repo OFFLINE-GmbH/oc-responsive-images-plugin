@@ -225,7 +225,7 @@ class ResponsiveImage
      */
     protected function getStoragePath($size)
     {
-        $path = temp_path('public/' . $this->getPartitionDirectory());
+        $path = rtrim(temp_path('public/' . $this->getPartitionDirectory()), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         if ( ! FileHelper::isDirectory($path)) {
             FileHelper::makeDirectory($path, 0777, true, true);
         }
