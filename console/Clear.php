@@ -20,7 +20,7 @@ class Clear extends Command
     /**
      * @var string description is the console command description
      */
-    protected $description = 'No description provided yet...';
+    protected $description = 'Clear generated responsive images';
 
     /**
      * handle executes the console command
