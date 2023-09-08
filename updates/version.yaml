@@ -100,3 +100,5 @@
     - 'Fixed bug where generated image URLs contained duplicated slashes (thanks to @damsfx)'
 2.5.7:
     - 'Fixed clear image cache widget (thanks to @PubliAlex)'
+2.5.8:
+    - 'Fixed path generation (thanks to @damsfx)'
