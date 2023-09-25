@@ -5,8 +5,10 @@ namespace OFFLINE\ResponsiveImages\Classes;
 use Cache;
 use Config;
 use File as FileHelper;
+use Illuminate\Support\Facades\Storage;
 use Log;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\InlineImageException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
 use OFFLINE\ResponsiveImages\Models\Settings;
@@ -94,16 +96,47 @@ class ResponsiveImage
     protected $webPEnabled = false;
 
     /**
+     * @var bool If the image comes from a cloud storage
+     */
+    protected $remote = false;
+    /**
+     * @var string remote path of the cloud image relative to the base URL
+     */
+    protected $remoteRelativePath = null;
+
+    /**
      * Create all the needed copies of the image.
      *
      * @param      $imagePath
      */
     public function __construct($imagePath)
     {
+        if (str_starts_with($imagePath, 'data:image/')) {
+            throw new InlineImageException('Inline Images not handled');
+        }
         $imagePath = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
 
-        if ( ! FileHelper::isLocalPath($this->path)) {
+        if (config('filesystems.disks.media.driver') !== 'local') {
+            $this->remote = true;
+            if (!str_starts_with($imagePath, config('filesystems.disks.media.url'))) {
+                Log::error(sprintf('The specified remote path is not handled: %s', $imagePath));
+                throw new RemotePathException(sprintf('The specified remote path is not handled by the current media disk: %s', $imagePath));
+            }
+            $this->remoteRelativePath = str_replace(config('filesystems.disks.media.url') . '/', '', $imagePath);
+
+            if (!Storage::disk('media')->exists($this->remoteRelativePath)) {
+                // if file is remote but not found on the remote media
+                throw new FileNotFoundException(sprintf('The specified remote file does not exist: %s', $imagePath));
+            } else if (!Storage::disk('local_media')->exists($this->remoteRelativePath)) {
+                // get the file locally if it does not exist already
+                Storage::disk('local_media')->write(
+                    $this->remoteRelativePath,
+                    Storage::disk('media')->read($this->remoteRelativePath)
+                );
+            }
+            $this->path = $this->normalizeImagePath(Storage::disk('local_media')->getConfig()['url'] . '/' . $this->remoteRelativePath);
+        } else if ( ! FileHelper::isLocalPath($this->path)) {
             throw new RemotePathException(sprintf('The specified path is not local: %s', $imagePath));
         }
 
@@ -118,7 +151,7 @@ class ResponsiveImage
 
         $width = $this->getWidth();
 
-        $this->sourceSet = new SourceSet($this->path, $width);
+        $this->sourceSet = new SourceSet($this->remote ? $this->remoteRelativePath : $this->path, $width, $this->remote);
 
         $this->dimensions[] = $width;
         $this->createCopies();
@@ -201,6 +234,10 @@ class ResponsiveImage
 
             $saveTo = $this->getStoragePath($size);
             $this->resizer->resize($size, null)->save($saveTo);
+            if ($this->remote) {
+                // upload the local copy to the cloud storage
+                Storage::disk('media')->put('temp' . str_replace(temp_path(), '', $saveTo), \File::get($saveTo));
+            }
 
             // Create webp images if the feature is enabled.
             if ($this->webPEnabled) {
@@ -217,7 +254,7 @@ class ResponsiveImage
     }
 
     /**
-     * Returns the absolute path for a image copy.
+     * Returns the absolute path for an image copy.
      *
      * @param $size
      *
@@ -232,7 +269,20 @@ class ResponsiveImage
 
         $storagePath = $path . $this->getStorageFilename($size);
 
-        $this->sourceSet->push($size, $storagePath);
+        // if using cloud storage, also generate the distant folders
+        if ($this->remote) {
+            $distTempPath = str_replace(temp_path(), '', $path);
+            if (!Storage::disk('media')->exists('temp' . $distTempPath)) {
+                Storage::disk('media')->makeDirectory('temp' . $distTempPath);
+            }
+
+            $distPath = '/temp' . $distTempPath . $this->getStorageFilename($size);
+
+            // then set the final source as the remote path
+            $this->sourceSet->push($size, $distPath);
+        } else {
+            $this->sourceSet->push($size, $storagePath);
+        }
 
         return $storagePath;
     }

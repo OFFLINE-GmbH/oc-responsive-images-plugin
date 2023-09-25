@@ -6,6 +6,7 @@ use Config;
 use DOMDocument;
 use DOMElement;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\FileNotFoundException;
+use OFFLINE\ResponsiveImages\Classes\Exceptions\InlineImageException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\RemotePathException;
 use OFFLINE\ResponsiveImages\Classes\Exceptions\UnallowedFileTypeException;
 use Psr\Log\LoggerInterface;
@@ -168,6 +169,8 @@ class DomManipulator
             // Ignore remote images completely
         } catch (UnallowedFileTypeException $e) {
             // Ignore file types that are not allowed
+        } catch (InlineImageException $e) {
+            // Ignore inline images
         } catch (FileNotFoundException $e) {
             $this->log(sprintf('Image %s does not exist', $source), $e);
         } catch (\Throwable $e) {

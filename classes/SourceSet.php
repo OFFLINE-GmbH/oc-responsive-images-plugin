@@ -19,14 +19,17 @@ class SourceSet
      */
     public $rules = [];
 
+    protected bool $remote = false;
+
     /**
      * SourceSet constructor.
      *
      * @param      $originalPath
      * @param      $originalWidth
      */
-    public function __construct($originalPath, $originalWidth)
+    public function __construct($originalPath, $originalWidth, $remote = false)
     {
+        $this->remote = $remote;
         $this->originalWidth = $originalWidth;
 
         $this->push($originalWidth, $originalPath);
@@ -69,7 +72,8 @@ class SourceSet
         $filename           = basename($relativePath);
         $relativeFolderPath = str_replace($filename, '', $relativePath);
 
-        $url = rawurlencode(rtrim(URL::to('/'), '/') . $relativeFolderPath . $filename);
+        $domain = $this->remote ? config('filesystems.disks.media.url') : URL::to('/');
+        $url = rawurlencode(rtrim($domain, '/') . $relativeFolderPath . $filename);
 
         // Bring encoded colon and slashes back
         return str_replace(['%2F', '%3A'], ['/', ':'], $url);
