@@ -39,6 +39,16 @@ class ResponsiveImagesMiddleware
         $logger = app('log');
 
         try {
+            if ($this->isJsonResponse($response)) {
+                $responseFields = json_decode($response->getContent(), true);
+
+                $responseFields = $this->handleJson($responseFields, $logger);
+
+                $response->setContent(json_encode($responseFields));
+
+                return $response;
+            }
+
             $manipulator = new DomManipulator(
                 $response->getContent(),
                 $this->getSettings(),
@@ -56,6 +66,25 @@ class ResponsiveImagesMiddleware
 
         return $response;
 
+    }
+
+    public function handleJson(array &$data, $logger = null) {
+        // loop over every field, parse the html and replace the content
+        foreach ($data as $key => $value) {
+            if (is_string($value) && strstr($value, '<img') !== false) {
+                $manipulator = new DomManipulator(
+                    $value,
+                    $this->getSettings(),
+                    $logger
+                );
+                $data[$key] = $manipulator->process();
+            }
+            else if (is_array($value)) {
+                $data[$key] = $this->handleJson($value);
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -87,6 +116,18 @@ class ResponsiveImagesMiddleware
     }
 
     /**
+     * Check the content type of the response.
+     *
+     * @param Response $response
+     *
+     * @return bool
+     */
+    private function isJsonResponse(Response $response)
+    {
+        return starts_with($response->headers->get('content-type'), 'application/json');
+    }
+
+    /**
      * Checks whether the response should be processed
      * by this middleware.
      *
@@ -100,6 +141,10 @@ class ResponsiveImagesMiddleware
         // Only default responses, no redirects
         if ( ! $response instanceof Response) {
             return false;
+        }
+
+        if ($this->isJsonResponse($response)) {
+            return true;
         }
         if ( ! $this->isHtmlResponse($response)) {
             return false;
