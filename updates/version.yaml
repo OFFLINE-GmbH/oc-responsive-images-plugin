@@ -104,3 +104,5 @@
     - 'Fixed path generation (thanks to @damsfx)'
 2.6.0:
     - 'The plugin now processes images in JSON responses as well'
+2.6.1:
+    - 'Bugfix release'

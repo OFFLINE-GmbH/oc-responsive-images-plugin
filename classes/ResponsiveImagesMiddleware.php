@@ -157,20 +157,23 @@ class ResponsiveImagesMiddleware
      */
     protected function isRelevant($request, $response)
     {
-        if ($this->isJsonResponse($response)) {
-            return true;
-        }
-
         // Only default responses, no redirects
         if ( ! $response instanceof Response) {
             return false;
         }
+
+        if ($this->isJsonResponse($response)) {
+            return true;
+        }
+
         if ( ! $this->isHtmlResponse($response)) {
             return false;
         }
+
         if ($this->isBackendRequest($request)) {
             return false;
         }
+
         if ($response->getContent() === '') {
             return false;
         }
