@@ -102,3 +102,5 @@
     - 'Fixed clear image cache widget (thanks to @PubliAlex)'
 2.5.8:
     - 'Fixed path generation (thanks to @damsfx)'
+2.6.0:
+    - 'The plugin now processes images in JSON responses as well'
