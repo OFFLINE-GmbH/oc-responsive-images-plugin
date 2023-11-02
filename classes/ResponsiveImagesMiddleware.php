@@ -40,13 +40,7 @@ class ResponsiveImagesMiddleware
 
         try {
             if ($this->isJsonResponse($response)) {
-                $responseFields = json_decode($response->getContent(), true);
-
-                $responseFields = $this->handleJson($responseFields, $logger);
-
-                $response->setContent(json_encode($responseFields));
-
-                return $response;
+                return $this->handleJsonResponse($response, $logger);
             }
 
             $manipulator = new DomManipulator(
@@ -66,25 +60,6 @@ class ResponsiveImagesMiddleware
 
         return $response;
 
-    }
-
-    public function handleJson(array &$data, $logger = null) {
-        // loop over every field, parse the html and replace the content
-        foreach ($data as $key => $value) {
-            if (is_string($value) && strstr($value, '<img') !== false) {
-                $manipulator = new DomManipulator(
-                    $value,
-                    $this->getSettings(),
-                    $logger
-                );
-                $data[$key] = $manipulator->process();
-            }
-            else if (is_array($value)) {
-                $data[$key] = $this->handleJson($value);
-            }
-        }
-
-        return $data;
     }
 
     /**
@@ -128,6 +103,50 @@ class ResponsiveImagesMiddleware
     }
 
     /**
+     * @param Response $response
+     * @param LoggerInterface $logger
+     * @return Response
+     * @throws \JsonException
+     */
+    private function handleJsonResponse(Response $response, LoggerInterface $logger): Response
+    {
+        $responseFields = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        $responseFields = $this->handleJson($responseFields, $logger);
+
+        $response->setContent(json_encode($responseFields, JSON_THROW_ON_ERROR));
+
+        return $response;
+    }
+
+    /**
+     * Recursively handle all fields in a json response.
+     * @param array $data
+     * @param $logger
+     * @return array
+     */
+    public function handleJson(array &$data, $logger)
+    {
+        foreach ($data as $key => $value) {
+            if (is_string($value) && str_contains($value, '<img')) {
+                $manipulator = new DomManipulator(
+                    $value,
+                    $this->getSettings(),
+                    $logger
+                );
+                $data[$key] = $manipulator->process();
+                continue;
+            }
+
+            if (is_array($value)) {
+                $data[$key] = $this->handleJson($value, $logger);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Checks whether the response should be processed
      * by this middleware.
      *
@@ -138,13 +157,13 @@ class ResponsiveImagesMiddleware
      */
     protected function isRelevant($request, $response)
     {
+        if ($this->isJsonResponse($response)) {
+            return true;
+        }
+
         // Only default responses, no redirects
         if ( ! $response instanceof Response) {
             return false;
-        }
-
-        if ($this->isJsonResponse($response)) {
-            return true;
         }
         if ( ! $this->isHtmlResponse($response)) {
             return false;
@@ -168,4 +187,5 @@ class ResponsiveImagesMiddleware
     {
         return DomManipulatorSettings::fromSettingsModel(Settings::instance());
     }
+
 }
