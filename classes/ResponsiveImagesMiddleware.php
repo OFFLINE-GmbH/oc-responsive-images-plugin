@@ -39,6 +39,10 @@ class ResponsiveImagesMiddleware
         $logger = app('log');
 
         try {
+            if ($this->isJsonResponse($response)) {
+                return $this->handleJsonResponse($response, $logger);
+            }
+
             $manipulator = new DomManipulator(
                 $response->getContent(),
                 $this->getSettings(),
@@ -87,6 +91,62 @@ class ResponsiveImagesMiddleware
     }
 
     /**
+     * Check the content type of the response.
+     *
+     * @param Response $response
+     *
+     * @return bool
+     */
+    private function isJsonResponse(Response $response)
+    {
+        return starts_with($response->headers->get('content-type'), 'application/json');
+    }
+
+    /**
+     * @param Response $response
+     * @param LoggerInterface $logger
+     * @return Response
+     * @throws \JsonException
+     */
+    private function handleJsonResponse(Response $response, LoggerInterface $logger): Response
+    {
+        $responseFields = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        $responseFields = $this->handleJson($responseFields, $logger);
+
+        $response->setContent(json_encode($responseFields, JSON_THROW_ON_ERROR));
+
+        return $response;
+    }
+
+    /**
+     * Recursively handle all fields in a json response.
+     * @param array $data
+     * @param $logger
+     * @return array
+     */
+    public function handleJson(array &$data, $logger)
+    {
+        foreach ($data as $key => $value) {
+            if (is_string($value) && str_contains($value, '<img')) {
+                $manipulator = new DomManipulator(
+                    $value,
+                    $this->getSettings(),
+                    $logger
+                );
+                $data[$key] = $manipulator->process();
+                continue;
+            }
+
+            if (is_array($value)) {
+                $data[$key] = $this->handleJson($value, $logger);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Checks whether the response should be processed
      * by this middleware.
      *
@@ -97,6 +157,10 @@ class ResponsiveImagesMiddleware
      */
     protected function isRelevant($request, $response)
     {
+        if ($this->isJsonResponse($response)) {
+            return true;
+        }
+
         // Only default responses, no redirects
         if ( ! $response instanceof Response) {
             return false;
@@ -123,4 +187,5 @@ class ResponsiveImagesMiddleware
     {
         return DomManipulatorSettings::fromSettingsModel(Settings::instance());
     }
+
 }
