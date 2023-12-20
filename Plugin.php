@@ -140,7 +140,23 @@ class Plugin extends PluginBase
         return [
             'functions' => [
                 'svg' => function ($path, $vars = []) {
-                    $themeDir = Theme::getActiveThemeCode();
+                    $theme = Theme::getActiveTheme();
+                    if (!$theme) {
+                        return '';
+                    }
+
+                    $themeDir = $theme->getId();
+
+                    // Try to fetch the file from the current theme.
+                    $themePath = themes_path(implode('/', [$themeDir, $path]));
+                    // If the file does not exist, check if there is a parent theme.
+                    if (!file_exists($themePath) && $parentTheme = $theme->getParentTheme()) {
+                        $themeDir = $parentTheme->getId();
+                        $parentThemeDir = themes_path(implode('/', [$parentTheme->getId(), $path]));
+                        if (file_exists($path)) {
+                            $path = $parentThemeDir;
+                        }
+                    }
 
                     return (new SVGInliner($themeDir))->inline($path, $vars);
                 },
@@ -150,7 +166,7 @@ class Plugin extends PluginBase
 
     /**
      * Returns the extra report widgets.
-     * 
+     *
      * @return  array
      */
     public function registerReportWidgets()

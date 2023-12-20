@@ -106,3 +106,5 @@
     - 'The plugin now processes images in JSON responses as well'
 2.6.1:
     - 'Bugfix release'
+2.6.2:
+    - 'Fixed SVG inlining in child themes'
