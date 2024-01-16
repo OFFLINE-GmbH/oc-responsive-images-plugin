@@ -108,3 +108,5 @@
     - 'Bugfix release'
 2.6.2:
     - 'Fixed SVG inlining in child themes'
+2.6.3:
+    - 'Fixed Image Pre-Generation in newer October versions'

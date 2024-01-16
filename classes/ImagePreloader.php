@@ -165,6 +165,7 @@ class ImagePreloader
                         'type'      => $type,
                         'replace'   => false,
                         'reference' => $reference,
+                        'sites'     => [],
                         'nesting'   => data_get($definition, 'nesting', false),
                     ];
                     $urls = $urls->concat($this->getUrlsForItem($type, $item));
@@ -177,6 +178,7 @@ class ImagePreloader
                         'type'      => $type,
                         'reference' => $reference,
                         'cmsPage'   => $cmsPage,
+                        'sites'     => [],
                         'nesting'   => data_get($definition, 'nesting', false),
                     ];
                     $urls = $urls->concat($this->getUrlsForItem($type, $itemName));
