@@ -5,6 +5,7 @@ use Cms\Classes\Theme;
 use Illuminate\Support\Facades\Event;
 use October\Rain\Exception\ApplicationException;
 use OFFLINE\ResponsiveImages\Classes\Focuspoint\File as FocusFile;
+use OFFLINE\ResponsiveImages\Classes\Focuspoint\FocuspointExtension;
 use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Console\ConvertCommand;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
@@ -31,49 +32,7 @@ class Plugin extends PluginBase
         $this->app['Illuminate\Contracts\Http\Kernel']
             ->pushMiddleware('OFFLINE\ResponsiveImages\Classes\ResponsiveImagesMiddleware');
 
-        Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
-            $controller->addJs('/plugins/offline/responsiveimages/widgets/fileupload/assets/js/focuspoint-tool.js');
-        });
-
-        File::extend(function (File $file) {
-            $file->addDynamicMethod('focus', function ($width, $height, $options = []) use ($file) {
-                return FocusFile::fromFileModel($file)->focus($width, $height, $options);
-            });
-        });
-
-        FileUpload::extend(function (FileUpload $widget) {
-            $isEnabled = (bool)($widget->config->focuspoint ?? false);
-            if ($isEnabled !== true) {
-                return;
-            }
-            $widget->addViewPath('plugins/offline/responsiveimages/widgets/fileupload/partials');
-            $widget->addDynamicMethod('onSaveAttachmentConfigFocuspoint', function () use ($widget) {
-                $original = $widget->onSaveAttachmentConfig();
-
-                if (is_array($original) === false || array_key_exists('displayName', $original) === false) {
-                    return $original;
-                }
-
-                try {
-                    list($model, $attribute) = $widget->resolveModelAttribute($widget->valueFrom);
-                    $fileModel = $model->makeRelation($attribute);
-
-                    if (($fileId = post('file_id')) && ($file = $fileModel::find($fileId))) {
-                        $file->offline_responsiveimages_focus_x_axis = post('offline_responsiveimages_focus_x_axis');
-                        $file->offline_responsiveimages_focus_y_axis = post('offline_responsiveimages_focus_y_axis');
-                        $file->title = post('title');
-                        $file->description = post('description');
-                        $file->save();
-
-                        return ['displayName' => $file->title ?: $file->file_name];
-                    }
-
-                    throw new ApplicationException('Unable to find file, it may no longer exist');
-                } catch (\Throwable $ex) {
-                    return json_encode(['error' => $ex->getMessage()]);
-                }
-            });
-        });
+        FocuspointExtension::boot();
     }
 
     /**

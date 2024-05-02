@@ -78,6 +78,11 @@
         'allow_inline_sizing_comment' => 'Schreibe die width und height Attribute direkt als style ins HTML',
     ],
 
+    'fields' => [
+        'focus_x_axis' => 'Fokuspunkt X-Achse',
+        'focus_y_axis' => 'Fokuspunkt Y-Achse',
+    ],
+
     'reportwidgets' => [
         'clearcache' => [
             'label' => 'Responsive Images: Cache leeren',

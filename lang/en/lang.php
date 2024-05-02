@@ -79,6 +79,11 @@
         'allow_inline_sizing_comment' => 'Inject the width and height CSS rules directly as style attribute into the HTML source',
     ],
 
+    'fields' => [
+        'focus_x_axis' => 'Focus point X-axis',
+        'focus_y_axis' => 'Focus point Y-axis',
+    ],
+
     'reportwidgets' => [
         'clearcache' => [
             'label' => 'Responsive Images: Clear cache',
