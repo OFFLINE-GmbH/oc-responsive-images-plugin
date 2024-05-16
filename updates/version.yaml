@@ -112,3 +112,5 @@
     - 'Fixed Image Pre-Generation in newer October versions'
 2.7.0:
     - 'Refactored the focus point feature to work with October CMS 3'
+2.7.1:
+    - 'Fixed config extension event handler'

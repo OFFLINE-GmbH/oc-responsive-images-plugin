@@ -18,7 +18,7 @@ class FocuspointExtension
         });
 
         // Add the X and Y Focus point fields to the file upload popup.
-        Event::listen('system.extendConfigFile', function (string $path, array $config) {
+        Event::listen('system.extendConfigFile', function (string $path, array $config = []) {
             if ($path === '/modules/system/models/file/fields.yaml') {
                 $config['fields']['offline_responsiveimages_focus_x_axis'] = [
                     'label' => 'offline.responsiveimages::lang.fields.focus_x_axis',
