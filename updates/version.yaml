@@ -114,3 +114,5 @@
     - 'Refactored the focus point feature to work with October CMS 3'
 2.7.1:
     - 'Fixed config extension event handler'
+2.7.2:
+    - 'Fixed config extension event handler'
