@@ -33,7 +33,7 @@ class Settings extends Model
     public function initSettingsData()
     {
         $this->dimensions = '400,768,1024';
-        $this->allowed_extensions = 'jpg,jpeg,png,gif';
+        $this->allowed_extensions = 'jpg,jpeg,png';
         $this->alternative_src = 'src, data-src';
         $this->alternative_src_set = 'srcset, data-srcset';
         $this->log_unprocessable = true;
