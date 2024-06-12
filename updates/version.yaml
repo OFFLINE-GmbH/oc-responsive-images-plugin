@@ -118,3 +118,5 @@
     - 'Fixed config extension event handler'
 2.7.3:
     - 'Fixed config extension event handler'
+2.7.4:
+    - 'Removed gif as default file extension as it is not supported by cwebp (thanks to @verenaroe)'
