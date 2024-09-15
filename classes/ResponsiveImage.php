@@ -94,6 +94,16 @@ class ResponsiveImage
     protected $webPEnabled = false;
 
     /**
+     * Use real path.
+     *
+     * These value is overridden by the plugin's
+     * settings!
+     *
+     * @var boolean
+     */
+    protected $use_real_path = true;
+
+    /**
      * Create all the needed copies of the image.
      *
      * @param      $imagePath
@@ -103,7 +113,9 @@ class ResponsiveImage
         $imagePath = urldecode($imagePath);
         $this->path = $this->normalizeImagePath($imagePath);
 
-        if ( ! FileHelper::isLocalPath($this->path)) {
+        $this->loadSettings();
+
+        if ( ! FileHelper::isLocalPath($this->path, $this->use_real_path)) {
             throw new RemotePathException(sprintf('The specified path is not local: %s', $imagePath));
         }
 
@@ -111,7 +123,6 @@ class ResponsiveImage
             throw new FileNotFoundException(sprintf('The specified file does not exist: %s', $imagePath));
         }
 
-        $this->loadSettings();
         $this->parseImagePath();
 
         $this->focus = [];
@@ -314,6 +325,7 @@ class ResponsiveImage
         $this->dimensions = Settings::getCommaSeparated('dimensions', $this->dimensions);
         $this->allowedExtensions = Settings::getCommaSeparated('allowed_extensions', $this->allowedExtensions);
         $this->webPEnabled = (bool)Settings::get('webp_enabled', false);
+        $this->use_real_path = (bool)Settings::get('use_real_path', true);
     }
 
     /**
