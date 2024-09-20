@@ -22,6 +22,7 @@ tabs:
         use_real_path:
             type: switch
             span: left
+            default: true
             label: 'offline.responsiveimages::lang.settings.use_real_path'
             comment: 'offline.responsiveimages::lang.settings.use_real_path_comment'
             tab: 'Responsive Image'

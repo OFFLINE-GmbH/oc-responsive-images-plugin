@@ -35,7 +35,7 @@
 2.2.0: Added support for automatic WebP conversion
 2.2.1: Optimized WebP implementation
 2.2.2: Performance improvements (thanks to @mauserrifle)
-2.2.3: Optimized handling of custom src attributes 
+2.2.3: Optimized handling of custom src attributes
 2.2.4: Optimized PHP 7.4 support
 2.2.5: Further optimized PHP 7.4 support
 2.2.6: Optimized WebP image quality
@@ -120,3 +120,5 @@
     - 'Fixed config extension event handler'
 2.7.4:
     - 'Removed gif as default file extension as it is not supported by cwebp (thanks to @verenaroe)'
+2.8.0:
+    - 'Make it possible to disable real path check before resizing files'

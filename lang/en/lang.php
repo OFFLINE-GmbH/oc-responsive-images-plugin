@@ -35,7 +35,7 @@
         'allowed_extensions_comment' => 'Comma separated list of file extensions that should be processed',
 
         'use_real_path' => 'Use real path',
-        'use_real_path_comment' => 'Turning off that setting, may help with setups that are using project-level symlink',
+        'use_real_path_comment' => 'Disabling this may be required if you use symlinks in your installation',
 
         'webp_enabled' => 'Enable WebP support',
         'webp_enabled_comment' => 'Images are automatically served in the WebP format to supported browsers. Please read the README on GitHub before enabling this option!',
