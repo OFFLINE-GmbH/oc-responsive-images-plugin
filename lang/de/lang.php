@@ -33,6 +33,9 @@
         'allowed_extensions' => 'Beachtete Dateiendungen',
         'allowed_extensions_comment' => 'Komma-getrennte Liste mit Dateiendungen, die verarbeitet werden sollen',
 
+        'use_real_path' => '"Real Path" Überprüfung verwenden',
+        'use_real_path_comment' => 'Diese Einstellung sollte für Installationen mit Symlinks deaktiviert werden',
+
         'webp_enabled' => 'Aktiviere WebP-Konvertierung',
         'webp_enabled_comment' => 'Bilder werden automatisch als WebP-Dateien an unterstütze Browser gesendet. Lies das README des Plugins bevor du diese Option aktivierst!',
 
