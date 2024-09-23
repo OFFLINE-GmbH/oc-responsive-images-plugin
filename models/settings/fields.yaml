@@ -20,7 +20,7 @@ tabs:
             placeholder: 'jpg,jpeg,png,gif'
             tab: 'Responsive Image'
         use_real_path:
-            type: switch
+            type: checkbox
             span: left
             default: true
             label: 'offline.responsiveimages::lang.settings.use_real_path'
