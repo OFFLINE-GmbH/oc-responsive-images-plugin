@@ -8,7 +8,7 @@ Automatically generate and serve images for your visitor's viewport size without
 * [Responsive images](#responsive-images)
 * [WebP conversion](#webp-conversion)
 * [Focuspoint](#focuspoint)
-* [Inline SVG helper function](#inline-svg-helper-function)
+* [Inline SVG helper function](#inlining-svg-images)
 
 ## Responsive images
 
