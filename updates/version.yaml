@@ -122,3 +122,5 @@
     - 'Removed gif as default file extension as it is not supported by cwebp (thanks to @verenaroe)'
 2.8.0:
     - 'Make it possible to disable real path check before resizing files'
+2.8.1:
+    - 'Fixed deprecated method call'
