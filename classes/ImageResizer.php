@@ -29,7 +29,7 @@ class ImageResizer extends Resizer
         // method was introduced and conflicted with this implementation.
         // We can now use the parent's getWidth method if it is available.
         // For older versions of october the width property gets returned.
-        if (is_callable('parent::getWidth')) {
+        if (method_exists(get_parent_class($this), 'getWidth')) {
             return parent::getWidth();
         }
 
