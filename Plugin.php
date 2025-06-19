@@ -98,7 +98,7 @@ class Plugin extends PluginBase
     {
         return [
             'functions' => [
-                'svg' => function ($path, $vars = []) {
+                'svg' => [function ($path, $vars = []) {
                     $theme = Theme::getActiveTheme();
                     if (!$theme) {
                         return '';
@@ -118,7 +118,7 @@ class Plugin extends PluginBase
                     }
 
                     return (new SVGInliner($themeDir))->inline($path, $vars);
-                },
+                }, false],
             ],
         ];
     }

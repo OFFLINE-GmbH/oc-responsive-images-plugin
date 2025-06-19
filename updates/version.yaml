@@ -124,3 +124,5 @@
     - 'Make it possible to disable real path check before resizing files'
 2.8.1:
     - 'Fixed deprecated method call'
+2.9.0:
+    - 'Fixed October v4 compatibility'
