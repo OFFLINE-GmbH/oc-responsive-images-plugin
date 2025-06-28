@@ -216,13 +216,13 @@ To enable this extension simply change the type of any fileupload widget to `foc
 plugin's `fields.yaml`. This feature is off by default.
 
 ```diff
-        avatar:
-            label: Avatar
--            type: fileupload
-+            type: focuspoint
-            mode: image
-            imageHeight: 260
-            imageWidth: 260
+avatar:
+    label: Avatar
+-   type: fileupload
++   type: focuspoint
+    mode: image
+    imageHeight: 260
+    imageWidth: 260
 ```
 
 Once it is enabled, you can click on an uploaded image to select the focus point.
