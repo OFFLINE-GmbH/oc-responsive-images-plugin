@@ -10,6 +10,7 @@ use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Console\ConvertCommand;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use OFFLINE\ResponsiveImages\Console\Clear;
+use OFFLINE\ResponsiveImages\FormWidgets\FocusPointFileUpload;
 use System\Classes\PluginBase;
 use System\Models\File;
 use System\Traits\AssetMaker;
@@ -135,6 +136,13 @@ class Plugin extends PluginBase
                 'label'   => 'offline.responsiveimages::lang.reportwidgets.clearcache.label',
                 'context' => 'dashboard'
             ]
+        ];
+    }
+
+    public function registerFormWidgets()
+    {
+        return [
+            FocusPointFileUpload::class => 'focuspoint',
         ];
     }
 

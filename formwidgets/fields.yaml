@@ -1,0 +1,23 @@
+
+fields:
+    title:
+        type: text
+        placeholder: Title
+        span: full
+    description:
+        type: textarea
+        placeholder: Description
+        span: full
+        size: tiny
+    offline_responsiveimages_focus_x_axis:
+        label: offline.responsiveimages::lang.fields.focus_x_axis
+        type: number
+        span: left
+        cssClass: focuspoint-x-axis
+        readOnly: true
+    offline_responsiveimages_focus_y_axis:
+        label: offline.responsiveimages::lang.fields.focus_y_axis
+        type: number
+        span: right
+        cssClass: focuspoint-y-axis
+        readOnly: true

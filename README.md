@@ -212,25 +212,20 @@ This feature has two components to it:
 
 In the backend, the file upload widget is extended with a simple focus point selector.
 
-To enable this extension simply set `focuspoint: true` to any fileupload widget in your
+To enable this extension simply change the type of any fileupload widget to `focuspoint` in your
 plugin's `fields.yaml`. This feature is off by default.
 
-Once it is enabled you can click on an uploaded image to select the focus point.
-
-```yaml
-fields:
-    images:
-        label: Images
-        mode: image
-        useCaption: true
-        thumbOptions:
-            mode: crop
-            extension: auto
-        span: full
-        type: fileupload
-        # Enable the focus point selector
-        focuspoint: true
+```diff
+        avatar:
+            label: Avatar
+-            type: fileupload
++            type: focuspoint
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
 ```
+
+Once it is enabled, you can click on an uploaded image to select the focus point.
 
 ![focuspoint-configform](https://user-images.githubusercontent.com/10140882/51920398-97a27480-23e5-11e9-91ee-612da085fdb3.JPG)
 
@@ -314,7 +309,14 @@ easily create dynamic SVGs.
 
 It is very likely that there will be bugs with some specific html markup. If you encounter such a bug, please report it.
 
-## Future plans
+## Upgrading
+### Breaking changes in 3.0
 
-* Exclude/Include-Filters
-* Maybe a component to enable the middleware only on some pages
+If you are using the focuspoint feature, you now have to use `type: focuspoint` to enable the feature.
+
+```diff
+image:
+-    type: fileupload
+-    focuspoint: true
++    type: focuspoint
+```
