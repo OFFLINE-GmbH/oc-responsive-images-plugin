@@ -126,3 +126,5 @@
     - 'Fixed deprecated method call'
 2.9.0:
     - 'Fixed October v4 compatibility'
+2.9.1:
+    - 'Optimized PHP 8.4 compatibility'

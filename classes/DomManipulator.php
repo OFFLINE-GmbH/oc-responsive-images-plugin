@@ -138,7 +138,7 @@ class DomManipulator
             // the DOMDocument will not be able to parse the markup. This is why we
             // encode the whole tag and then convert the < and > entities back.
             // Not pretty, but it works.
-            $cleanedTag = mb_convert_encoding($tag, 'HTML-ENTITIES', 'UTF-8');
+            $cleanedTag = htmlspecialchars($tag, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $cleanedTag = htmlspecialchars($cleanedTag, ENT_NOQUOTES, 'UTF-8', false);
             $cleanedTag = str_replace('&lt;', '<', $cleanedTag);
             $cleanedTag = str_replace('&gt;', '>', $cleanedTag);
