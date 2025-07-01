@@ -181,7 +181,7 @@ class ImagePreloader
                         'sites'     => [],
                         'nesting'   => data_get($definition, 'nesting', false),
                     ];
-                    $urls = $urls->concat($this->getUrlsForItem($type, $itemName));
+                    $urls = $urls->concat($this->getUrlsForItem($type, $item));
                 }
             }
 

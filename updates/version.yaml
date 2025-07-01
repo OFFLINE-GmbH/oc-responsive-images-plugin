@@ -130,3 +130,5 @@
     - 'Optimized PHP 8.4 compatibility'
 3.0.0:
   - '!!! Changed focuspoint implementation. Use type: focuspoint to enable the feature. See README'
+3.0.1:
+  - 'Fixed responsive-images:generate command implementation'
