@@ -132,3 +132,5 @@
   - '!!! Changed focuspoint implementation. Use type: focuspoint to enable the feature. See README'
 3.0.1:
   - 'Fixed responsive-images:generate command implementation'
+3.0.2:
+  - 'Fixed parsing of responsive image tags'
