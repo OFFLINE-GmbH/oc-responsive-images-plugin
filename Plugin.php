@@ -10,6 +10,7 @@ use OFFLINE\ResponsiveImages\Classes\SVG\SVGInliner;
 use OFFLINE\ResponsiveImages\Console\ConvertCommand;
 use OFFLINE\ResponsiveImages\Console\GenerateResizedImages;
 use OFFLINE\ResponsiveImages\Console\Clear;
+use OFFLINE\ResponsiveImages\ContentFields\FocuspointField;
 use OFFLINE\ResponsiveImages\FormWidgets\FocusPointFileUpload;
 use System\Classes\PluginBase;
 use System\Models\File;
@@ -34,6 +35,13 @@ class Plugin extends PluginBase
             ->pushMiddleware('OFFLINE\ResponsiveImages\Classes\ResponsiveImagesMiddleware');
 
         FocuspointExtension::boot();
+    }
+
+    public function registerContentFields()
+    {
+        return [
+            FocuspointField::class => 'focuspoint',
+        ];
     }
 
     /**

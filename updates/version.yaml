@@ -134,3 +134,5 @@
   - 'Fixed responsive-images:generate command implementation'
 3.0.2:
   - 'Fixed parsing of responsive image tags'
+3.0.3:
+  - 'Added support for foucspoint field in Tailor'
