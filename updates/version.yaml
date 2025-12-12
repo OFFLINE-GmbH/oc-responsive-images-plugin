@@ -136,3 +136,5 @@
   - 'Fixed parsing of responsive image tags'
 3.0.3:
   - 'Added support for foucspoint field in Tailor'
+3.0.4:
+  - 'Fixed handling of encoding when replacing <img> Tags'
