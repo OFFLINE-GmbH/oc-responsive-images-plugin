@@ -141,6 +141,7 @@ class DomManipulator
             $cleanedTag = htmlspecialchars($tag, ENT_NOQUOTES | ENT_HTML5, 'UTF-8', false);
             $cleanedTag = str_replace('&lt;', '<', $cleanedTag);
             $cleanedTag = str_replace('&gt;', '>', $cleanedTag);
+            $cleanedTag = str_replace('&quot;', '"', $cleanedTag);
 
             $this->dom->loadHTML($cleanedTag);
 
