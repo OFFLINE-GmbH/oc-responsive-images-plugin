@@ -138,3 +138,5 @@
   - 'Added support for foucspoint field in Tailor'
 3.0.4:
   - 'Fixed handling of encoding when replacing <img> Tags'
+3.0.5:
+  - 'Optimized backwards compatibility with forks'

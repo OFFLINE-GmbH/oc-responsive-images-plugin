@@ -105,29 +105,37 @@ class Plugin extends PluginBase
 
     public function registerMarkupTags()
     {
+        $svgReturn = function ($path, $vars = []) {
+            $theme = Theme::getActiveTheme();
+            if (!$theme) {
+                return '';
+            }
+
+            $themeDir = $theme->getId();
+
+            // Try to fetch the file from the current theme.
+            $themePath = themes_path(implode('/', [$themeDir, $path]));
+            // If the file does not exist, check if there is a parent theme.
+            if (!file_exists($themePath) && $parentTheme = $theme->getParentTheme()) {
+                $themeDir = $parentTheme->getId();
+                $parentThemeDir = themes_path(implode('/', [$parentTheme->getId(), $path]));
+                if (file_exists($path)) {
+                    $path = $parentThemeDir;
+                }
+            }
+
+            return (new SVGInliner($themeDir))->inline($path, $vars);
+        };
+
+        // October requires a second boolean parameter so output is not automatically escaped.
+        // We keep the original return to remain backward compatible with forks.
+        if (class_exists(\Tailor\ServiceProvider::class)) {
+            $svgReturn = [$svgReturn, false];
+        }
+
         return [
             'functions' => [
-                'svg' => [function ($path, $vars = []) {
-                    $theme = Theme::getActiveTheme();
-                    if (!$theme) {
-                        return '';
-                    }
-
-                    $themeDir = $theme->getId();
-
-                    // Try to fetch the file from the current theme.
-                    $themePath = themes_path(implode('/', [$themeDir, $path]));
-                    // If the file does not exist, check if there is a parent theme.
-                    if (!file_exists($themePath) && $parentTheme = $theme->getParentTheme()) {
-                        $themeDir = $parentTheme->getId();
-                        $parentThemeDir = themes_path(implode('/', [$parentTheme->getId(), $path]));
-                        if (file_exists($path)) {
-                            $path = $parentThemeDir;
-                        }
-                    }
-
-                    return (new SVGInliner($themeDir))->inline($path, $vars);
-                }, false],
+                'svg' => $svgReturn,
             ],
         ];
     }
