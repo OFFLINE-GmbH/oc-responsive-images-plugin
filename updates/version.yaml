@@ -140,3 +140,5 @@
   - 'Fixed handling of encoding when replacing <img> Tags'
 3.0.5:
   - 'Optimized backwards compatibility with forks'
+3.0.6:
+  - 'Optimized path handling in symlinked environments (thanks to @isdailydev)'
