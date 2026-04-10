@@ -353,6 +353,14 @@ class ResponsiveImage
      */
     protected function getPathHash()
     {
-        return md5($this->path);
+        $path = $this->path;
+
+        // Use a project-relative path when project is served via symlink,
+        // so identical files do not get different hashes from env-specific absolute paths.
+        if ($this->useRealPath === false) {
+            $path = substr($this->path, strlen(base_path()));
+        }
+
+        return md5($path);
     }
 }
