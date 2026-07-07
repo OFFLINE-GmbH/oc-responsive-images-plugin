@@ -142,3 +142,5 @@
   - 'Optimized backwards compatibility with forks'
 3.0.6:
   - 'Optimized path handling in symlinked environments (thanks to @isdailydev)'
+3.0.7:
+  - 'Optimized October 4 compat'
